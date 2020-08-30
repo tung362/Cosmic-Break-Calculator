@@ -1,0 +1,30 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using TMPro;
+
+namespace CB.Calculator.UI
+{
+    /// <summary>
+    /// Handles displaying hints on the UI
+    /// </summary>
+    public class UIHintModule : MonoBehaviour
+    {
+        public static UIHintModule instance { get; private set; }
+
+        public List<TextMeshProUGUI> Binds;
+
+        void OnEnable()
+        {
+            if (!instance) instance = this;
+            else Debug.Log("Warning! Multiple instances of \"UIHintModule\"");
+        }
+
+        #region Utils
+        public void UpdateText(string text)
+        {
+            for(int i = 0; i < Binds.Count; i++) Binds[i].text = text;
+        }
+        #endregion
+    }
+}
