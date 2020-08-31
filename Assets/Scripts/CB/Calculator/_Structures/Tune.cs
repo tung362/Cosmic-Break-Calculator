@@ -17,7 +17,7 @@ namespace CB.Calculator
 
         /*Configuration*/
         public bool IsEx;
-        public BitMask RequirementMask = new BitMask();
+        public Bitmask RequirementMask = new Bitmask();
         public Color TuneColor = new Color(0.227451f, 0.8078431f, 0.2745098f);
         public Stats ModifierStats = new Stats();
         public WeaponStats ModifierWeaponStats = new WeaponStats();

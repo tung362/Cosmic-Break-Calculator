@@ -4,6 +4,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using CB.UI;
 using CB.Calculator.Utils;
 
 namespace CB.Calculator.UI
@@ -21,7 +22,7 @@ namespace CB.Calculator.UI
         //Part
         public TMP_InputField PartNameBind;
         public TMP_InputField PartTagsBind;
-        public TMP_Dropdown PartBDMaskBind;
+        public UIMaskDropdown PartBDMaskBind;
         public TMP_Dropdown PartSizeBind;
         public TMP_InputField PartCOSTBind;
         public TMP_InputField PartCAPABind;
@@ -101,10 +102,12 @@ namespace CB.Calculator.UI
 
         public void UpdatePartBDMask()
         {
-            for (int i = 0; i < Slots.Count; i++)
-            {
-                //Create a custom dropdown that support mask
-            }
+            for (int i = 0; i < Slots.Count; i++) Slots[i].Slot.EquipedPart.BDMask = PartBDMaskBind.Value;
+        }
+
+        public void UpdatePartSize()
+        {
+            for (int i = 0; i < Slots.Count; i++) Slots[i].Slot.EquipedPart.Size = (Part.SizeType)PartSizeBind.value;
         }
 
         public void UpdatePartAllowJs(bool toggle)

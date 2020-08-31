@@ -13,14 +13,14 @@ namespace CB.Calculator
     public class Part : UIDescriptionModule.IUIDescription
     {
         /*Enums*/
-        public enum BDType { Land, Air, Artillery, Support };
+        public enum BDType { Lnd, Air, Art, Sup };
         public enum SizeType { SS, S, M, L, LL};
 
         /*Configuration*/
         public string Name = "";
         public Dictionary<string, string> Tags = new Dictionary<string, string>();
         public PartJoint.JointType Joint = PartJoint.JointType.BD;
-        public BitMask BDMask = new BitMask();
+        public Bitmask BDMask = new Bitmask();
         public SizeType Size = SizeType.M;
         public bool AllowJs = true;
         public bool IsJ = false;

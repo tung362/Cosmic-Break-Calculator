@@ -4,22 +4,25 @@ using UnityEngine;
 
 namespace CB.Utils
 {
+    /// <summary>
+    /// Mask for storing multiple flags using bit shifting
+    /// </summary>
     [System.Serializable]
-    public class BitMask
+    public class Bitmask
     {
         public int Mask { get; private set; }
 
-        bool HasFlag(int flag)
+        public bool HasFlag(int flag)
         {
             return ((int)Mask & 1 << (int)flag) != 0;
         }
 
-        void AddFlag(int flag)
+        public void AddFlag(int flag)
         {
             Mask |= (int)(1 << (int)flag);
         }
 
-        void RemoveFlag(int flag)
+        public void RemoveFlag(int flag)
         {
             Mask &= (int)(~(int)(1 << (int)flag));
         }
