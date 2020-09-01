@@ -15,7 +15,9 @@ namespace CB.Calculator
 
         /*Configuration*/
         public bool Editable = true;
+        public bool Required = false;
         public JointType Joint = JointType.BD;
+        public Dictionary<string, string> Tags = new Dictionary<string, string>();
 
         private Part _EquipedPart;
         public Part EquipedPart
