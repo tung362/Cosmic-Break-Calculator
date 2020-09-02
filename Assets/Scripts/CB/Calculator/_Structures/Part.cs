@@ -9,7 +9,7 @@ namespace CB.Calculator
     /// <summary>
     /// Represents a generic part
     /// </summary>
-    [System.Serializable]
+    //[System.Serializable]
     public class Part : UIDescriptionModule.IUIDescription
     {
         /*Enums*/

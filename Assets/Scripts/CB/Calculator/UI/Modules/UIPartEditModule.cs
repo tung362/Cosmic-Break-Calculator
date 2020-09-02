@@ -10,7 +10,7 @@ using CB.Calculator.Utils;
 namespace CB.Calculator.UI
 {
     /// <summary>
-    /// Handles displaying hints on the UI
+    /// Handles creation and editing of PartJoints and Parts
     /// </summary>
     public class UIPartEditModule : MonoBehaviour
     {

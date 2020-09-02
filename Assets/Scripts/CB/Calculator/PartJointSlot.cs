@@ -12,31 +12,28 @@ namespace CB.Calculator
     public class PartJointSlot : MonoBehaviour
     {
         public PartJoint Slot;
-        //public PartJoint Slot
-        //{
-        //    get
-        //    {
-        //        return _Slot;
-        //    }
-        //    set
-        //    {
-        //        _Slot = value;
 
-        //    }
-        //}
-
+        public PartBuilder Builder;
         public TextMeshProUGUI TypeText;
         public Image TypeIcon;
         public RectTransform ChildLine;
         public TextMeshProUGUI NameText;
         public RectTransform TuneSlotOrigin;
+        public Image SelectionBox;
 
-        #region Utils
-        //public void UpdatePartJoint()
-        //{
-        //    TypeText.text = _Slot.Joint.ToString();
-        //    TypeIcon.sprite = Run.instance.JointIcons.Icons[_Slot.Joint];
-        //}
-        #endregion
+        public void CreateJoint()
+        {
+            Builder.CreateJoint(this);
+        }
+
+        public void RemoveJoint()
+        {
+            Builder.RemoveJoint(this);
+        }
+
+        public void JointSelect()
+        {
+            Builder.JointSelect(this);
+        }
     }
 }
