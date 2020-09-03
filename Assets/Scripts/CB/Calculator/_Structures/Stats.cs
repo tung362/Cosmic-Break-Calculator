@@ -7,7 +7,7 @@ namespace CB.Calculator
     /// <summary>
     /// Stats for parts
     /// </summary>
-    [System.Serializable]
+    //[System.Serializable]
     public class Stats
     {
         /*Configuration*/

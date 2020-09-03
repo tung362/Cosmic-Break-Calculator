@@ -18,6 +18,9 @@ namespace CB.Calculator
         /*Slots to edit*/
         public List<PartJointSlot> Slots;
 
+        /*Callbacks*/
+        public event Action<PartJointSlot> OnJointSelect;
+
         void Start()
         {
             //Create the root joint
@@ -88,6 +91,8 @@ namespace CB.Calculator
             }
             jointSlot.SelectionBox.gameObject.SetActive(true);
             Slots.Add(jointSlot);
+            //Event callback
+            OnJointSelect?.Invoke(jointSlot);
         }
 
         public void JointDeselect()
@@ -107,6 +112,28 @@ namespace CB.Calculator
             }
         }
 
+        public void UpdateJointRequired(bool toggle)
+        {
+            for (int i = 0; i < Slots.Count; i++) Slots[i].Slot.Required = toggle;
+        }
+
+        public void UpdateJointTags(string text)
+        {
+            for (int i = 0; i < Slots.Count; i++)
+            {
+                //Grabs raw tags
+                string[] tags = text.Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
+
+                //Filters out duplicate tags
+                Dictionary<string, string> filteredTags = new Dictionary<string, string>();
+                for (int j = 0; j < tags.Length; j++)
+                {
+                    if (!filteredTags.ContainsKey(tags[j])) filteredTags.Add(tags[j], tags[j]);
+                }
+                Slots[i].Slot.Tags = filteredTags;
+            }
+        }
+
         public void UpdateJointType(int num)
         {
             for (int i = 0; i < Slots.Count; i++)
@@ -114,6 +141,15 @@ namespace CB.Calculator
                 Slots[i].Slot.Joint = (PartJoint.JointType)num;
                 Slots[i].TypeText.text = Slots[i].Slot.Joint.ToString();
                 Slots[i].TypeIcon.sprite = Calculator.instance.JointIcons.Icons[Slots[i].Slot.Joint];
+            }
+        }
+
+        public void UpdateJointPart(bool toggle)
+        {
+            for (int i = 0; i < Slots.Count; i++)
+            {
+                if(toggle) Slots[i].Builder.CreatePart(Slots[i]);
+                else Slots[i].Builder.RemovePart(Slots[i]);
             }
         }
 
@@ -211,6 +247,26 @@ namespace CB.Calculator
             for (int i = 0; i < Slots.Count; i++) Slots[i].Slot.EquipedPart.BaseStats.TGH = stat;
         }
 
+        public void UpdatePartMain(bool toggle)
+        {
+            for (int i = 0; i < Slots.Count; i++)
+            {
+                if(toggle) Slots[i].Slot.EquipedPart.MainWeapon = new WeaponStats();
+                else Slots[i].Slot.EquipedPart.MainWeapon = null;
+                Slots[i].NameText.color = Slots[i].Slot.EquipedPart.MainWeapon == null ? DefaultColors.Value : Slots[i].Slot.EquipedPart.SubWeapon == null ? DefaultColors.MAIN : DefaultColors.MAINSUB;
+            }
+        }
+
+        public void UpdatePartSub(bool toggle)
+        {
+            for (int i = 0; i < Slots.Count; i++)
+            {
+                if (toggle) Slots[i].Slot.EquipedPart.SubWeapon = new WeaponStats();
+                else Slots[i].Slot.EquipedPart.SubWeapon = null;
+                Slots[i].NameText.color = Slots[i].Slot.EquipedPart.SubWeapon == null ? DefaultColors.Value : Slots[i].Slot.EquipedPart.MainWeapon == null ? DefaultColors.SUB : DefaultColors.MAINSUB;
+            }
+        }
+
         public void UpdatePartMainForce(string text)
         {
             int.TryParse(text, out int stat);
@@ -241,6 +297,12 @@ namespace CB.Calculator
             for (int i = 0; i < Slots.Count; i++) Slots[i].Slot.EquipedPart.MainWeapon.Int = stat;
         }
 
+        public void UpdatePartMainDMG(string text)
+        {
+            //int.TryParse(text, out int stat);
+            //for (int i = 0; i < Slots.Count; i++) Slots[i].Slot.EquipedPart.MainWeapon.Int = stat;
+        }
+
         public void UpdatePartSubForce(string text)
         {
             int.TryParse(text, out int stat);
@@ -269,6 +331,12 @@ namespace CB.Calculator
         {
             int.TryParse(text, out int stat);
             for (int i = 0; i < Slots.Count; i++) Slots[i].Slot.EquipedPart.SubWeapon.Int = stat;
+        }
+
+        public void UpdatePartSubDMG(string text)
+        {
+            //int.TryParse(text, out int stat);
+            //for (int i = 0; i < Slots.Count; i++) Slots[i].Slot.EquipedPart.MainWeapon.Int = stat;
         }
 
         public void UpdatePartDescription(string text)

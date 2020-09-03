@@ -16,6 +16,7 @@ namespace CB.Calculator.Utils
         public static Color Value = new Color(0.8196079f, 0.8196079f, 0.8196079f, 1.0f);
         public static Color MAIN = new Color(1.0f, 0.3215686f, 0.3215686f, 1.0f);
         public static Color SUB = new Color(0.3294118f, 0.5686275f, 0.9647059f, 1.0f);
+        public static Color MAINSUB = new Color(1.0f, 0.3215686f, 0.9566534f, 1.0f);
         public static Color COST = new Color(0.627451f, 1.0f, 1.0f, 1.0f);
         public static Color HP = new Color(0.254902f, 0.3803922f, 0.8431373f, 1.0f);
         public static Color STR = new Color(1.0f, 0.3137255f, 0.0f, 1.0f);
