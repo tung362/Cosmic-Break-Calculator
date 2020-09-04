@@ -21,6 +21,7 @@ namespace CB.Calculator
         public RectTransform TuneSlotOrigin;
         public Image SelectionBox;
 
+        #region Utils
         public void CreateJoint()
         {
             Builder.CreateJoint(this);
@@ -35,5 +36,6 @@ namespace CB.Calculator
         {
             Builder.JointSelect(this);
         }
+        #endregion
     }
 }

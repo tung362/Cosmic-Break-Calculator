@@ -30,11 +30,30 @@ namespace CB.UI
         public BitMaskEvent OnValueChanged;
 
         /*Cache*/
-        public Bitmask Value = new Bitmask();
+        private Bitmask _Value = new Bitmask();
+        public Bitmask Value
+        {
+            get
+            {
+                return _Value;
+            }
+            set
+            {
+                _Value = value;
+                UpdateLabel();
+                OnValueChanged.Invoke(Value);
+            }
+        }
         private float PreviousDropdownHeight;
         private float PreviousContentHeight;
         bool MouseOnMenu;
         private List<RectTransform> Items = new List<RectTransform>();
+
+        void Start()
+        {
+            PreviousDropdownHeight = DropdownTemplate.sizeDelta.y;
+            PreviousContentHeight = ContentTemplate.sizeDelta.y;
+        }
 
         public void OnPointerEnter(PointerEventData eventData)
         {
@@ -81,12 +100,10 @@ namespace CB.UI
 
         void CreateItems()
         {
-            PreviousDropdownHeight = DropdownTemplate.sizeDelta.y;
-            PreviousContentHeight = ContentTemplate.sizeDelta.y;
-
             //Resize window to fit all items
             float height = (ItemTemplate.sizeDelta.y * Options.Count) + (ContentTemplate.sizeDelta.y - ItemTemplate.sizeDelta.y);
             if (height < PreviousDropdownHeight) DropdownTemplate.sizeDelta = new Vector2(DropdownTemplate.sizeDelta.x, height);
+            else DropdownTemplate.sizeDelta = new Vector2(DropdownTemplate.sizeDelta.x, PreviousDropdownHeight);
             ContentTemplate.sizeDelta = new Vector2(ContentTemplate.sizeDelta.x, height);
 
             //Create Items
@@ -148,29 +165,35 @@ namespace CB.UI
             }
         }
 
+        public void SetValueNoCallback(Bitmask mask)
+        {
+            _Value = mask;
+            UpdateLabel();
+        }
+
         public void AddFlag(int flag)
         {
-            Value.AddFlag(flag);
+            _Value.AddFlag(flag);
             UpdateLabel();
             OnValueChanged.Invoke(Value);
         }
 
         public void AddFlagNoCallback(int flag)
         {
-            Value.AddFlag(flag);
+            _Value.AddFlag(flag);
             UpdateLabel();
         }
 
         public void RemoveFlag(int flag)
         {
-            Value.RemoveFlag(flag);
+            _Value.RemoveFlag(flag);
             UpdateLabel();
             OnValueChanged.Invoke(Value);
         }
 
         public void RemoveFlagNoCallback(int flag)
         {
-            Value.RemoveFlag(flag);
+            _Value.RemoveFlag(flag);
             UpdateLabel();
         }
     }

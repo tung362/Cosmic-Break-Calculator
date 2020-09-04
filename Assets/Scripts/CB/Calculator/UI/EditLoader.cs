@@ -25,7 +25,7 @@ namespace CB.Calculator.Utils
         public TMP_InputField PartNameBind;
         public TMP_InputField PartTagsBind;
         public UIMaskDropdown PartBDMaskBind;
-        public Dropdown PartSizeBind;
+        public TMP_Dropdown PartSizeBind;
         public TMP_InputField PartCostBind;
         public TMP_InputField PartHPBind;
         public TMP_InputField PartSTRBind;
@@ -48,43 +48,88 @@ namespace CB.Calculator.Utils
         public TMP_InputField SubSpeedBind;
         public TMP_InputField SubIntBind;
         public TMP_InputField SubDMGBind;
+        public TMP_InputField DiscriptionBind;
+        public TMP_InputField SlotsBind;
 
         void OnEnable()
         {
             //Set listener
-            Builder.OnJointSelect += OnJointSelect;
+            Builder.OnRedraw += OnRedraw;
         }
 
         void OnDisable()
         {
             //Unset listener
-            Builder.OnJointSelect -= OnJointSelect;
+            Builder.OnRedraw -= OnRedraw;
         }
 
         #region Listeners
-        void OnJointSelect(PartJointSlot jointSlot)
+        void OnRedraw(PartJointSlot jointSlot)
         {
-            JointFixedBind.SetIsOnWithoutNotify(jointSlot.Slot.Editable);
-
-            if(jointSlot.Slot.EquipedPart != null)
+            Builder.IgnoreToggles = true;
+            //Joint
+            JointFixedBind.isOn = jointSlot.Slot.Fixed;
+            JointRequiredBind.isOn = jointSlot.Slot.Required;
+            JointTagsBind.SetTextWithoutNotify(string.Join(", ", jointSlot.Slot.Tags.Values));
+            JointTypeBind.SetValueWithoutNotify((int)jointSlot.Slot.Joint);
+            //Part
+            CreatePartBind.isOn = jointSlot.Slot.EquipedPart != null ? true : false;
+            if (jointSlot.Slot.EquipedPart != null)
             {
-
+                PartNameBind.SetTextWithoutNotify(jointSlot.Slot.EquipedPart.Name);
+                PartTagsBind.SetTextWithoutNotify(string.Join(", ", jointSlot.Slot.EquipedPart.Tags.Values));
+                PartBDMaskBind.SetValueNoCallback(jointSlot.Slot.EquipedPart.BDMask);
+                PartSizeBind.SetValueWithoutNotify((int)jointSlot.Slot.EquipedPart.Size);
+                PartCostBind.SetTextWithoutNotify(jointSlot.Slot.EquipedPart.BaseStats.COST.ToString());
+                PartHPBind.SetTextWithoutNotify(jointSlot.Slot.EquipedPart.BaseStats.HP.ToString());
+                PartSTRBind.SetTextWithoutNotify(jointSlot.Slot.EquipedPart.BaseStats.STR.ToString());
+                PartTECBind.SetTextWithoutNotify(jointSlot.Slot.EquipedPart.BaseStats.TEC.ToString());
+                PartWLKBind.SetTextWithoutNotify(jointSlot.Slot.EquipedPart.BaseStats.WLK.ToString());
+                PartFLYBind.SetTextWithoutNotify(jointSlot.Slot.EquipedPart.BaseStats.FLY.ToString());
+                PartTGHBind.SetTextWithoutNotify(jointSlot.Slot.EquipedPart.BaseStats.TGH.ToString());
+                PartCAPABind.SetTextWithoutNotify(jointSlot.Slot.EquipedPart.BaseStats.CAPA.ToString());
+                //Main weapon
+                MainBind.isOn = jointSlot.Slot.EquipedPart.MainWeapon != null ? true : false;
+                if(jointSlot.Slot.EquipedPart.MainWeapon != null)
+                {
+                    MainForceBind.SetTextWithoutNotify(jointSlot.Slot.EquipedPart.MainWeapon.Force.ToString());
+                    MainAmmoBind.SetTextWithoutNotify(jointSlot.Slot.EquipedPart.MainWeapon.Ammo.ToString());
+                    MainRangeBind.SetTextWithoutNotify(jointSlot.Slot.EquipedPart.MainWeapon.Range.ToString());
+                    MainSpeedBind.SetTextWithoutNotify(jointSlot.Slot.EquipedPart.MainWeapon.Speed.ToString());
+                    MainIntBind.SetTextWithoutNotify(jointSlot.Slot.EquipedPart.MainWeapon.Int.ToString());
+                    UpdateMainDamage();
+                }
+                //Sub weapon
+                SubBind.isOn = jointSlot.Slot.EquipedPart.SubWeapon != null ? true : false;
+                if (jointSlot.Slot.EquipedPart.SubWeapon != null)
+                {
+                    SubForceBind.SetTextWithoutNotify(jointSlot.Slot.EquipedPart.SubWeapon.Force.ToString());
+                    SubAmmoBind.SetTextWithoutNotify(jointSlot.Slot.EquipedPart.SubWeapon.Ammo.ToString());
+                    SubRangeBind.SetTextWithoutNotify(jointSlot.Slot.EquipedPart.SubWeapon.Range.ToString());
+                    SubSpeedBind.SetTextWithoutNotify(jointSlot.Slot.EquipedPart.SubWeapon.Speed.ToString());
+                    SubIntBind.SetTextWithoutNotify(jointSlot.Slot.EquipedPart.SubWeapon.Int.ToString());
+                    UpdateSubDamage();
+                }
+                DiscriptionBind.SetTextWithoutNotify(jointSlot.Slot.EquipedPart.Description);
+                SlotsBind.SetTextWithoutNotify(jointSlot.Slot.EquipedPart.Tunes.Count.ToString());
             }
-
-            //Load for multiple joints
-            for (int i = 0; i < Builder.Slots.Count; i++)
-            {
-
-            }
+            Builder.IgnoreToggles = false;
         }
         #endregion
 
         #region Utils
-        public void UpdateDMG(bool isMain)
+        public void UpdateMainDamage()
         {
             int.TryParse(MainForceBind.text, out int force);
-            int.TryParse(isMain ? PartTECBind.text : PartSTRBind.text, out int stat);
-            WeaponStats.CalculateDamage(force, stat, isMain);
+            int.TryParse(PartTECBind.text, out int stat);
+            MainDMGBind.text = WeaponStats.CalculateDamage(force, stat, true).ToString();
+        }
+
+        public void UpdateSubDamage()
+        {
+            int.TryParse(SubForceBind.text, out int force);
+            int.TryParse(PartSTRBind.text, out int stat);
+            SubDMGBind.text = WeaponStats.CalculateDamage(force, stat, false).ToString();
         }
         #endregion
     }

@@ -10,11 +10,7 @@ namespace CB.Calculator
     //[System.Serializable]
     public class WeaponStats
     {
-        /*Enums*/
-        public enum AttachmentType { Main, Sub };
-
         /*Configuration*/
-        public AttachmentType WeaponType = AttachmentType.Main;
         public int Force = 0;
         public int Ammo = 0;
         public int Range = 0;
@@ -25,7 +21,7 @@ namespace CB.Calculator
         public static int CalculateDamage(int force, int stat, bool isMain)
         {
             float coefficient = (isMain ? 16 : 24) / 1000.0f;
-            return (int)(force * (1 + coefficient * (stat - 10)) + 0.5f);
+            return (int)(force * (1 + coefficient * (Mathf.Clamp(stat, 0, 40) - 10)) + 0.5f);
         }
         #endregion
     }

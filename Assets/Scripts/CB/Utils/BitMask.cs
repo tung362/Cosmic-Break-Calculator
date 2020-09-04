@@ -8,7 +8,7 @@ namespace CB.Utils
     /// Mask for storing multiple flags using bit shifting
     /// </summary>
     [System.Serializable]
-    public class Bitmask
+    public struct Bitmask
     {
         public int Mask { get; private set; }
 
@@ -25,6 +25,11 @@ namespace CB.Utils
         public void RemoveFlag(int flag)
         {
             Mask &= (int)(~(int)(1 << (int)flag));
+        }
+
+        public void ClearFlags()
+        {
+            Mask = 0;
         }
     }
 }

@@ -5568,7 +5568,6 @@ GameObject:
   - component: {fileID: 152796991}
   - component: {fileID: 152796993}
   - component: {fileID: 152796992}
-  - component: {fileID: 152796995}
   - component: {fileID: 152796994}
   m_Layer: 5
   m_Name: DMG InputField
@@ -5658,17 +5657,6 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 152796995}
-        m_MethodName: EnsureNumber
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 152796994}
         m_MethodName: UpdateColor
         m_Mode: 0
@@ -5697,29 +5685,7 @@ MonoBehaviour:
       m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 152796995}
-        m_MethodName: RestrictLessThan
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 152796995}
-        m_MethodName: RestrictGreaterThan
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_OnTouchScreenKeyboardStatusChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -5729,7 +5695,7 @@ MonoBehaviour:
   m_Text: 4000
   m_CaretBlinkRate: 0.85
   m_CaretWidth: 1
-  m_ReadOnly: 0
+  m_ReadOnly: 1
   m_RichText: 1
   m_GlobalFontAsset: {fileID: 11400000, guid: f202111e283cae94aab5999357f03ddf, type: 2}
   m_OnFocusSelectAll: 1
@@ -5762,21 +5728,6 @@ MonoBehaviour:
   Threshold: 0
   Color1: {r: 0.36862746, g: 0.36862746, b: 0.36862746, a: 1}
   Color2: {r: 0.81960785, g: 0.81960785, b: 0.81960785, a: 1}
---- !u!114 &152796995
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 152796990}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0588abe35b68524c8b105e75f4f6725, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Bind: {fileID: 152796992}
-  MinValue: -9999
-  MaxValue: 9999
 --- !u!1 &156023126
 GameObject:
   m_ObjectHideFlags: 0
@@ -17545,7 +17496,7 @@ GameObject:
   - component: {fileID: 406518512}
   - component: {fileID: 406518513}
   m_Layer: 5
-  m_Name: Main Wep Stats Mask (1)
+  m_Name: Main Wep Stats Mask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -22562,6 +22513,17 @@ MonoBehaviour:
       - m_Target: {fileID: 1263424138}
         m_MethodName: UpdatePartMainForce
         m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 989335807}
+        m_MethodName: UpdateMainDamage
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -31165,15 +31127,10 @@ PrefabInstance:
       propertyPath: Builder
       value: 
       objectReference: {fileID: 1263424138}
-    - target: {fileID: 4834512580917297440, guid: a4a547ed6d401eb44be93f30102ad3ff,
-        type: 3}
-      propertyPath: SelectionBox
-      value: 
-      objectReference: {fileID: 672274103}
     - target: {fileID: 4834512580917297469, guid: a4a547ed6d401eb44be93f30102ad3ff,
         type: 3}
       propertyPath: m_Name
-      value: Part Joint Slot
+      value: Part Joint Edit Slot
       objectReference: {fileID: 0}
     - target: {fileID: 4834512580917297470, guid: a4a547ed6d401eb44be93f30102ad3ff,
         type: 3}
@@ -31280,36 +31237,6 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 7422767079198269143, guid: a4a547ed6d401eb44be93f30102ad3ff,
-        type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7935556350563354552, guid: a4a547ed6d401eb44be93f30102ad3ff,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8220713911992498892, guid: a4a547ed6d401eb44be93f30102ad3ff,
-        type: 3}
-      propertyPath: m_AnchorMin.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8220713911992498892, guid: a4a547ed6d401eb44be93f30102ad3ff,
-        type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8220713911992498892, guid: a4a547ed6d401eb44be93f30102ad3ff,
-        type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -23.600037
-      objectReference: {fileID: 0}
-    - target: {fileID: 8220713911992498892, guid: a4a547ed6d401eb44be93f30102ad3ff,
-        type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 24.149994
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a4a547ed6d401eb44be93f30102ad3ff, type: 3}
 --- !u!224 &672274102 stripped
@@ -31318,18 +31245,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 672274101}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &672274103 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 1796714299124147918, guid: a4a547ed6d401eb44be93f30102ad3ff,
-    type: 3}
-  m_PrefabInstance: {fileID: 672274101}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &676299752
 GameObject:
   m_ObjectHideFlags: 0
@@ -32036,6 +31951,17 @@ MonoBehaviour:
       - m_Target: {fileID: 1263424138}
         m_MethodName: UpdatePartSTR
         m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 989335807}
+        m_MethodName: UpdateSubDamage
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -46777,38 +46703,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5a01af29067b2041bcfdd8b12b6b2f9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Builder: {fileID: 0}
-  JointFixedBind: {fileID: 0}
-  JointRequiredBind: {fileID: 0}
-  JointTagsBind: {fileID: 0}
-  JointTypeBind: {fileID: 0}
-  CreatePartBind: {fileID: 0}
-  PartNameBind: {fileID: 0}
-  PartTagsBind: {fileID: 0}
-  PartBDMaskBind: {fileID: 0}
-  PartSizeBind: {fileID: 0}
-  PartCostBind: {fileID: 0}
-  PartHPBind: {fileID: 0}
-  PartSTRBind: {fileID: 0}
-  PartTECBind: {fileID: 0}
-  PartWLKBind: {fileID: 0}
-  PartFLYBind: {fileID: 0}
-  PartTGHBind: {fileID: 0}
-  PartCAPABind: {fileID: 0}
-  MainBind: {fileID: 0}
-  MainForceBind: {fileID: 0}
-  MainAmmoBind: {fileID: 0}
-  MainRangeBind: {fileID: 0}
-  MainSpeedBind: {fileID: 0}
-  MainIntBind: {fileID: 0}
-  MainDMGBind: {fileID: 0}
-  SubBind: {fileID: 0}
-  SubForceBind: {fileID: 0}
-  SubAmmoBind: {fileID: 0}
-  SubRangeBind: {fileID: 0}
-  SubSpeedBind: {fileID: 0}
-  SubIntBind: {fileID: 0}
-  SubDMGBind: {fileID: 0}
+  Builder: {fileID: 1263424138}
+  JointFixedBind: {fileID: 1026009819}
+  JointRequiredBind: {fileID: 639813933}
+  JointTagsBind: {fileID: 2089145969}
+  JointTypeBind: {fileID: 1420467581}
+  CreatePartBind: {fileID: 2012046118}
+  PartNameBind: {fileID: 1630575872}
+  PartTagsBind: {fileID: 1512992467}
+  PartBDMaskBind: {fileID: 15}
+  PartSizeBind: {fileID: 193092768}
+  PartCostBind: {fileID: 1360684446}
+  PartHPBind: {fileID: 730753155}
+  PartSTRBind: {fileID: 684089202}
+  PartTECBind: {fileID: 2078184859}
+  PartWLKBind: {fileID: 1808224538}
+  PartFLYBind: {fileID: 1067618033}
+  PartTGHBind: {fileID: 1008804136}
+  PartCAPABind: {fileID: 750641451}
+  MainBind: {fileID: 1199508108}
+  MainForceBind: {fileID: 508107400}
+  MainAmmoBind: {fileID: 1896461615}
+  MainRangeBind: {fileID: 899227511}
+  MainSpeedBind: {fileID: 862129928}
+  MainIntBind: {fileID: 1790881433}
+  MainDMGBind: {fileID: 152796992}
+  SubBind: {fileID: 1787802218}
+  SubForceBind: {fileID: 1505120090}
+  SubAmmoBind: {fileID: 494930435}
+  SubRangeBind: {fileID: 1271963156}
+  SubSpeedBind: {fileID: 1056762032}
+  SubIntBind: {fileID: 2087384277}
+  SubDMGBind: {fileID: 1422562605}
+  DiscriptionBind: {fileID: 527600804}
+  SlotsBind: {fileID: 834526287}
 --- !u!1 &991762844
 GameObject:
   m_ObjectHideFlags: 0
@@ -48708,7 +48636,7 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
       - m_Target: {fileID: 1263424138}
-        m_MethodName: UpdateJointEditable
+        m_MethodName: UpdateJointFixed
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -49447,7 +49375,7 @@ MonoBehaviour:
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
-            m_StringArgument: Multi Select [Ctrl + Click]
+            m_StringArgument: Deselect [Click]
             m_BoolArgument: 0
           m_CallState: 2
   - eventID: 1
@@ -49470,7 +49398,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 1263424138}
-          m_MethodName: JointDeselect
+          m_MethodName: EditSlotsReset
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -57378,9 +57306,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Root: {fileID: 41317090}
-  SlotPrefab: {fileID: 4834512580917297440, guid: a4a547ed6d401eb44be93f30102ad3ff,
+  JointSlotPrefab: {fileID: 4834512580917297440, guid: a4a547ed6d401eb44be93f30102ad3ff,
     type: 3}
-  Slots: []
+  TuneSlotPrefab: {fileID: 6223872298898641825, guid: ef0e7d76e1bcafd40aca49e5e444f244,
+    type: 3}
+  EditSlot: {fileID: 0}
+  IgnoreToggles: 0
 --- !u!1 &1266643981
 GameObject:
   m_ObjectHideFlags: 0
@@ -59895,7 +59826,7 @@ GameObject:
   - component: {fileID: 1335022007}
   - component: {fileID: 1335022008}
   m_Layer: 5
-  m_Name: Sub Wep Stats Mask (2)
+  m_Name: Sub Wep Stats Mask
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -64148,7 +64079,6 @@ GameObject:
   - component: {fileID: 1422562604}
   - component: {fileID: 1422562606}
   - component: {fileID: 1422562605}
-  - component: {fileID: 1422562608}
   - component: {fileID: 1422562607}
   m_Layer: 5
   m_Name: DMG InputField
@@ -64238,17 +64168,6 @@ MonoBehaviour:
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1422562608}
-        m_MethodName: EnsureNumber
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 1422562607}
         m_MethodName: UpdateColor
         m_Mode: 0
@@ -64277,29 +64196,7 @@ MonoBehaviour:
       m_Calls: []
   m_OnValueChanged:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 1422562608}
-        m_MethodName: RestrictLessThan
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 1422562608}
-        m_MethodName: RestrictGreaterThan
-        m_Mode: 0
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
   m_OnTouchScreenKeyboardStatusChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -64342,21 +64239,6 @@ MonoBehaviour:
   Threshold: 0
   Color1: {r: 0.36862746, g: 0.36862746, b: 0.36862746, a: 1}
   Color2: {r: 0.81960785, g: 0.81960785, b: 0.81960785, a: 1}
---- !u!114 &1422562608
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1422562603}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b0588abe35b68524c8b105e75f4f6725, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Bind: {fileID: 1422562605}
-  MinValue: -9999
-  MaxValue: 9999
 --- !u!1 &1424351503
 GameObject:
   m_ObjectHideFlags: 0
@@ -67735,6 +67617,17 @@ MonoBehaviour:
       - m_Target: {fileID: 1263424138}
         m_MethodName: UpdatePartSubForce
         m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 989335807}
+        m_MethodName: UpdateSubDamage
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -81363,7 +81256,7 @@ GameObject:
   - component: {fileID: 1787802219}
   - component: {fileID: 1787802218}
   m_Layer: 5
-  m_Name: Sub Wep Stats Toggle (1)
+  m_Name: Sub Wep Stats Toggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -90982,7 +90875,7 @@ GameObject:
   - component: {fileID: 2012046119}
   - component: {fileID: 2012046118}
   m_Layer: 5
-  m_Name: Joint Required Toggle
+  m_Name: Create Part Toggle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -94732,6 +94625,17 @@ MonoBehaviour:
       - m_Target: {fileID: 1263424138}
         m_MethodName: UpdatePartTEC
         m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 989335807}
+        m_MethodName: UpdateMainDamage
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

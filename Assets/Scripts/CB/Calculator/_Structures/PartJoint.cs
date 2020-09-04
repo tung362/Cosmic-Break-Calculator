@@ -14,10 +14,10 @@ namespace CB.Calculator
         public enum JointType { BD, LG, HD, HAC, FAC, AM, BS, WP, WB }
 
         /*Configuration*/
-        public bool Editable = true;
+        public bool Fixed = false;
         public bool Required = false;
-        public JointType Joint = JointType.BD;
         public Dictionary<string, string> Tags = new Dictionary<string, string>();
+        public JointType Joint = JointType.BD;
 
         public Part EquipedPart;
     }

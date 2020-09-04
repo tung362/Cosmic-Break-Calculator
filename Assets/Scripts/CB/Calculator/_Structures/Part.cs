@@ -19,8 +19,8 @@ namespace CB.Calculator
         /*Configuration*/
         public string Name = "";
         public Dictionary<string, string> Tags = new Dictionary<string, string>();
-        public PartJoint.JointType Joint = PartJoint.JointType.BD;
         public Bitmask BDMask = new Bitmask();
+        public PartJoint.JointType Joint = PartJoint.JointType.BD;
         public SizeType Size = SizeType.M;
         public bool AllowJs = true;
         public bool IsJ = false;
