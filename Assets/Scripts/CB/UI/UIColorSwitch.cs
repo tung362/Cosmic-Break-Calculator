@@ -10,7 +10,7 @@ namespace CB.UI
     /// </summary>
     public class UIColorSwitch : MonoBehaviour
     {
-        public Image Bind;
+        public Graphic Bind;
         public Color OnColor = Color.white;
         public Color OffColor = Color.white;
 

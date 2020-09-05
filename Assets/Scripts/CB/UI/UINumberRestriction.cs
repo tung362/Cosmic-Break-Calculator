@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using TMPro;
 
 namespace CB.UI
@@ -13,6 +14,11 @@ namespace CB.UI
         public TMP_InputField Bind;
         public float MinValue;
         public float MaxValue;
+
+        /*Events*/
+        public UnityEvent OnMinReached = new UnityEvent();
+        public UnityEvent OnMaxReached = new UnityEvent();
+        public UnityEvent OnInBetween = new UnityEvent();
 
         public void RestrictNegative(string text)
         {
@@ -35,6 +41,14 @@ namespace CB.UI
         {
             float.TryParse(text, out float value);
             Bind.SetTextWithoutNotify(value.ToString());
+        }
+
+        public void NumberEvent(string text)
+        {
+            float.TryParse(text, out float value);
+            if (value > MinValue && value < MaxValue) OnInBetween.Invoke();
+            if (value >= MaxValue) OnMaxReached.Invoke();
+            if (value <= MinValue) OnMinReached.Invoke();
         }
     }
 }

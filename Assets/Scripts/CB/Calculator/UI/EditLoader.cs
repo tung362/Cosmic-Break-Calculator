@@ -25,6 +25,7 @@ namespace CB.Calculator.Utils
         public TMP_InputField PartNameBind;
         public TMP_InputField PartTagsBind;
         public UIMaskDropdown PartBDMaskBind;
+        public TMP_Dropdown PartBDTypeBind;
         public TMP_Dropdown PartSizeBind;
         public TMP_InputField PartCostBind;
         public TMP_InputField PartHPBind;
@@ -78,7 +79,25 @@ namespace CB.Calculator.Utils
             {
                 PartNameBind.SetTextWithoutNotify(jointSlot.Slot.EquipedPart.Name);
                 PartTagsBind.SetTextWithoutNotify(string.Join(", ", jointSlot.Slot.EquipedPart.Tags.Values));
-                PartBDMaskBind.SetValueNoCallback(jointSlot.Slot.EquipedPart.BDMask);
+                if(jointSlot.transform == Builder.Root.transform && jointSlot.Slot.EquipedPart.Joint == PartJoint.JointType.BD)
+                {
+                    PartBDTypeBind.transform.parent.gameObject.SetActive(true);
+                    PartBDMaskBind.transform.parent.gameObject.SetActive(false);
+                    for(int i = 0; i < 4; i++)
+                    {
+                        if(jointSlot.Slot.EquipedPart.BDMask.HasFlag(i))
+                        {
+                            PartBDTypeBind.SetValueWithoutNotify(i);
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    PartBDMaskBind.transform.parent.gameObject.SetActive(true);
+                    PartBDTypeBind.transform.parent.gameObject.SetActive(false);
+                    PartBDMaskBind.SetValueNoCallback(jointSlot.Slot.EquipedPart.BDMask);
+                }
                 PartSizeBind.SetValueWithoutNotify((int)jointSlot.Slot.EquipedPart.Size);
                 PartCostBind.SetTextWithoutNotify(jointSlot.Slot.EquipedPart.BaseStats.COST.ToString());
                 PartHPBind.SetTextWithoutNotify(jointSlot.Slot.EquipedPart.BaseStats.HP.ToString());

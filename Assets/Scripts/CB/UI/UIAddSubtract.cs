@@ -17,6 +17,7 @@ namespace CB.UI
             int.TryParse(Bind.text, out int value);
             value += num;
             Bind.text = value.ToString();
+            Bind.onEndEdit.Invoke(Bind.text);
         }
 
         public void Subtract(int num)
@@ -24,6 +25,7 @@ namespace CB.UI
             int.TryParse(Bind.text, out int value);
             value -= num;
             Bind.text = value.ToString();
+            Bind.onEndEdit.Invoke(Bind.text);
         }
 
         public void Add(float num)
@@ -31,6 +33,7 @@ namespace CB.UI
             float.TryParse(Bind.text, out float value);
             value += num;
             Bind.text = value.ToString();
+            Bind.onEndEdit.Invoke(Bind.text);
         }
 
         public void Subtract(float num)
@@ -38,6 +41,7 @@ namespace CB.UI
             float.TryParse(Bind.text, out float value);
             value -= num;
             Bind.text = value.ToString();
+            Bind.onEndEdit.Invoke(Bind.text);
         }
     }
 }

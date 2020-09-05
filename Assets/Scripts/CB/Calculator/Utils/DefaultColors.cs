@@ -33,5 +33,7 @@ namespace CB.Calculator.Utils
         public static Color RegularTune = new Color(0.227451f, 0.8078431f, 0.2745098f, 1.0f);
         public static Color WeaponTune = new Color(0.874f, 0.2827648f, 0.2827648f, 1.0f);
         public static Color ExTune = new Color(0.9921569f, 0.9197562f, 0.5456863f, 1.0f);
+        public static Color AddSlot = new Color(0.3726415f, 0.6053202f, 1.0f, 1.0f);
+        public static Color RemoveSlot = new Color(1.0f, 0.3725491f, 0.4533907f, 1.0f);
     }
 }

@@ -11,15 +11,27 @@ namespace CB.Calculator
     /// </summary>
     public class PartJointSlot : MonoBehaviour
     {
+        //Hook to an existing PartJoint
         public PartJoint Slot;
 
-        public PartBuilder Builder;
+        [Header("Binds")]
         public TextMeshProUGUI TypeText;
         public Image TypeIcon;
         public RectTransform ChildLine;
         public TextMeshProUGUI NameText;
-        public RectTransform TuneSlotOrigin;
         public Image SelectionBox;
+        public Button AddSlotButton;
+        public TMP_Text AddSlotButtonText;
+        public Button RemoveSlotButton;
+        public TMP_Text RemoveSlotButtonText;
+        public RectTransform JointSlotOrigin;
+        public RectTransform TuneSlotOrigin;
+
+        [Header("Builder")]
+        public PartBuilder Builder;
+        public PartJointSlot Parent;
+        public List<PartJointSlot> SubJoints;
+        public List<TuneSlot> Tunes;
 
         #region Utils
         public void CreateJoint()

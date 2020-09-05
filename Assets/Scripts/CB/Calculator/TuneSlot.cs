@@ -10,8 +10,10 @@ namespace CB.Calculator
     /// </summary>
     public class TuneSlot : MonoBehaviour
     {
-        private Tune Slot;
+        //Hook to an existing Tune
+        public Tune Slot;
 
+        [Header("Binds")]
         public Image Icon;
     }
 }

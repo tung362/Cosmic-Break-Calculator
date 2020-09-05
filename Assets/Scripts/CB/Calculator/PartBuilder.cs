@@ -15,7 +15,7 @@ namespace CB.Calculator
         public PartJointSlot Root;
         public PartJointSlot JointSlotPrefab;
         public TuneSlot TuneSlotPrefab;
-        public Vector2 JointSlotOffset = new Vector2(38.59998f, 38.97501f);
+        public Vector2 JointSlotOffset = new Vector2(0, -26.90006f);
         public Vector2 TuneSlotOffset = new Vector2(21.90002f, 0);
 
         /*Slot to edit*/
@@ -27,11 +27,14 @@ namespace CB.Calculator
         /*Cache*/
         //Set to true when you want toggle events to be ignored (For loading toggle settings without triggering edits)
         public bool IgnoreToggles = false;
-
         void Start()
         {
             //Create the root joint
             Root.Slot = new PartJoint();
+            Root.AddSlotButton.interactable = false;
+            Root.AddSlotButtonText.color = DefaultColors.Name;
+            Root.RemoveSlotButton.interactable = false;
+            Root.RemoveSlotButtonText.color = DefaultColors.Name;
         }
 
         #region Creation And Removal
@@ -54,9 +57,15 @@ namespace CB.Calculator
             //Ensures that the joint can only be created if the parent has a part attached
             if (jointSlot.Slot.EquipedPart != null)
             {
-                PartJointSlot jointSlotChild = Instantiate(JointSlotPrefab, jointSlot.transform);
+                PartJointSlot jointSlotChild = Instantiate(JointSlotPrefab, jointSlot.JointSlotOrigin);
+                jointSlotChild.Builder = this;
+                jointSlotChild.Parent = jointSlot;
                 jointSlotChild.Slot = new PartJoint();
+                jointSlotChild.AddSlotButton.interactable = false;
+                jointSlotChild.AddSlotButtonText.color = DefaultColors.Name;
+                jointSlotChild.GetComponent<RectTransform>().anchoredPosition = new Vector2(JointSlotOffset.x, JointSlotOffset.y * jointSlot.SubJoints.Count);
                 jointSlot.Slot.EquipedPart.SubJoints.Add(jointSlotChild.Slot);
+                jointSlot.SubJoints.Add(jointSlotChild);
             }
         }
 
@@ -67,19 +76,71 @@ namespace CB.Calculator
             {
                 jointSlot.Slot.EquipedPart = new Part();
                 jointSlot.Slot.EquipedPart.Joint = jointSlot.Slot.Joint;
-                jointSlot.Slot.EquipedPart.BDMask = Root.Slot.EquipedPart.BDMask;
+                if (jointSlot.transform == Root.transform && jointSlot.Slot.EquipedPart.Joint == PartJoint.JointType.BD) jointSlot.Slot.EquipedPart.BDMask.AddFlag((int)Part.BDType.Lnd);
+                else jointSlot.Slot.EquipedPart.BDMask = Root.Slot.EquipedPart.BDMask;
                 jointSlot.Slot.EquipedPart.Size = Root.Slot.EquipedPart.Size;
+                jointSlot.AddSlotButton.interactable = true;
+                jointSlot.AddSlotButtonText.color = DefaultColors.AddSlot;
+            }
+        }
+
+        public void CreateTune(PartJointSlot jointSlot)
+        {
+            //Ensures that the tune can only be created if the parent has a part attached
+            if (jointSlot.Slot.EquipedPart != null)
+            {
+                TuneSlot tuneSlot = Instantiate(TuneSlotPrefab, jointSlot.TuneSlotOrigin);
+                tuneSlot.Slot = new Tune();
+                tuneSlot.GetComponent<RectTransform>().anchoredPosition = new Vector2(TuneSlotOffset.x * jointSlot.Tunes.Count, TuneSlotOffset.y);
+                jointSlot.Slot.EquipedPart.Tunes.Add(tuneSlot.Slot);
+                jointSlot.Tunes.Add(tuneSlot);
             }
         }
 
         public void RemoveJoint(PartJointSlot jointSlot)
         {
-
+            //Ensures that the joint can only be removed if a parent exists
+            if (jointSlot.Parent)
+            {
+                jointSlot.Parent.Slot.EquipedPart.SubJoints.Remove(jointSlot.Slot);
+                jointSlot.Parent.SubJoints.Remove(jointSlot);
+                Destroy(jointSlot.gameObject);
+            }
         }
 
         public void RemovePart(PartJointSlot jointSlot)
         {
+            //Ensures that the part can only be removed if the parent has a joint attached
+            if (jointSlot.Slot != null)
+            {
+                for(int i = 0; i < jointSlot.SubJoints.Count; i++)
+                {
+                    RemoveJoint(jointSlot.SubJoints[i]);
+                    i--;
+                }
 
+                for (int i = 0; i < jointSlot.Tunes.Count; i++)
+                {
+                    RemoveTune(jointSlot);
+                    i--;
+                }
+
+                jointSlot.Slot.EquipedPart = null;
+                jointSlot.AddSlotButton.interactable = false;
+                jointSlot.AddSlotButtonText.color = DefaultColors.Name;
+            }
+        }
+
+        public void RemoveTune(PartJointSlot jointSlot)
+        {
+            //Ensures that the tune can only be removed if the parent has a part attached
+            if (jointSlot.Slot.EquipedPart != null)
+            {
+                TuneSlot slot = jointSlot.Tunes[jointSlot.Tunes.Count - 1];
+                jointSlot.Slot.EquipedPart.Tunes.Remove(slot.Slot);
+                jointSlot.Tunes.Remove(slot);
+                Destroy(slot.gameObject);
+            }
         }
 
         public void JointSelect(PartJointSlot jointSlot)
@@ -135,6 +196,26 @@ namespace CB.Calculator
         {
             if (EditSlot == null) return;
             EditSlot.Slot.Joint = (PartJoint.JointType)num;
+            if (EditSlot.Slot.EquipedPart != null)
+            {
+                EditSlot.Slot.EquipedPart.Joint = EditSlot.Slot.Joint;
+                if (EditSlot.transform == Root.transform && EditSlot.Slot.EquipedPart.Joint == PartJoint.JointType.BD)
+                {
+                    if(EditSlot.Slot.EquipedPart.BDMask.Mask == 0) EditSlot.Slot.EquipedPart.BDMask.AddFlag((int)Part.BDType.Lnd);
+                    else
+                    {
+                        for(int i = 0; i < 4; i++)
+                        {
+                            if(EditSlot.Slot.EquipedPart.BDMask.HasFlag(i))
+                            {
+                                EditSlot.Slot.EquipedPart.BDMask.ClearFlags();
+                                EditSlot.Slot.EquipedPart.BDMask.AddFlag(i);
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
             EditSlot.TypeText.text = EditSlot.Slot.Joint.ToString();
             EditSlot.TypeIcon.sprite = Calculator.instance.JointIcons.Icons[EditSlot.Slot.Joint];
         }
@@ -174,6 +255,13 @@ namespace CB.Calculator
         {
             if (EditSlot == null) return;
             EditSlot.Slot.EquipedPart.BDMask = mask;
+        }
+
+        public void UpdatePartBDMask(int flag)
+        {
+            if (EditSlot == null) return;
+            EditSlot.Slot.EquipedPart.BDMask.ClearFlags();
+            EditSlot.Slot.EquipedPart.BDMask.AddFlag(flag);
         }
 
         public void UpdatePartSize(int num)
@@ -361,21 +449,12 @@ namespace CB.Calculator
         public void UpdatePartTunes(string text)
         {
             if (EditSlot == null) return;
-
             int.TryParse(text, out int tuneCount);
             int difference = tuneCount - EditSlot.Slot.EquipedPart.Tunes.Count;
-            for (int i = 0; i < Mathf.Abs(difference); i++)
+            for(int i = 0; i < Mathf.Abs(difference); i++)
             {
-                if (difference >= 0)
-                {
-                    RectTransform tuneSlot = Instantiate(TuneSlotPrefab, EditSlot.TuneSlotOrigin).GetComponent<RectTransform>();
-                    tuneSlot.GetComponent<RectTransform>().anchoredPosition = new Vector2(TuneSlotOffset.x * ((EditSlot.Slot.EquipedPart.Tunes.Count - 1) + i), TuneSlotOffset.y);
-                    EditSlot.Slot.EquipedPart.Tunes.Add(new Tune());
-                }
-                else
-                {
-                    EditSlot.Slot.EquipedPart.Tunes.RemoveAt(EditSlot.Slot.EquipedPart.Tunes.Count - 1);
-                }
+                if(difference > 0) CreateTune(EditSlot);
+                if (difference < 0) RemoveTune(EditSlot);
             }
         }
         #endregion
