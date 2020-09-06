@@ -25,8 +25,8 @@ namespace CB.Calculator
         public event Action<PartJointSlot> OnRedraw;
 
         /*Cache*/
-        //Set to true when you want toggle events to be ignored (For loading toggle settings without triggering edits)
-        public bool IgnoreToggles = false;
+        //Set to true when you want events to be ignored (For loading settings without triggering edits)
+        public bool IgnoreEvents = false;
         void Start()
         {
             //Create the root joint
@@ -160,26 +160,27 @@ namespace CB.Calculator
         {
             if (EditSlot != null) EditSlot.SelectionBox.gameObject.SetActive(false);
             EditSlot = null;
+            OnRedraw?.Invoke(null);
         }
         #endregion
 
         #region Editing
         public void UpdateJointFixed(bool toggle)
         {
-            if (EditSlot == null || IgnoreToggles) return;
+            if (EditSlot == null || IgnoreEvents) return;
             EditSlot.Slot.Fixed = toggle;
             EditSlot.TypeText.color = EditSlot.Slot.Fixed ? Color.red : DefaultColors.Name;
         }
 
         public void UpdateJointRequired(bool toggle)
         {
-            if (EditSlot == null || IgnoreToggles) return;
+            if (EditSlot == null || IgnoreEvents) return;
             EditSlot.Slot.Required = toggle;
         }
 
         public void UpdateJointTags(string text)
         {
-            if (EditSlot == null) return;
+            if (EditSlot == null || IgnoreEvents) return;
             //Grabs raw tags
             string[] tags = text.Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -194,7 +195,7 @@ namespace CB.Calculator
 
         public void UpdateJointType(int num)
         {
-            if (EditSlot == null) return;
+            if (EditSlot == null || IgnoreEvents) return;
             EditSlot.Slot.Joint = (PartJoint.JointType)num;
             if (EditSlot.Slot.EquipedPart != null)
             {
@@ -210,7 +211,7 @@ namespace CB.Calculator
                             {
                                 EditSlot.Slot.EquipedPart.BDMask.ClearFlags();
                                 EditSlot.Slot.EquipedPart.BDMask.AddFlag(i);
-                                return;
+                                break;
                             }
                         }
                     }
@@ -218,27 +219,33 @@ namespace CB.Calculator
             }
             EditSlot.TypeText.text = EditSlot.Slot.Joint.ToString();
             EditSlot.TypeIcon.sprite = Calculator.instance.JointIcons.Icons[EditSlot.Slot.Joint];
+            OnRedraw?.Invoke(EditSlot);
         }
 
         public void UpdateJointPart(bool toggle)
         {
-            if (EditSlot == null || IgnoreToggles) return;
+            if (EditSlot == null || IgnoreEvents) return;
             if (toggle) EditSlot.Builder.CreatePart(EditSlot);
-            else EditSlot.Builder.RemovePart(EditSlot);
+            else
+            {
+                EditSlot.Builder.RemovePart(EditSlot);
+                EditSlot.NameText.text = "-";
+                EditSlot.NameText.color = DefaultColors.Value;
+            }
             //Event callback
             OnRedraw?.Invoke(EditSlot);
         }
 
         public void UpdatePartName(string text)
         {
-            if (EditSlot == null) return;
+            if (EditSlot == null || IgnoreEvents) return;
             EditSlot.Slot.EquipedPart.Name = text;
-            EditSlot.NameText.text = EditSlot.Slot.EquipedPart.Name;
+            EditSlot.NameText.text = string.IsNullOrEmpty(EditSlot.Slot.EquipedPart.Name) ? "-" : EditSlot.Slot.EquipedPart.Name;
         }
 
         public void UpdatePartTags(string text)
         {
-            if (EditSlot == null) return;
+            if (EditSlot == null || IgnoreEvents) return;
             //Grabs raw tags
             string[] tags = text.Split(new string[] { ", " }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -253,94 +260,94 @@ namespace CB.Calculator
 
         public void UpdatePartBDMask(Bitmask mask)
         {
-            if (EditSlot == null) return;
+            if (EditSlot == null || IgnoreEvents) return;
             EditSlot.Slot.EquipedPart.BDMask = mask;
         }
 
         public void UpdatePartBDMask(int flag)
         {
-            if (EditSlot == null) return;
+            if (EditSlot == null || IgnoreEvents) return;
             EditSlot.Slot.EquipedPart.BDMask.ClearFlags();
             EditSlot.Slot.EquipedPart.BDMask.AddFlag(flag);
         }
 
         public void UpdatePartSize(int num)
         {
-            if (EditSlot == null) return;
+            if (EditSlot == null || IgnoreEvents) return;
             EditSlot.Slot.EquipedPart.Size = (Part.SizeType)num;
         }
 
         public void UpdatePartAllowJs(bool toggle)
         {
-            if (EditSlot == null || IgnoreToggles) return;
+            if (EditSlot == null || IgnoreEvents) return;
             EditSlot.Slot.EquipedPart.AllowJs = toggle;
         }
 
         public void UpdatePartIsJ(bool toggle)
         {
-            if (EditSlot == null || IgnoreToggles) return;
+            if (EditSlot == null || IgnoreEvents) return;
             EditSlot.Slot.EquipedPart.IsJ = toggle;
         }
 
         public void UpdatePartCOST(string text)
         {
-            if (EditSlot == null) return;
+            if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int stat);
             EditSlot.Slot.EquipedPart.BaseStats.COST = stat;
         }
 
         public void UpdatePartCAPA(string text)
         {
-            if (EditSlot == null) return;
+            if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int stat);
             EditSlot.Slot.EquipedPart.BaseStats.CAPA = stat;
         }
 
         public void UpdatePartHP(string text)
         {
-            if (EditSlot == null) return;
+            if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int stat);
             EditSlot.Slot.EquipedPart.BaseStats.HP = stat;
         }
 
         public void UpdatePartSTR(string text)
         {
-            if (EditSlot == null) return;
+            if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int stat);
             EditSlot.Slot.EquipedPart.BaseStats.STR = stat;
         }
 
         public void UpdatePartTEC(string text)
         {
-            if (EditSlot == null) return;
+            if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int stat);
             EditSlot.Slot.EquipedPart.BaseStats.TEC = stat;
         }
 
         public void UpdatePartWLK(string text)
         {
-            if (EditSlot == null) return;
+            if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int stat);
             EditSlot.Slot.EquipedPart.BaseStats.WLK = stat;
         }
 
         public void UpdatePartFLY(string text)
         {
-            if (EditSlot == null) return;
+            if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int stat);
             EditSlot.Slot.EquipedPart.BaseStats.FLY = stat;
         }
 
         public void UpdatePartTGH(string text)
         {
-            if (EditSlot == null) return;
+            if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int stat);
             EditSlot.Slot.EquipedPart.BaseStats.TGH = stat;
         }
 
         public void UpdatePartMain(bool toggle)
         {
-            if (EditSlot == null || IgnoreToggles) return;
+            if (EditSlot == null || IgnoreEvents) return;
             if (toggle) EditSlot.Slot.EquipedPart.MainWeapon = new WeaponStats();
             else EditSlot.Slot.EquipedPart.MainWeapon = null;
 
@@ -356,7 +363,7 @@ namespace CB.Calculator
 
         public void UpdatePartSub(bool toggle)
         {
-            if (EditSlot == null || IgnoreToggles) return;
+            if (EditSlot == null || IgnoreEvents) return;
             if (toggle) EditSlot.Slot.EquipedPart.SubWeapon = new WeaponStats();
             else EditSlot.Slot.EquipedPart.SubWeapon = null;
 
@@ -372,83 +379,83 @@ namespace CB.Calculator
 
         public void UpdatePartMainForce(string text)
         {
-            if (EditSlot == null) return;
+            if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int stat);
             EditSlot.Slot.EquipedPart.MainWeapon.Force = stat;
         }
 
         public void UpdatePartMainAmmo(string text)
         {
-            if (EditSlot == null) return;
+            if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int stat);
             EditSlot.Slot.EquipedPart.MainWeapon.Ammo = stat;
         }
 
         public void UpdatePartMainRange(string text)
         {
-            if (EditSlot == null) return;
+            if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int stat);
             EditSlot.Slot.EquipedPart.MainWeapon.Range = stat;
         }
 
         public void UpdatePartMainSpeed(string text)
         {
-            if (EditSlot == null) return;
+            if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int stat);
             EditSlot.Slot.EquipedPart.MainWeapon.Speed = stat;
         }
 
         public void UpdatePartMainInt(string text)
         {
-            if (EditSlot == null) return;
+            if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int stat);
             EditSlot.Slot.EquipedPart.MainWeapon.Int = stat;
         }
 
         public void UpdatePartSubForce(string text)
         {
-            if (EditSlot == null) return;
+            if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int stat);
             EditSlot.Slot.EquipedPart.SubWeapon.Force = stat;
         }
 
         public void UpdatePartSubAmmo(string text)
         {
-            if (EditSlot == null) return;
+            if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int stat);
             EditSlot.Slot.EquipedPart.SubWeapon.Ammo = stat;
         }
 
         public void UpdatePartSubRange(string text)
         {
-            if (EditSlot == null) return;
+            if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int stat);
             EditSlot.Slot.EquipedPart.SubWeapon.Range = stat;
         }
 
         public void UpdatePartSubSpeed(string text)
         {
-            if (EditSlot == null) return;
+            if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int stat);
             EditSlot.Slot.EquipedPart.SubWeapon.Speed = stat;
         }
 
         public void UpdatePartSubInt(string text)
         {
-            if (EditSlot == null) return;
+            if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int stat);
             EditSlot.Slot.EquipedPart.SubWeapon.Int = stat;
         }
 
         public void UpdatePartDescription(string text)
         {
-            if (EditSlot == null) return;
+            if (EditSlot == null || IgnoreEvents) return;
             EditSlot.Slot.EquipedPart.Description = text;
         }
 
         public void UpdatePartTunes(string text)
         {
-            if (EditSlot == null) return;
+            if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int tuneCount);
             int difference = tuneCount - EditSlot.Slot.EquipedPart.Tunes.Count;
             for(int i = 0; i < Mathf.Abs(difference); i++)
