@@ -35,6 +35,8 @@ namespace CB.Calculator
             Root.AddSlotButtonText.color = DefaultColors.Name;
             Root.RemoveSlotButton.interactable = false;
             Root.RemoveSlotButtonText.color = DefaultColors.Name;
+            //Event callback
+            OnRedraw?.Invoke(EditSlot);
         }
 
         #region Creation And Removal
@@ -52,6 +54,18 @@ namespace CB.Calculator
             }
         }
 
+        public void AddBranchCount(PartJointSlot jointSlot)
+        {
+            jointSlot.BranchCount += 1;
+            if (jointSlot.Parent) AddBranchCount(jointSlot.Parent);
+        }
+
+        public void RemoveBranchCount(PartJointSlot jointSlot, int count)
+        {
+            jointSlot.BranchCount -= count;
+            if (jointSlot.Parent) RemoveBranchCount(jointSlot.Parent, count);
+        }
+
         public void CreateJoint(PartJointSlot jointSlot)
         {
             //Ensures that the joint can only be created if the parent has a part attached
@@ -63,9 +77,10 @@ namespace CB.Calculator
                 jointSlotChild.Slot = new PartJoint();
                 jointSlotChild.AddSlotButton.interactable = false;
                 jointSlotChild.AddSlotButtonText.color = DefaultColors.Name;
-                jointSlotChild.GetComponent<RectTransform>().anchoredPosition = new Vector2(JointSlotOffset.x, JointSlotOffset.y * jointSlot.SubJoints.Count);
+                jointSlotChild.GetComponent<RectTransform>().anchoredPosition = new Vector2(JointSlotOffset.x, JointSlotOffset.y * (jointSlot.BranchCount - 1));
                 jointSlot.Slot.EquipedPart.SubJoints.Add(jointSlotChild.Slot);
                 jointSlot.SubJoints.Add(jointSlotChild);
+                AddBranchCount(jointSlot);
             }
         }
 
@@ -104,6 +119,7 @@ namespace CB.Calculator
             {
                 jointSlot.Parent.Slot.EquipedPart.SubJoints.Remove(jointSlot.Slot);
                 jointSlot.Parent.SubJoints.Remove(jointSlot);
+                RemoveBranchCount(jointSlot.Parent, jointSlot.BranchCount);
                 Destroy(jointSlot.gameObject);
             }
         }

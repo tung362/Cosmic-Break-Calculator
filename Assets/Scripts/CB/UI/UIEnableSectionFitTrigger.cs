@@ -37,10 +37,12 @@ namespace CB.UI
             {
                 if(Sections[i].UITransform)
                 {
-                    Vector2 min = new Vector2(Sections[i].Left ? Sections[i].Left.position.x : 0, Sections[i].Bottom ? Sections[i].Bottom.position.y : 0);
-                    Vector2 max = new Vector2(Sections[i].Right ? Sections[i].Right.position.x - ScreenCanvas.rect.width : 0, Sections[i].Top ? Sections[i].Top.position.y - ScreenCanvas.rect.height : 0);
-                    Sections[i].UITransform.offsetMin = min;
-                    Sections[i].UITransform.offsetMax = max;
+                    float xMin = Sections[i].Left && Sections[i].Left.gameObject.activeInHierarchy ? Sections[i].Left.position.x : 0;
+                    float yMin = Sections[i].Bottom && Sections[i].Bottom.gameObject.activeInHierarchy ? Sections[i].Bottom.position.y : 0;
+                    float xMax = Sections[i].Right && Sections[i].Right.gameObject.activeInHierarchy ? Sections[i].Right.position.x - ScreenCanvas.rect.width : 0;
+                    float yMax = Sections[i].Top && Sections[i].Top.gameObject.activeInHierarchy ? Sections[i].Top.position.y - ScreenCanvas.rect.height : 0;
+                    Sections[i].UITransform.offsetMin = new Vector2(xMin, yMin);
+                    Sections[i].UITransform.offsetMax = new Vector2(xMax, yMax);
                 }
             }
         }

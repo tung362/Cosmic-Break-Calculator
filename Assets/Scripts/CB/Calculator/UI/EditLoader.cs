@@ -13,6 +13,7 @@ namespace CB.Calculator.Utils
     public class EditLoader : MonoBehaviour
     {
         public PartBuilder Builder;
+        public UIEnableSectionFitTrigger SectionFitter;
 
         /*Binds*/
         [Header("Part Edit Binds")]
@@ -56,6 +57,9 @@ namespace CB.Calculator.Utils
         public Toggle IsJBind;
         public TMP_InputField SlotsBind;
 
+        [Header("BD Edit Binds")]
+        public RectTransform BDEditSection;
+
         void OnEnable()
         {
             //Set listener
@@ -71,12 +75,16 @@ namespace CB.Calculator.Utils
         #region Listeners
         void OnRedraw(PartJointSlot jointSlot)
         {
-            if(!jointSlot)
+            if(Builder.Root.Slot.Joint != PartJoint.JointType.BD) BDEditSection.gameObject.SetActive(false);
+            else BDEditSection.gameObject.SetActive(true);
+            SectionFitter.Resize();
+
+            if (!jointSlot)
             {
                 PartEditSection.gameObject.SetActive(false);
                 return;
             }
-            PartEditSection.gameObject.SetActive(true);
+            else PartEditSection.gameObject.SetActive(true);
 
             Builder.IgnoreEvents = true;
             //Joint

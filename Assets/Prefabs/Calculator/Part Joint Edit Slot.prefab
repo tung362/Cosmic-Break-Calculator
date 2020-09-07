@@ -1276,6 +1276,7 @@ MonoBehaviour:
   Parent: {fileID: 0}
   SubJoints: []
   Tunes: []
+  BranchCount: 1
 --- !u!1 &5509508396620211099
 GameObject:
   m_ObjectHideFlags: 0

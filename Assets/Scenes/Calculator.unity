@@ -1097,7 +1097,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -297.8, y: -108.10004}
+  m_AnchoredPosition: {x: -6.69989, y: -108.10004}
   m_SizeDelta: {x: 309.7, y: 24.150024}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &16320794
@@ -6729,7 +6729,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -357, y: -82}
+  m_AnchoredPosition: {x: -65.8999, y: -82}
   m_SizeDelta: {x: 59.19995, y: 22.2}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &167948950
@@ -38644,8 +38644,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: -145.55005, y: 0}
+  m_SizeDelta: {x: -291.1001, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &791958263
 MonoBehaviour:
@@ -39083,7 +39083,6 @@ GameObject:
   - component: {fileID: 802161437}
   - component: {fileID: 802161438}
   - component: {fileID: 802161439}
-  - component: {fileID: 802161441}
   - component: {fileID: 802161440}
   m_Layer: 5
   m_Name: Info Section
@@ -39176,20 +39175,6 @@ MonoBehaviour:
     Reverse: 0
     OriginalSize: {x: 0, y: 0}
   Horizontal: 1
---- !u!114 &802161441
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 802161436}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2dfe95c7ff0a7f04ab677f4f1fcb85aa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ScreenCanvas: {fileID: 1089897747}
-  Sections: []
 --- !u!1 &804231718
 GameObject:
   m_ObjectHideFlags: 0
@@ -47809,6 +47794,11 @@ MonoBehaviour:
     Right: {fileID: 1183665470}
     Bottom: {fileID: 0}
     Top: {fileID: 0}
+  - UITransform: {fileID: 791958261}
+    Left: {fileID: 0}
+    Right: {fileID: 1183665470}
+    Bottom: {fileID: 0}
+    Top: {fileID: 0}
 --- !u!114 &989335807
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -47822,6 +47812,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Builder: {fileID: 1263424138}
+  SectionFitter: {fileID: 989335806}
   PartEditSection: {fileID: 791958261}
   JointFixedBind: {fileID: 1026009819}
   JointRequiredBind: {fileID: 639813933}
@@ -47859,6 +47850,7 @@ MonoBehaviour:
   AllowJBind: {fileID: 1962643799}
   IsJBind: {fileID: 1538952960}
   SlotsBind: {fileID: 834526287}
+  BDEditSection: {fileID: 2118361135}
 --- !u!1 &991762844
 GameObject:
   m_ObjectHideFlags: 0
@@ -52513,7 +52505,6 @@ GameObject:
   - component: {fileID: 1089897748}
   - component: {fileID: 1089897749}
   - component: {fileID: 1089897750}
-  - component: {fileID: 1089897752}
   m_Layer: 5
   m_Name: Calculator Canvas
   m_TagString: Untagged
@@ -52665,44 +52656,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   JointIcons: {fileID: 11400000, guid: 8117d575f75834d4ea0a2ecb042e5bb8, type: 2}
---- !u!114 &1089897752
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1089897743}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 95b5f2ba0cc235a408861eba2df2c55e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  JointTypeBind: {fileID: 0}
-  PartNameBind: {fileID: 0}
-  PartTagsBind: {fileID: 0}
-  PartBDMaskBind: {fileID: 0}
-  PartSizeBind: {fileID: 0}
-  PartCOSTBind: {fileID: 0}
-  PartCAPABind: {fileID: 0}
-  PartHPBind: {fileID: 0}
-  PartSTRBind: {fileID: 0}
-  PartTECBind: {fileID: 0}
-  PartWLKBind: {fileID: 0}
-  PartFLYBind: {fileID: 0}
-  PartTGHBind: {fileID: 0}
-  PartMainForceBind: {fileID: 0}
-  PartMainAmmoBind: {fileID: 0}
-  PartMainRangeBind: {fileID: 0}
-  PartMainSpeedBind: {fileID: 0}
-  PartMainIntBind: {fileID: 0}
-  PartSubForceBind: {fileID: 0}
-  PartSubAmmoBind: {fileID: 0}
-  PartSubRangeBind: {fileID: 0}
-  PartSubSpeedBind: {fileID: 0}
-  PartSubIntBind: {fileID: 0}
-  PartDescriptionBind: {fileID: 0}
-  PartTunesBind: {fileID: 0}
-  Slots: []
 --- !u!1 &1092210020
 GameObject:
   m_ObjectHideFlags: 0
@@ -65161,7 +65114,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -297.8, y: -213.7}
+  m_AnchoredPosition: {x: -6.69989, y: -213.7}
   m_SizeDelta: {x: 309.7, y: 24.150024}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!114 &1404867096
@@ -69387,7 +69340,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -407.30005, y: -82}
+  m_AnchoredPosition: {x: -116.19995, y: -82}
   m_SizeDelta: {x: 49, y: 22.2}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1504161763

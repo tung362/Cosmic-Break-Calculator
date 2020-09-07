@@ -32,6 +32,7 @@ namespace CB.Calculator
         public PartJointSlot Parent;
         public List<PartJointSlot> SubJoints;
         public List<TuneSlot> Tunes;
+        public int BranchCount = 1;
 
         #region Utils
         public void CreateJoint()
