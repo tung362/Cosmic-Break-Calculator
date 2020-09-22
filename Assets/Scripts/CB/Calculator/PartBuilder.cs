@@ -17,12 +17,13 @@ namespace CB.Calculator
         public TuneSlot TuneSlotPrefab;
         public Vector2 JointSlotOffset = new Vector2(0, -26.90006f);
         public Vector2 TuneSlotOffset = new Vector2(21.90002f, 0);
+        public Vector2 ChildLineOffset = new Vector2(0, 26.9f);
 
         /*Slot to edit*/
         public PartJointSlot EditSlot;
 
         /*Callbacks*/
-        public event Action<PartJointSlot> OnRedraw;
+        public event Action<ISelectable> OnRedraw;
 
         /*Cache*/
         //Set to true when you want events to be ignored (For loading settings without triggering edits)
@@ -37,6 +38,12 @@ namespace CB.Calculator
             Root.RemoveSlotButtonText.color = DefaultColors.Name;
             //Event callback
             OnRedraw?.Invoke(EditSlot);
+        }
+
+        void Update()
+        {
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(Root.GetComponent<RectTransform>(), Input.mousePosition, null, out Vector2 localMousePosition);
+            //Debug.Log(localMousePosition);
         }
 
         #region Creation And Removal
@@ -54,16 +61,38 @@ namespace CB.Calculator
             }
         }
 
-        public void AddBranchCount(PartJointSlot jointSlot)
+        public void AddBranch(PartJointSlot jointSlot, int startIndex)
         {
+            //Update branch count
             jointSlot.BranchCount += 1;
-            if (jointSlot.Parent) AddBranchCount(jointSlot.Parent);
+            //Update positions
+            for(int i = startIndex; i < jointSlot.SubJoints.Count; i++)
+            {
+                RectTransform childTransform = jointSlot.SubJoints[i].GetComponent<RectTransform>();
+                childTransform.anchoredPosition = new Vector2(childTransform.anchoredPosition.x, childTransform.anchoredPosition.y + JointSlotOffset.y);
+            }
+            //Update child line
+            jointSlot.ChildLine.sizeDelta = new Vector2(jointSlot.ChildLine.sizeDelta.x, ChildLineOffset.y * (jointSlot.BranchCount - 1));
+            //Recursive branching
+            if (jointSlot.Parent) AddBranch(jointSlot.Parent, jointSlot.BranchIndex + 1);
         }
 
-        public void RemoveBranchCount(PartJointSlot jointSlot, int count)
+        public void RemoveBranch(PartJointSlot jointSlot, int count, int startIndex)
         {
+            //Update branch count
             jointSlot.BranchCount -= count;
-            if (jointSlot.Parent) RemoveBranchCount(jointSlot.Parent, count);
+            //Update positions
+            for (int i = startIndex; i < jointSlot.SubJoints.Count; i++)
+            {
+                RectTransform childTransform = jointSlot.SubJoints[i].GetComponent<RectTransform>();
+                childTransform.anchoredPosition = new Vector2(childTransform.anchoredPosition.x, childTransform.anchoredPosition.y - (JointSlotOffset.y * count));
+                //Update index
+                jointSlot.SubJoints[i].BranchIndex = i;
+            }
+            //Update child line
+            jointSlot.ChildLine.sizeDelta = new Vector2(jointSlot.ChildLine.sizeDelta.x, ChildLineOffset.y * (jointSlot.BranchCount - 1));
+            //Recursive branching
+            if (jointSlot.Parent) RemoveBranch(jointSlot.Parent, count, jointSlot.BranchIndex + 1);
         }
 
         public void CreateJoint(PartJointSlot jointSlot)
@@ -77,10 +106,13 @@ namespace CB.Calculator
                 jointSlotChild.Slot = new PartJoint();
                 jointSlotChild.AddSlotButton.interactable = false;
                 jointSlotChild.AddSlotButtonText.color = DefaultColors.Name;
+                jointSlotChild.BranchIndex = jointSlot.SubJoints.Count;
                 jointSlotChild.GetComponent<RectTransform>().anchoredPosition = new Vector2(JointSlotOffset.x, JointSlotOffset.y * (jointSlot.BranchCount - 1));
                 jointSlot.Slot.EquipedPart.SubJoints.Add(jointSlotChild.Slot);
                 jointSlot.SubJoints.Add(jointSlotChild);
-                AddBranchCount(jointSlot);
+                jointSlot.BranchCount += 1;
+                jointSlot.ChildLine.sizeDelta = new Vector2(jointSlot.ChildLine.sizeDelta.x, ChildLineOffset.y * (jointSlot.BranchCount - 1));
+                if (jointSlot.Parent) AddBranch(jointSlot.Parent, jointSlot.BranchIndex + 1);
             }
         }
 
@@ -106,6 +138,7 @@ namespace CB.Calculator
             {
                 TuneSlot tuneSlot = Instantiate(TuneSlotPrefab, jointSlot.TuneSlotOrigin);
                 tuneSlot.Slot = new Tune();
+                tuneSlot.Builder = this;
                 tuneSlot.GetComponent<RectTransform>().anchoredPosition = new Vector2(TuneSlotOffset.x * jointSlot.Tunes.Count, TuneSlotOffset.y);
                 jointSlot.Slot.EquipedPart.Tunes.Add(tuneSlot.Slot);
                 jointSlot.Tunes.Add(tuneSlot);
@@ -119,7 +152,7 @@ namespace CB.Calculator
             {
                 jointSlot.Parent.Slot.EquipedPart.SubJoints.Remove(jointSlot.Slot);
                 jointSlot.Parent.SubJoints.Remove(jointSlot);
-                RemoveBranchCount(jointSlot.Parent, jointSlot.BranchCount);
+                RemoveBranch(jointSlot.Parent, jointSlot.BranchCount, jointSlot.BranchIndex);
                 Destroy(jointSlot.gameObject);
             }
         }
@@ -170,6 +203,12 @@ namespace CB.Calculator
             EditSlot = jointSlot;
             //Event callback
             OnRedraw?.Invoke(jointSlot);
+        }
+
+        public void SelectableHover(ISelectable selectable)
+        {
+            //Event callback
+            OnRedraw?.Invoke(selectable);
         }
 
         public void EditSlotsReset()
@@ -235,6 +274,15 @@ namespace CB.Calculator
             }
             EditSlot.TypeText.text = EditSlot.Slot.Joint.ToString();
             EditSlot.TypeIcon.sprite = Calculator.instance.JointIcons.Icons[EditSlot.Slot.Joint];
+            Color textColor = EditSlot.Slot.Joint == PartJoint.JointType.WB ? DefaultColors.WB : DefaultColors.Value;
+            if(EditSlot.Slot.EquipedPart != null)
+            {
+                if (EditSlot.Slot.EquipedPart.MainWeapon != null && EditSlot.Slot.EquipedPart.SubWeapon != null) textColor = DefaultColors.MAINSUB;
+                else if (EditSlot.Slot.EquipedPart.MainWeapon != null) textColor = DefaultColors.MAIN;
+                else if (EditSlot.Slot.EquipedPart.SubWeapon != null) textColor = DefaultColors.SUB;
+            }
+            EditSlot.NameText.color = textColor;
+            //Event callback
             OnRedraw?.Invoke(EditSlot);
         }
 
@@ -247,6 +295,7 @@ namespace CB.Calculator
                 EditSlot.Builder.RemovePart(EditSlot);
                 EditSlot.NameText.text = "-";
                 EditSlot.NameText.color = DefaultColors.Value;
+                EditSlot.TypeIcon.color = Color.white;
             }
             //Event callback
             OnRedraw?.Invoke(EditSlot);
@@ -303,6 +352,7 @@ namespace CB.Calculator
         {
             if (EditSlot == null || IgnoreEvents) return;
             EditSlot.Slot.EquipedPart.IsJ = toggle;
+            EditSlot.TypeIcon.color = toggle ? DefaultColors.J : Color.white;
         }
 
         public void UpdatePartCOST(string text)
@@ -367,12 +417,11 @@ namespace CB.Calculator
             if (toggle) EditSlot.Slot.EquipedPart.MainWeapon = new WeaponStats();
             else EditSlot.Slot.EquipedPart.MainWeapon = null;
 
-            Color textColor = DefaultColors.Value;
+            Color textColor = EditSlot.Slot.Joint == PartJoint.JointType.WB ? DefaultColors.WB : DefaultColors.Value;
             if (EditSlot.Slot.EquipedPart.MainWeapon != null && EditSlot.Slot.EquipedPart.SubWeapon != null) textColor = DefaultColors.MAINSUB;
             else if(EditSlot.Slot.EquipedPart.MainWeapon != null) textColor = DefaultColors.MAIN;
             else if (EditSlot.Slot.EquipedPart.SubWeapon != null) textColor = DefaultColors.SUB;
             EditSlot.NameText.color = textColor;
-
             //Event callback
             OnRedraw?.Invoke(EditSlot);
         }
@@ -383,12 +432,11 @@ namespace CB.Calculator
             if (toggle) EditSlot.Slot.EquipedPart.SubWeapon = new WeaponStats();
             else EditSlot.Slot.EquipedPart.SubWeapon = null;
 
-            Color textColor = DefaultColors.Value;
+            Color textColor = EditSlot.Slot.Joint == PartJoint.JointType.WB ? DefaultColors.WB : DefaultColors.Value;
             if (EditSlot.Slot.EquipedPart.MainWeapon != null && EditSlot.Slot.EquipedPart.SubWeapon != null) textColor = DefaultColors.MAINSUB;
             else if (EditSlot.Slot.EquipedPart.MainWeapon != null) textColor = DefaultColors.MAIN;
             else if (EditSlot.Slot.EquipedPart.SubWeapon != null) textColor = DefaultColors.SUB;
             EditSlot.NameText.color = textColor;
-
             //Event callback
             OnRedraw?.Invoke(EditSlot);
         }

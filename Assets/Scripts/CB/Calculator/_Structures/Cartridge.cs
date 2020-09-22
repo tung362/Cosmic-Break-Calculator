@@ -9,7 +9,7 @@ namespace CB.Calculator
     /// Represents a generic cartridge for the bot
     /// </summary>
     [System.Serializable]
-    public class Cartridge : UIDescriptionModule.IUIDescription
+    public class Cartridge
     {
         /*Configuration*/
 
@@ -22,10 +22,5 @@ namespace CB.Calculator
         public float CoreSpeedMultiplier = 1.0f;
         public float CoreIntMultiplier = 1.0f;
         public string Description = "";
-
-        public string GetDescription()
-        {
-            return Description;
-        }
     }
 }

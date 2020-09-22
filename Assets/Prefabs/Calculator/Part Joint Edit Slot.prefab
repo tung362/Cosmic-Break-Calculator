@@ -945,7 +945,8 @@ GameObject:
   - component: {fileID: 4834512580347959175}
   - component: {fileID: 4834512580347959174}
   - component: {fileID: 2964118043554137531}
-  - component: {fileID: 4834512580347959176}
+  - component: {fileID: 665945427}
+  - component: {fileID: 665945423}
   m_Layer: 5
   m_Name: Part
   m_TagString: Untagged
@@ -1067,7 +1068,35 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &4834512580347959176
+--- !u!114 &665945427
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4834512580347959171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0b148fe25e99eb48b9724523833bab1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Delegates:
+  - eventID: 5
+    callback:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 4834512580917297440}
+          m_MethodName: Move
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+--- !u!114 &665945423
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1079,7 +1108,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f5e337717e05364ca485676e50d86db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EnterText: Joint
+  EnterText: 'Select Joint [LeftClick] : Move Joint [LeftClick+Drag]'
   ExitText: 
 --- !u!1 &4834512580520532024
 GameObject:
@@ -1142,7 +1171,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4834512580574971407
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1160,7 +1189,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 4, y: 26.9}
+  m_SizeDelta: {x: 4, y: 0}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &4834512580574971505
 CanvasRenderer:
@@ -1277,6 +1306,7 @@ MonoBehaviour:
   SubJoints: []
   Tunes: []
   BranchCount: 1
+  BranchIndex: 0
 --- !u!1 &5509508396620211099
 GameObject:
   m_ObjectHideFlags: 0

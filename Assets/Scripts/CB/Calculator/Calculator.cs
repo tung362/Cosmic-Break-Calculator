@@ -29,10 +29,20 @@ namespace CB.Calculator
         public List<Part> WPs = new List<Part>();
         public List<Part> WBs = new List<Part>();
 
+        /*Global Variables*/
+        public bool ShowFixedParts = false;
+
         void OnEnable()
         {
             if (!instance) instance = this;
             else Debug.Log("Warning! Multiple instances of \"Calculator\"");
         }
+
+        #region Utils
+        public void ToggleFixedParts(bool toggle)
+        {
+            ShowFixedParts = toggle;
+        }
+        #endregion
     }
 }

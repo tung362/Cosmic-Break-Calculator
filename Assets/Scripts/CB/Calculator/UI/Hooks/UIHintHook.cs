@@ -6,8 +6,8 @@ using UnityEngine.EventSystems;
 namespace CB.Calculator.UI
 {
     /// <summary>
-    /// Hook for dynamically generated game objects to update to the UIHintModule
-    /// UIHintModule must be set up
+    /// Hook for sending updates to the UIHintBind
+    /// UIHintBind must be set up
     /// </summary>
     public class UIHintHook : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
@@ -16,12 +16,12 @@ namespace CB.Calculator.UI
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            UIHintModule.instance.UpdateText(EnterText);
+            UIHintBind.instance.UpdateText(EnterText);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            UIHintModule.instance.UpdateText(ExitText);
+            UIHintBind.instance.UpdateText(ExitText);
         }
     }
 }

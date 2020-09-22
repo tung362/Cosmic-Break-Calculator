@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using TMPro;
 using CB.UI;
 
-namespace CB.Calculator.Utils
+namespace CB.Calculator.UI
 {
     /// <summary>
     /// UI loader for joints and parts editor
@@ -73,87 +73,91 @@ namespace CB.Calculator.Utils
         }
 
         #region Listeners
-        void OnRedraw(PartJointSlot jointSlot)
+        void OnRedraw(ISelectable selectable)
         {
-            if(Builder.Root.Slot.Joint != PartJoint.JointType.BD) BDEditSection.gameObject.SetActive(false);
+            if (Builder.Root.Slot.Joint != PartJoint.JointType.BD) BDEditSection.gameObject.SetActive(false);
             else BDEditSection.gameObject.SetActive(true);
             SectionFitter.Resize();
 
-            if (!jointSlot)
+            if(selectable != null)
             {
-                PartEditSection.gameObject.SetActive(false);
-                return;
-            }
-            else PartEditSection.gameObject.SetActive(true);
-
-            Builder.IgnoreEvents = true;
-            //Joint
-            JointFixedBind.isOn = jointSlot.Slot.Fixed;
-            JointRequiredBind.isOn = jointSlot.Slot.Required;
-            JointTagsBind.text = string.Join(", ", jointSlot.Slot.Tags.Values);
-            JointTypeBind.value = (int)jointSlot.Slot.Joint;
-            //Part
-            CreatePartBind.isOn = jointSlot.Slot.EquipedPart != null ? true : false;
-            if (jointSlot.Slot.EquipedPart != null)
-            {
-                PartNameBind.text = jointSlot.Slot.EquipedPart.Name;
-                PartTagsBind.text = string.Join(", ", jointSlot.Slot.EquipedPart.Tags.Values);
-                if(jointSlot.transform == Builder.Root.transform && jointSlot.Slot.EquipedPart.Joint == PartJoint.JointType.BD)
+                //If the selectable type is a PartJointSlot
+                if (selectable.GetType() == typeof(PartJointSlot))
                 {
-                    PartBDTypeBind.transform.parent.gameObject.SetActive(true);
-                    PartBDMaskBind.transform.parent.gameObject.SetActive(false);
-                    for(int i = 0; i < 4; i++)
+                    PartJointSlot jointSlot = (PartJointSlot)selectable;
+                    PartEditSection.gameObject.SetActive(true);
+                    Builder.IgnoreEvents = true;
+                    //Joint
+                    JointFixedBind.isOn = jointSlot.Slot.Fixed;
+                    JointRequiredBind.isOn = jointSlot.Slot.Required;
+                    JointTagsBind.text = string.Join(", ", jointSlot.Slot.Tags.Values);
+                    JointTypeBind.value = (int)jointSlot.Slot.Joint;
+                    //Part
+                    CreatePartBind.isOn = jointSlot.Slot.EquipedPart != null ? true : false;
+                    if (jointSlot.Slot.EquipedPart != null)
                     {
-                        if(jointSlot.Slot.EquipedPart.BDMask.HasFlag(i))
+                        PartNameBind.text = jointSlot.Slot.EquipedPart.Name;
+                        PartTagsBind.text = string.Join(", ", jointSlot.Slot.EquipedPart.Tags.Values);
+                        if (jointSlot.transform == Builder.Root.transform && jointSlot.Slot.EquipedPart.Joint == PartJoint.JointType.BD)
                         {
-                            PartBDTypeBind.value = i;
-                            break;
+                            PartBDTypeBind.transform.parent.gameObject.SetActive(true);
+                            PartBDMaskBind.transform.parent.gameObject.SetActive(false);
+                            for (int i = 0; i < 4; i++)
+                            {
+                                if (jointSlot.Slot.EquipedPart.BDMask.HasFlag(i))
+                                {
+                                    PartBDTypeBind.value = i;
+                                    break;
+                                }
+                            }
                         }
+                        else
+                        {
+                            PartBDMaskBind.transform.parent.gameObject.SetActive(true);
+                            PartBDTypeBind.transform.parent.gameObject.SetActive(false);
+                            PartBDMaskBind.Value = jointSlot.Slot.EquipedPart.BDMask;
+                        }
+                        PartSizeBind.value = (int)jointSlot.Slot.EquipedPart.Size;
+                        PartCostBind.text = jointSlot.Slot.EquipedPart.BaseStats.COST.ToString();
+                        PartHPBind.text = jointSlot.Slot.EquipedPart.BaseStats.HP.ToString();
+                        PartSTRBind.text = jointSlot.Slot.EquipedPart.BaseStats.STR.ToString();
+                        PartTECBind.text = jointSlot.Slot.EquipedPart.BaseStats.TEC.ToString();
+                        PartWLKBind.text = jointSlot.Slot.EquipedPart.BaseStats.WLK.ToString();
+                        PartFLYBind.text = jointSlot.Slot.EquipedPart.BaseStats.FLY.ToString();
+                        PartTGHBind.text = jointSlot.Slot.EquipedPart.BaseStats.TGH.ToString();
+                        PartCAPABind.text = jointSlot.Slot.EquipedPart.BaseStats.CAPA.ToString();
+                        //Main weapon
+                        MainBind.isOn = jointSlot.Slot.EquipedPart.MainWeapon != null ? true : false;
+                        if (jointSlot.Slot.EquipedPart.MainWeapon != null)
+                        {
+                            MainForceBind.text = jointSlot.Slot.EquipedPart.MainWeapon.Force.ToString();
+                            MainAmmoBind.text = jointSlot.Slot.EquipedPart.MainWeapon.Ammo.ToString();
+                            MainRangeBind.text = jointSlot.Slot.EquipedPart.MainWeapon.Range.ToString();
+                            MainSpeedBind.text = jointSlot.Slot.EquipedPart.MainWeapon.Speed.ToString();
+                            MainIntBind.text = jointSlot.Slot.EquipedPart.MainWeapon.Int.ToString();
+                            UpdateMainDamage();
+                        }
+                        //Sub weapon
+                        SubBind.isOn = jointSlot.Slot.EquipedPart.SubWeapon != null ? true : false;
+                        if (jointSlot.Slot.EquipedPart.SubWeapon != null)
+                        {
+                            SubForceBind.text = jointSlot.Slot.EquipedPart.SubWeapon.Force.ToString();
+                            SubAmmoBind.text = jointSlot.Slot.EquipedPart.SubWeapon.Ammo.ToString();
+                            SubRangeBind.text = jointSlot.Slot.EquipedPart.SubWeapon.Range.ToString();
+                            SubSpeedBind.text = jointSlot.Slot.EquipedPart.SubWeapon.Speed.ToString();
+                            SubIntBind.text = jointSlot.Slot.EquipedPart.SubWeapon.Int.ToString();
+                            UpdateSubDamage();
+                        }
+                        DiscriptionBind.text = jointSlot.Slot.EquipedPart.Description;
+                        AllowJBind.isOn = jointSlot.Slot.EquipedPart.AllowJs;
+                        IsJBind.isOn = jointSlot.Slot.EquipedPart.IsJ;
+                        SlotsBind.text = jointSlot.Slot.EquipedPart.Tunes.Count.ToString();
                     }
+                    Builder.IgnoreEvents = false;
                 }
-                else
-                {
-                    PartBDMaskBind.transform.parent.gameObject.SetActive(true);
-                    PartBDTypeBind.transform.parent.gameObject.SetActive(false);
-                    PartBDMaskBind.Value = jointSlot.Slot.EquipedPart.BDMask;
-                }
-                PartSizeBind.value = (int)jointSlot.Slot.EquipedPart.Size;
-                PartCostBind.text = jointSlot.Slot.EquipedPart.BaseStats.COST.ToString();
-                PartHPBind.text = jointSlot.Slot.EquipedPart.BaseStats.HP.ToString();
-                PartSTRBind.text = jointSlot.Slot.EquipedPart.BaseStats.STR.ToString();
-                PartTECBind.text = jointSlot.Slot.EquipedPart.BaseStats.TEC.ToString();
-                PartWLKBind.text = jointSlot.Slot.EquipedPart.BaseStats.WLK.ToString();
-                PartFLYBind.text = jointSlot.Slot.EquipedPart.BaseStats.FLY.ToString();
-                PartTGHBind.text = jointSlot.Slot.EquipedPart.BaseStats.TGH.ToString();
-                PartCAPABind.text = jointSlot.Slot.EquipedPart.BaseStats.CAPA.ToString();
-                //Main weapon
-                MainBind.isOn = jointSlot.Slot.EquipedPart.MainWeapon != null ? true : false;
-                if(jointSlot.Slot.EquipedPart.MainWeapon != null)
-                {
-                    MainForceBind.text = jointSlot.Slot.EquipedPart.MainWeapon.Force.ToString();
-                    MainAmmoBind.text = jointSlot.Slot.EquipedPart.MainWeapon.Ammo.ToString();
-                    MainRangeBind.text = jointSlot.Slot.EquipedPart.MainWeapon.Range.ToString();
-                    MainSpeedBind.text = jointSlot.Slot.EquipedPart.MainWeapon.Speed.ToString();
-                    MainIntBind.text = jointSlot.Slot.EquipedPart.MainWeapon.Int.ToString();
-                    UpdateMainDamage();
-                }
-                //Sub weapon
-                SubBind.isOn = jointSlot.Slot.EquipedPart.SubWeapon != null ? true : false;
-                if (jointSlot.Slot.EquipedPart.SubWeapon != null)
-                {
-                    SubForceBind.text = jointSlot.Slot.EquipedPart.SubWeapon.Force.ToString();
-                    SubAmmoBind.text = jointSlot.Slot.EquipedPart.SubWeapon.Ammo.ToString();
-                    SubRangeBind.text = jointSlot.Slot.EquipedPart.SubWeapon.Range.ToString();
-                    SubSpeedBind.text = jointSlot.Slot.EquipedPart.SubWeapon.Speed.ToString();
-                    SubIntBind.text = jointSlot.Slot.EquipedPart.SubWeapon.Int.ToString();
-                    UpdateSubDamage();
-                }
-                DiscriptionBind.text = jointSlot.Slot.EquipedPart.Description;
-                AllowJBind.isOn = jointSlot.Slot.EquipedPart.AllowJs;
-                IsJBind.isOn = jointSlot.Slot.EquipedPart.IsJ;
-                SlotsBind.text = jointSlot.Slot.EquipedPart.Tunes.Count.ToString();
+                else PartEditSection.gameObject.SetActive(false);
             }
-            Builder.IgnoreEvents = false;
+            else PartEditSection.gameObject.SetActive(false);
         }
         #endregion
 

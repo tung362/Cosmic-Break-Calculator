@@ -10,11 +10,11 @@ namespace CB.Calculator
     /// Represents a generic part
     /// </summary>
     //[System.Serializable]
-    public class Part : UIDescriptionModule.IUIDescription
+    public class Part
     {
         /*Enums*/
         public enum BDType { Lnd, Air, Art, Sup };
-        public enum SizeType { SS, S, M, L, LL};
+        public enum SizeType { None, SS, S, M, L, LL};
 
         /*Configuration*/
         public string Name = "";
@@ -32,10 +32,5 @@ namespace CB.Calculator
 
         /*Joints branch*/
         public List<PartJoint> SubJoints = new List<PartJoint>();
-
-        public string GetDescription()
-        {
-            return Description;
-        }
     }
 }

@@ -9,7 +9,7 @@ namespace CB.Calculator
     /// <summary>
     /// UI representation of PartJoint
     /// </summary>
-    public class PartJointSlot : MonoBehaviour
+    public class PartJointSlot : MonoBehaviour, ISelectable
     {
         //Hook to an existing PartJoint
         public PartJoint Slot;
@@ -33,8 +33,28 @@ namespace CB.Calculator
         public List<PartJointSlot> SubJoints;
         public List<TuneSlot> Tunes;
         public int BranchCount = 1;
+        public int BranchIndex;
+
+        void OnDestroy()
+        {
+            //Invoke redraw event if the joint being destroyed is currently selected
+            if(Builder.EditSlot)
+            {
+                if (Builder.EditSlot.transform == transform) Builder.EditSlotsReset();
+            }
+        }
 
         #region Utils
+        public void HoverSelect()
+        {
+            Builder.SelectableHover(this);
+        }
+
+        public void Move()
+        {
+
+        }
+
         public void CreateJoint()
         {
             Builder.CreateJoint(this);

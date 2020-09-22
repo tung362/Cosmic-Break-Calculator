@@ -35,5 +35,7 @@ namespace CB.Calculator.Utils
         public static Color ExTune = new Color(0.9921569f, 0.9197562f, 0.5456863f, 1.0f);
         public static Color AddSlot = new Color(0.3726415f, 0.6053202f, 1.0f, 1.0f);
         public static Color RemoveSlot = new Color(1.0f, 0.3725491f, 0.4533907f, 1.0f);
+        public static Color J = new Color(0.4481132f, 0.8253026f, 1.0f, 1.0f);
+        public static Color WB = new Color(1.0f, 0.9896567f, 0.3215686f, 1.0f);
     }
 }
