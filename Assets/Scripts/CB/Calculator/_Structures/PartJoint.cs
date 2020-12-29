@@ -16,6 +16,7 @@ namespace CB.Calculator
         /*Configuration*/
         public bool Fixed = false;
         public bool Required = false;
+        public bool AllowJs = true;
         public Dictionary<string, string> Tags = new Dictionary<string, string>();
         public JointType Joint = JointType.BD;
 

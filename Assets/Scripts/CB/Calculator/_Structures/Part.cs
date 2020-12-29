@@ -22,7 +22,6 @@ namespace CB.Calculator
         public Bitmask BDMask = new Bitmask();
         public PartJoint.JointType Joint = PartJoint.JointType.BD;
         public SizeType Size = SizeType.M;
-        public bool AllowJs = true;
         public bool IsJ = false;
         public Stats BaseStats = new Stats();
         public WeaponStats MainWeapon = null;

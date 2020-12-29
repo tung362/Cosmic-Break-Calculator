@@ -57,8 +57,8 @@ namespace CB.Calculator.UI
         public Toggle IsJBind;
         public TMP_InputField SlotsBind;
 
-        [Header("BD Edit Binds")]
-        public RectTransform BDEditSection;
+        //[Header("BD Edit Binds")]
+        //public RectTransform BDEditSection;
 
         void OnEnable()
         {
@@ -75,8 +75,8 @@ namespace CB.Calculator.UI
         #region Listeners
         void OnRedraw(ISelectable selectable)
         {
-            if (Builder.Root.Slot.Joint != PartJoint.JointType.BD) BDEditSection.gameObject.SetActive(false);
-            else BDEditSection.gameObject.SetActive(true);
+            //if (Builder.Root.Slot.Joint != PartJoint.JointType.BD) BDEditSection.gameObject.SetActive(false);
+            //else BDEditSection.gameObject.SetActive(true);
             SectionFitter.Resize();
 
             if(selectable != null)
@@ -90,6 +90,7 @@ namespace CB.Calculator.UI
                     //Joint
                     JointFixedBind.isOn = jointSlot.Slot.Fixed;
                     JointRequiredBind.isOn = jointSlot.Slot.Required;
+                    AllowJBind.isOn = jointSlot.Slot.AllowJs;
                     JointTagsBind.text = string.Join(", ", jointSlot.Slot.Tags.Values);
                     JointTypeBind.value = (int)jointSlot.Slot.Joint;
                     //Part
@@ -149,7 +150,6 @@ namespace CB.Calculator.UI
                             UpdateSubDamage();
                         }
                         DiscriptionBind.text = jointSlot.Slot.EquipedPart.Description;
-                        AllowJBind.isOn = jointSlot.Slot.EquipedPart.AllowJs;
                         IsJBind.isOn = jointSlot.Slot.EquipedPart.IsJ;
                         SlotsBind.text = jointSlot.Slot.EquipedPart.Tunes.Count.ToString();
                     }

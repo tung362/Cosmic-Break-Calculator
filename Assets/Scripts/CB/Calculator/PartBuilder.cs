@@ -32,6 +32,7 @@ namespace CB.Calculator
         {
             //Create the root joint
             Root.Slot = new PartJoint();
+            Root.Slot.Tags.Add("Universal", "Universal");
             Root.AddSlotButton.interactable = false;
             Root.AddSlotButtonText.color = DefaultColors.Name;
             Root.RemoveSlotButton.interactable = false;
@@ -42,7 +43,7 @@ namespace CB.Calculator
 
         void Update()
         {
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(Root.GetComponent<RectTransform>(), Input.mousePosition, null, out Vector2 localMousePosition);
+            //RectTransformUtility.ScreenPointToLocalPointInRectangle(Root.GetComponent<RectTransform>(), Input.mousePosition, null, out Vector2 localMousePosition);
             //Debug.Log(localMousePosition);
         }
 
@@ -104,6 +105,7 @@ namespace CB.Calculator
                 jointSlotChild.Builder = this;
                 jointSlotChild.Parent = jointSlot;
                 jointSlotChild.Slot = new PartJoint();
+                jointSlotChild.Slot.Tags.Add("Universal", "Universal");
                 jointSlotChild.AddSlotButton.interactable = false;
                 jointSlotChild.AddSlotButtonText.color = DefaultColors.Name;
                 jointSlotChild.BranchIndex = jointSlot.SubJoints.Count;
@@ -122,6 +124,7 @@ namespace CB.Calculator
             if(jointSlot.Slot != null)
             {
                 jointSlot.Slot.EquipedPart = new Part();
+                jointSlot.Slot.EquipedPart.Tags.Add("Universal", "Universal");
                 jointSlot.Slot.EquipedPart.Joint = jointSlot.Slot.Joint;
                 if (jointSlot.transform == Root.transform && jointSlot.Slot.EquipedPart.Joint == PartJoint.JointType.BD) jointSlot.Slot.EquipedPart.BDMask.AddFlag((int)Part.BDType.Lnd);
                 else jointSlot.Slot.EquipedPart.BDMask = Root.Slot.EquipedPart.BDMask;
@@ -345,7 +348,7 @@ namespace CB.Calculator
         public void UpdatePartAllowJs(bool toggle)
         {
             if (EditSlot == null || IgnoreEvents) return;
-            EditSlot.Slot.EquipedPart.AllowJs = toggle;
+            EditSlot.Slot.AllowJs = toggle;
         }
 
         public void UpdatePartIsJ(bool toggle)

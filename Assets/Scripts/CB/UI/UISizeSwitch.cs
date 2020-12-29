@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace CB.UI
 {
     /// <summary>
-    /// UI effects for switching Image colors
+    /// UI effects for switching size
     /// </summary>
     public class UISizeSwitch : MonoBehaviour
     {
