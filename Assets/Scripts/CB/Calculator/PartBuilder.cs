@@ -12,6 +12,7 @@ namespace CB.Calculator
     /// </summary>
     public class PartBuilder : MonoBehaviour
     {
+        public Contraption AssembledData = new Contraption();
         public PartJointSlot Root;
         public PartJointSlot JointSlotPrefab;
         public TuneSlot TuneSlotPrefab;
@@ -45,6 +46,13 @@ namespace CB.Calculator
         {
             //RectTransformUtility.ScreenPointToLocalPointInRectangle(Root.GetComponent<RectTransform>(), Input.mousePosition, null, out Vector2 localMousePosition);
             //Debug.Log(localMousePosition);
+
+            //if (Input.GetKeyDown(KeyCode.K))
+            //{
+            //    //Debug.Log("Root: " + AssembledData.Root);
+            //    //Debug.Log("Root: " + AssembledData.Root.SubJoints.Count);
+            //    AssembledData.Root.SubJoints[1].EquipedPart.Size = Part.SizeType.LL;
+            //}
         }
 
         #region Creation And Removal
@@ -126,11 +134,16 @@ namespace CB.Calculator
                 jointSlot.Slot.EquipedPart = new Part();
                 jointSlot.Slot.EquipedPart.Tags.Add("Universal", "Universal");
                 jointSlot.Slot.EquipedPart.Joint = jointSlot.Slot.Joint;
-                if (jointSlot.transform == Root.transform && jointSlot.Slot.EquipedPart.Joint == PartJoint.JointType.BD) jointSlot.Slot.EquipedPart.BDMask.AddFlag((int)Part.BDType.Lnd);
-                else jointSlot.Slot.EquipedPart.BDMask = Root.Slot.EquipedPart.BDMask;
+                jointSlot.Slot.EquipedPart.BDMask = Root.Slot.EquipedPart.BDMask;
                 jointSlot.Slot.EquipedPart.Size = Root.Slot.EquipedPart.Size;
                 jointSlot.AddSlotButton.interactable = true;
                 jointSlot.AddSlotButtonText.color = DefaultColors.AddSlot;
+
+                if (jointSlot.transform == Root.transform)
+                {
+                    if (jointSlot.Slot.EquipedPart.Joint == PartJoint.JointType.BD) jointSlot.Slot.EquipedPart.BDMask.AddFlag((int)Part.BDType.Lnd);
+                    AssembledData.Root = jointSlot.Slot.EquipedPart;
+                }
             }
         }
 

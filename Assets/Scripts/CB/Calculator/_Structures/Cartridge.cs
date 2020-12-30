@@ -12,7 +12,6 @@ namespace CB.Calculator
     public class Cartridge
     {
         /*Configuration*/
-
         public int RequireLevel = 1;
         public Stats ModifierStats = new Stats();
         public WeaponStats ModifierWeaponStats = new WeaponStats();

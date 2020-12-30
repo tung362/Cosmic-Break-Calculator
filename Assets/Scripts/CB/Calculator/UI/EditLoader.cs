@@ -18,13 +18,13 @@ namespace CB.Calculator.UI
         /*Binds*/
         [Header("Part Edit Binds")]
         public RectTransform PartEditSection;
-        //Joint
+        //Joint header
         public Toggle JointFixedBind;
         public Toggle JointRequiredBind;
         public TMP_InputField JointTagsBind;
         public TMP_Dropdown JointTypeBind;
         public Toggle CreatePartBind;
-        //Part
+        //Part header
         public TMP_InputField PartNameBind;
         public TMP_InputField PartTagsBind;
         public UIMaskDropdown PartBDMaskBind;
@@ -57,8 +57,26 @@ namespace CB.Calculator.UI
         public Toggle IsJBind;
         public TMP_InputField SlotsBind;
 
-        //[Header("BD Edit Binds")]
-        //public RectTransform BDEditSection;
+        [Header("BD Edit Binds")]
+        public RectTransform CartridgeHeaderRegion;
+        //Robot Information header
+        public TMP_InputField InfoTypeBind;
+        public TMP_InputField InfoHPBind;
+        public TMP_InputField InfoSizeBind;
+        public TMP_InputField InfoCostBind;
+        public TMP_InputField InfoCapaBind;
+        public TMP_InputField InfoStrBind;
+        public TMP_InputField InfoTecBind;
+        public TMP_InputField InfoWlkBind;
+        public TMP_InputField InfoFlyBind;
+        public TMP_InputField InfoTghBind;
+        public TMP_InputField InfoStrBarBind;
+        public TMP_InputField InfoTecBarBind;
+        public TMP_InputField InfoWlkBarBind;
+        public TMP_InputField InfoFlyBarBind;
+        public TMP_InputField InfoTghBarBind;
+        //Cartridge header
+        public TMP_InputField InfoLevelBind;
 
         void OnEnable()
         {
@@ -75,12 +93,25 @@ namespace CB.Calculator.UI
         #region Listeners
         void OnRedraw(ISelectable selectable)
         {
-            //if (Builder.Root.Slot.Joint != PartJoint.JointType.BD) BDEditSection.gameObject.SetActive(false);
-            //else BDEditSection.gameObject.SetActive(true);
+            if (Builder.Root.Slot.Joint != PartJoint.JointType.BD) CartridgeHeaderRegion.gameObject.SetActive(false);
+            else CartridgeHeaderRegion.gameObject.SetActive(true);
+            /*BD Edit Section*/
+            UpdateInfoType();
+            UpdateInfoHP();
+            UpdateInfoSize();
+            UpdateInfoCost();
+            UpdateInfoCapa();
+            UpdateInfoStr();
+            UpdateInfoTec();
+            UpdateInfoWlk();
+            UpdateInfoFly();
+            UpdateInfoTgh();
+            UpdateInfoLevel();
             SectionFitter.Resize();
 
             if(selectable != null)
             {
+                /*Part Edit Section*/
                 //If the selectable type is a PartJointSlot
                 if (selectable.GetType() == typeof(PartJointSlot))
                 {
@@ -165,15 +196,139 @@ namespace CB.Calculator.UI
         public void UpdateMainDamage()
         {
             int.TryParse(MainForceBind.text, out int force);
-            int.TryParse(PartTECBind.text, out int stat);
-            MainDMGBind.text = WeaponStats.CalculateDamage(force, stat, true).ToString();
+            MainDMGBind.text = WeaponStats.CalculateDamage(force, Builder.AssembledData.TotalStats.TEC, true).ToString();
         }
 
         public void UpdateSubDamage()
         {
             int.TryParse(SubForceBind.text, out int force);
-            int.TryParse(PartSTRBind.text, out int stat);
-            SubDMGBind.text = WeaponStats.CalculateDamage(force, stat, false).ToString();
+            SubDMGBind.text = WeaponStats.CalculateDamage(force, Builder.AssembledData.TotalStats.STR, false).ToString();
+        }
+
+        public void UpdateInfoType()
+        {
+            if (Builder.Root.Slot.EquipedPart != null)
+            {
+                string text = "";
+                for(int i = 0; i < 4; i++)
+                {
+                    string typeName = "";
+                    switch(i)
+                    {
+                        case 0:
+                            typeName = "Lnd";
+                            break;
+                        case 1:
+                            typeName = "Air";
+                            break;
+                        case 2:
+                            typeName = "Art";
+                            break;
+                        case 3:
+                            typeName = "Sup";
+                            break;
+                        default:
+                            typeName = "Null";
+                            break;
+                    }
+
+                    if (i > 0 && i < 4) text += " | ";
+
+                    if (Builder.Root.Slot.EquipedPart.BDMask.HasFlag(i)) text += typeName;
+                    else text += "---";
+                }
+                InfoTypeBind.text = text;
+            }
+            else InfoTypeBind.text = "--- | --- | --- | ---";
+        }
+
+        public void UpdateInfoHP()
+        {
+            InfoHPBind.text = Builder.AssembledData.TotalStats.HP.ToString();
+        }
+
+        public void UpdateInfoSize()
+        {
+            InfoSizeBind.text = "--";
+            if (Builder.Root.Slot != null)
+            {
+                if (Builder.Root.Slot.EquipedPart != null) InfoSizeBind.text = Builder.Root.Slot.EquipedPart.Size == Part.SizeType.None ? "--" : Builder.Root.Slot.EquipedPart.Size.ToString();
+            }
+        }
+
+        public void UpdateInfoCost()
+        {
+            InfoCostBind.text = Builder.AssembledData.TotalStats.COST.ToString();
+        }
+
+        public void UpdateInfoCapa()
+        {
+            InfoCapaBind.text = Builder.AssembledData.TotalStats.CAPA.ToString();
+        }
+
+        public void UpdateInfoStr()
+        {
+            string text = "";
+            for (int i = 0; i < Mathf.Clamp(Builder.AssembledData.TotalStats.STR, 0, 40); i++)
+            {
+                if ((i + 1) % 10 == 0) text += "l";
+                else text += "I";
+            }
+            InfoStrBarBind.text = text;
+            InfoStrBind.text = Builder.AssembledData.TotalStats.STR.ToString();
+        }
+
+        public void UpdateInfoTec()
+        {
+            string text = "";
+            for (int i = 0; i < Mathf.Clamp(Builder.AssembledData.TotalStats.TEC, 0, 40); i++)
+            {
+                if ((i + 1) % 10 == 0) text += "l";
+                else text += "I";
+            }
+            InfoTecBarBind.text = text;
+            InfoTecBind.text = Builder.AssembledData.TotalStats.TEC.ToString();
+        }
+
+        public void UpdateInfoWlk()
+        {
+            string text = "";
+            for (int i = 0; i < Mathf.Clamp(Builder.AssembledData.TotalStats.WLK, 0, 40); i++)
+            {
+                if ((i + 1) % 10 == 0) text += "l";
+                else text += "I";
+            }
+            InfoWlkBarBind.text = text;
+            InfoWlkBind.text = Builder.AssembledData.TotalStats.WLK.ToString();
+        }
+
+        public void UpdateInfoFly()
+        {
+            string text = "";
+            for (int i = 0; i < Mathf.Clamp(Builder.AssembledData.TotalStats.FLY, 0, 40); i++)
+            {
+                if ((i + 1) % 10 == 0) text += "l";
+                else text += "I";
+            }
+            InfoFlyBarBind.text = text;
+            InfoFlyBind.text = Builder.AssembledData.TotalStats.FLY.ToString();
+        }
+
+        public void UpdateInfoTgh()
+        {
+            string text = "";
+            for (int i = 0; i < Mathf.Clamp(Builder.AssembledData.TotalStats.TGH, 0, 40); i++)
+            {
+                if ((i + 1) % 10 == 0) text += "l";
+                else text += "I";
+            }
+            InfoTghBarBind.text = text;
+            InfoTghBind.text = Builder.AssembledData.TotalStats.TGH.ToString();
+        }
+
+        public void UpdateInfoLevel()
+        {
+            InfoLevelBind.text = Builder.AssembledData.MaxLevel.ToString();
         }
         #endregion
     }
