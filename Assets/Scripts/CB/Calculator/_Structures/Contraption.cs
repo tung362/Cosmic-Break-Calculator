@@ -5,7 +5,7 @@ using UnityEngine;
 namespace CB.Calculator
 {
     /// <summary>
-    /// Represents the assembled data of a generic robot or part of a selectable generic robot(HD, AM, LG, WP, Etc)
+    /// Represents the assembled data of a generic robot or part of a generic robot
     /// </summary>
     //[System.Serializable]
     public class Contraption

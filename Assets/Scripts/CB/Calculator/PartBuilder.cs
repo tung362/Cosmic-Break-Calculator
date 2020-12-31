@@ -29,6 +29,7 @@ namespace CB.Calculator
         /*Cache*/
         //Set to true when you want events to be ignored (For loading settings without triggering edits)
         public bool IgnoreEvents = false;
+
         void Start()
         {
             //Create the root joint
@@ -60,7 +61,7 @@ namespace CB.Calculator
         {
             jointSlot.Slot.Joint = loadData.Joint;
             jointSlot.Slot.EquipedPart = loadData;
-            for(int i = 0; i < loadData.SubJoints.Count; i++)
+            for (int i = 0; i < loadData.SubJoints.Count; i++)
             {
                 PartJointSlot jointSlotChild = Instantiate(JointSlotPrefab, jointSlot.transform);
                 jointSlotChild.Slot = loadData.SubJoints[i];
@@ -75,7 +76,7 @@ namespace CB.Calculator
             //Update branch count
             jointSlot.BranchCount += 1;
             //Update positions
-            for(int i = startIndex; i < jointSlot.SubJoints.Count; i++)
+            for (int i = startIndex; i < jointSlot.SubJoints.Count; i++)
             {
                 RectTransform childTransform = jointSlot.SubJoints[i].GetComponent<RectTransform>();
                 childTransform.anchoredPosition = new Vector2(childTransform.anchoredPosition.x, childTransform.anchoredPosition.y + JointSlotOffset.y);
@@ -104,6 +105,21 @@ namespace CB.Calculator
             if (jointSlot.Parent) RemoveBranch(jointSlot.Parent, count, jointSlot.BranchIndex + 1);
         }
 
+        public void RemoveBranchStats(PartJointSlot jointSlot)
+        {
+            if(jointSlot.Slot.EquipedPart != null)
+            {
+                AssembledData.TotalStats -= jointSlot.Slot.EquipedPart.BaseStats;
+
+                //Loop through all child branches
+                for(int i = 0; i < jointSlot.SubJoints.Count; i++)
+                {
+                    //Recursive branching
+                    RemoveBranchStats(jointSlot.SubJoints[i]);
+                }
+            }
+        }
+
         public void CreateJoint(PartJointSlot jointSlot)
         {
             //Ensures that the joint can only be created if the parent has a part attached
@@ -129,7 +145,7 @@ namespace CB.Calculator
         public void CreatePart(PartJointSlot jointSlot)
         {
             //Ensures that the part can only be created if the parent has a joint attached
-            if(jointSlot.Slot != null)
+            if (jointSlot.Slot != null)
             {
                 jointSlot.Slot.EquipedPart = new Part();
                 jointSlot.Slot.EquipedPart.Tags.Add("Universal", "Universal");
@@ -166,10 +182,12 @@ namespace CB.Calculator
             //Ensures that the joint can only be removed if a parent exists
             if (jointSlot.Parent)
             {
+                RemoveBranchStats(jointSlot);
                 jointSlot.Parent.Slot.EquipedPart.SubJoints.Remove(jointSlot.Slot);
                 jointSlot.Parent.SubJoints.Remove(jointSlot);
                 RemoveBranch(jointSlot.Parent, jointSlot.BranchCount, jointSlot.BranchIndex);
                 Destroy(jointSlot.gameObject);
+                OnRedraw?.Invoke(EditSlot);
             }
         }
 
@@ -178,7 +196,9 @@ namespace CB.Calculator
             //Ensures that the part can only be removed if the parent has a joint attached
             if (jointSlot.Slot != null)
             {
-                for(int i = 0; i < jointSlot.SubJoints.Count; i++)
+                AssembledData.TotalStats -= jointSlot.Slot.EquipedPart.BaseStats;
+
+                for (int i = 0; i < jointSlot.SubJoints.Count; i++)
                 {
                     RemoveJoint(jointSlot.SubJoints[i]);
                     i--;
@@ -212,7 +232,7 @@ namespace CB.Calculator
         {
             if (EditSlot != null)
             {
-                if(EditSlot.transform == jointSlot.transform) return;
+                if (EditSlot.transform == jointSlot.transform) return;
                 EditSlot.SelectionBox.gameObject.SetActive(false);
             }
             jointSlot.SelectionBox.gameObject.SetActive(true);
@@ -273,12 +293,12 @@ namespace CB.Calculator
                 EditSlot.Slot.EquipedPart.Joint = EditSlot.Slot.Joint;
                 if (EditSlot.transform == Root.transform && EditSlot.Slot.EquipedPart.Joint == PartJoint.JointType.BD)
                 {
-                    if(EditSlot.Slot.EquipedPart.BDMask.Mask == 0) EditSlot.Slot.EquipedPart.BDMask.AddFlag((int)Part.BDType.Lnd);
+                    if (EditSlot.Slot.EquipedPart.BDMask.Mask == 0) EditSlot.Slot.EquipedPart.BDMask.AddFlag((int)Part.BDType.Lnd);
                     else
                     {
-                        for(int i = 0; i < 4; i++)
+                        for (int i = 0; i < 4; i++)
                         {
-                            if(EditSlot.Slot.EquipedPart.BDMask.HasFlag(i))
+                            if (EditSlot.Slot.EquipedPart.BDMask.HasFlag(i))
                             {
                                 EditSlot.Slot.EquipedPart.BDMask.ClearFlags();
                                 EditSlot.Slot.EquipedPart.BDMask.AddFlag(i);
@@ -291,7 +311,7 @@ namespace CB.Calculator
             EditSlot.TypeText.text = EditSlot.Slot.Joint.ToString();
             EditSlot.TypeIcon.sprite = Calculator.instance.JointIcons.Icons[EditSlot.Slot.Joint];
             Color textColor = EditSlot.Slot.Joint == PartJoint.JointType.WB ? DefaultColors.WB : DefaultColors.Value;
-            if(EditSlot.Slot.EquipedPart != null)
+            if (EditSlot.Slot.EquipedPart != null)
             {
                 if (EditSlot.Slot.EquipedPart.MainWeapon != null && EditSlot.Slot.EquipedPart.SubWeapon != null) textColor = DefaultColors.MAINSUB;
                 else if (EditSlot.Slot.EquipedPart.MainWeapon != null) textColor = DefaultColors.MAIN;
@@ -375,56 +395,73 @@ namespace CB.Calculator
         {
             if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int stat);
+            AssembledData.TotalStats.COST -= EditSlot.Slot.EquipedPart.BaseStats.COST;
             EditSlot.Slot.EquipedPart.BaseStats.COST = stat;
+            AssembledData.TotalStats.COST += EditSlot.Slot.EquipedPart.BaseStats.COST;
         }
 
         public void UpdatePartCAPA(string text)
         {
             if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int stat);
+            AssembledData.TotalStats.CAPA -= EditSlot.Slot.EquipedPart.BaseStats.CAPA;
             EditSlot.Slot.EquipedPart.BaseStats.CAPA = stat;
+            AssembledData.TotalStats.CAPA += EditSlot.Slot.EquipedPart.BaseStats.CAPA;
         }
 
         public void UpdatePartHP(string text)
         {
             if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int stat);
+            AssembledData.TotalStats.HP -= EditSlot.Slot.EquipedPart.BaseStats.HP;
             EditSlot.Slot.EquipedPart.BaseStats.HP = stat;
+            AssembledData.TotalStats.HP += EditSlot.Slot.EquipedPart.BaseStats.HP;
+
         }
 
         public void UpdatePartSTR(string text)
         {
             if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int stat);
+            AssembledData.TotalStats.STR -= EditSlot.Slot.EquipedPart.BaseStats.STR;
             EditSlot.Slot.EquipedPart.BaseStats.STR = stat;
+            AssembledData.TotalStats.STR += EditSlot.Slot.EquipedPart.BaseStats.STR;
         }
 
         public void UpdatePartTEC(string text)
         {
             if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int stat);
+            AssembledData.TotalStats.TEC -= EditSlot.Slot.EquipedPart.BaseStats.TEC;
             EditSlot.Slot.EquipedPart.BaseStats.TEC = stat;
+            AssembledData.TotalStats.TEC += EditSlot.Slot.EquipedPart.BaseStats.TEC;
         }
 
         public void UpdatePartWLK(string text)
         {
             if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int stat);
+            AssembledData.TotalStats.WLK -= EditSlot.Slot.EquipedPart.BaseStats.WLK;
             EditSlot.Slot.EquipedPart.BaseStats.WLK = stat;
+            AssembledData.TotalStats.WLK += EditSlot.Slot.EquipedPart.BaseStats.WLK;
         }
 
         public void UpdatePartFLY(string text)
         {
             if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int stat);
+            AssembledData.TotalStats.FLY -= EditSlot.Slot.EquipedPart.BaseStats.FLY;
             EditSlot.Slot.EquipedPart.BaseStats.FLY = stat;
+            AssembledData.TotalStats.FLY += EditSlot.Slot.EquipedPart.BaseStats.FLY;
         }
 
         public void UpdatePartTGH(string text)
         {
             if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int stat);
+            AssembledData.TotalStats.TGH -= EditSlot.Slot.EquipedPart.BaseStats.TGH;
             EditSlot.Slot.EquipedPart.BaseStats.TGH = stat;
+            AssembledData.TotalStats.TGH += EditSlot.Slot.EquipedPart.BaseStats.TGH;
         }
 
         public void UpdatePartMain(bool toggle)
@@ -435,7 +472,7 @@ namespace CB.Calculator
 
             Color textColor = EditSlot.Slot.Joint == PartJoint.JointType.WB ? DefaultColors.WB : DefaultColors.Value;
             if (EditSlot.Slot.EquipedPart.MainWeapon != null && EditSlot.Slot.EquipedPart.SubWeapon != null) textColor = DefaultColors.MAINSUB;
-            else if(EditSlot.Slot.EquipedPart.MainWeapon != null) textColor = DefaultColors.MAIN;
+            else if (EditSlot.Slot.EquipedPart.MainWeapon != null) textColor = DefaultColors.MAIN;
             else if (EditSlot.Slot.EquipedPart.SubWeapon != null) textColor = DefaultColors.SUB;
             EditSlot.NameText.color = textColor;
             //Event callback
@@ -538,11 +575,18 @@ namespace CB.Calculator
             if (EditSlot == null || IgnoreEvents) return;
             int.TryParse(text, out int tuneCount);
             int difference = tuneCount - EditSlot.Slot.EquipedPart.Tunes.Count;
-            for(int i = 0; i < Mathf.Abs(difference); i++)
+            for (int i = 0; i < Mathf.Abs(difference); i++)
             {
-                if(difference > 0) CreateTune(EditSlot);
+                if (difference > 0) CreateTune(EditSlot);
                 if (difference < 0) RemoveTune(EditSlot);
             }
+        }
+
+        public void UpdateMaxLevel(string text)
+        {
+            if (IgnoreEvents) return;
+            int.TryParse(text, out int level);
+            AssembledData.MaxLevel = level;
         }
         #endregion
     }

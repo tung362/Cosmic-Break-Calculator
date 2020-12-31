@@ -30,6 +30,7 @@ namespace CB.Calculator
         public List<Part> WBs = new List<Part>();
 
         /*Global Variables*/
+        public bool ShowPauseMenu = false;
         public bool ShowFixedParts = false;
 
         void OnEnable()
