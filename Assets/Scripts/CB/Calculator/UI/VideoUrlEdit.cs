@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using CB.Utils;
 
 namespace CB.Calculator.UI
 {
@@ -24,7 +25,6 @@ namespace CB.Calculator.UI
         {
             URLTemplate.gameObject.SetActive(false);
 
-            //Initial load
             Load();
             if (UrlSlots.Count == 0) AddSlot(false);
         }
@@ -68,23 +68,28 @@ namespace CB.Calculator.UI
             if (!IgnoreSave) Save();
         }
 
+        public void Clear()
+        {
+            for(int i = 0; i < UrlSlots.Count; i++) Destroy(UrlSlots[i].gameObject);
+            UrlSlots.Clear();
+        }
+
         public void Save()
         {
-            VideoUrlLibrary urlLibrary = new VideoUrlLibrary();
-            for (int i = 0; i < UrlSlots.Count; i++) urlLibrary.Urls.Add(UrlSlots[i].UrlInputField.text);
-            VideoUrlLibrary.Save(Calculator.VideoUrlLibraryPath, urlLibrary);
+            VideoUrlLibrary entry = new VideoUrlLibrary();
+            for (int i = 0; i < UrlSlots.Count; i++) entry.Urls.Add(UrlSlots[i].UrlInputField.text);
+            Calculator.instance.UrlLibrary = entry;
+            Calculator.instance.SaveUrlLibrary();
         }
 
         public void Load()
         {
             IgnoreSave = true;
-            if (VideoUrlLibrary.Load(Calculator.VideoUrlLibraryPath, out VideoUrlLibrary result) && result != null)
+            Clear();
+            for (int i = 0; i < Calculator.instance.UrlLibrary.Urls.Count; i++)
             {
-                for (int i = 0; i < result.Urls.Count; i++)
-                {
-                    AddSlot(i != 0);
-                    UrlSlots[i].UrlInputField.text = result.Urls[i];
-                }
+                AddSlot(i != 0);
+                UrlSlots[i].UrlInputField.text = Calculator.instance.UrlLibrary.Urls[i];
             }
             IgnoreSave = false;
         }

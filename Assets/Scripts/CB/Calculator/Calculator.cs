@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using CB.Calculator.Database;
+using CB.Utils;
 
 namespace CB.Calculator
 {
@@ -17,6 +18,8 @@ namespace CB.Calculator
 
         /*Save Locations*/
         public static string RootPath { get { return Application.dataPath + "/../"; } }
+        public static string OptionsPath { get { return RootPath + "/Config/Options.preset"; } }
+        public static string ShortcutsPath { get { return RootPath + "/Config/Shortcuts.preset"; } }
         public static string VideoUrlLibraryPath { get { return RootPath + "/Config/VideoUrlLibrary.preset"; } }
 
         /*Fixed Databases*/
@@ -36,11 +39,56 @@ namespace CB.Calculator
         /*Global Variables*/
         public bool ShowFixedParts = false;
 
+        /*Options*/
+        public Options Settings = new Options();
+        public Shortcuts Controls = new Shortcuts();
+        public VideoUrlLibrary UrlLibrary = new VideoUrlLibrary();
+
         void OnEnable()
         {
             if (!instance) instance = this;
             else Debug.Log("Warning! Multiple instances of \"Calculator\"");
         }
+
+        void Awake()
+        {
+            //Initial load
+            LoadOptions();
+            LoadShortcuts();
+            LoadUrlLibrary();
+        }
+
+        #region Serialization
+        public void LoadOptions()
+        {
+            if (Serializer.Load(Calculator.OptionsPath, out Options result) && result != null) Settings = result;
+        }
+
+        public void SaveOptions()
+        {
+            Serializer.Save(Calculator.OptionsPath, Settings);
+        }
+
+        public void LoadShortcuts()
+        {
+            if (Serializer.Load(Calculator.ShortcutsPath, out Shortcuts result) && result != null) Controls = result;
+        }
+
+        public void SaveShortcuts()
+        {
+            Serializer.Save(Calculator.ShortcutsPath, Controls);
+        }
+
+        public void LoadUrlLibrary()
+        {
+            if (Serializer.Load(Calculator.VideoUrlLibraryPath, out VideoUrlLibrary result) && result != null) UrlLibrary = result;
+        }
+
+        public void SaveUrlLibrary()
+        {
+            Serializer.Save(Calculator.VideoUrlLibraryPath, UrlLibrary);
+        }
+        #endregion
 
         #region Utils
         public void ToggleFixedParts(bool toggle)
