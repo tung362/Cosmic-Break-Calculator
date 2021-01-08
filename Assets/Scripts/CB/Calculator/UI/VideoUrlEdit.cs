@@ -41,7 +41,7 @@ namespace CB.Calculator.UI
             RecalculateContent();
 
             //Save
-            if (!IgnoreSave) Save();
+            Save();
         }
 
         public void RemoveSlot(VideoUrlSlot slot)
@@ -65,7 +65,7 @@ namespace CB.Calculator.UI
             RecalculateContent();
 
             //Save
-            if (!IgnoreSave) Save();
+            Save();
         }
 
         public void Clear()
@@ -76,6 +76,8 @@ namespace CB.Calculator.UI
 
         public void Save()
         {
+            if (IgnoreSave) return;
+
             VideoUrlLibrary entry = new VideoUrlLibrary();
             for (int i = 0; i < UrlSlots.Count; i++) entry.Urls.Add(UrlSlots[i].UrlInputField.text);
             Calculator.instance.UrlLibrary = entry;

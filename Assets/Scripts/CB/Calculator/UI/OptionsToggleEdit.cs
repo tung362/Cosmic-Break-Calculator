@@ -1,0 +1,69 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+namespace CB.Calculator.UI
+{
+    /// <summary>
+    /// UI options editor for toggles
+    /// </summary>
+    public class OptionsToggleEdit : MonoBehaviour
+    {
+        /*Enums*/
+        public enum OptionType { AudioVisualizer, VideoBackground };
+
+        /*Configuration*/
+        public Toggle ToggleBind;
+        public OptionType OptionField;
+
+        /*Cache*/
+        private bool IgnoreSave = false;
+
+        void Start()
+        {
+            Load();
+        }
+
+        public void SetValue(bool toggle)
+        {
+            switch(OptionField)
+            {
+                case OptionType.AudioVisualizer:
+                    Calculator.instance.Settings.AudioVisualizer = toggle;
+                    break;
+                case OptionType.VideoBackground:
+                    Calculator.instance.Settings.VideoBackground = toggle;
+                    break;
+                default:
+                    break;
+            }
+            ToggleBind.SetIsOnWithoutNotify(toggle);
+            Save();
+        }
+
+        public void Save()
+        {
+            if (IgnoreSave) return;
+
+            Calculator.instance.SaveOptions();
+        }
+
+        public void Load()
+        {
+            IgnoreSave = true;
+            switch (OptionField)
+            {
+                case OptionType.AudioVisualizer:
+                    SetValue(Calculator.instance.Settings.AudioVisualizer);
+                    break;
+                case OptionType.VideoBackground:
+                    SetValue(Calculator.instance.Settings.VideoBackground);
+                    break;
+                default:
+                    break;
+            }
+            IgnoreSave = false;
+        }
+    }
+}
