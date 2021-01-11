@@ -34,6 +34,11 @@ namespace CB.Calculator.UI
                     break;
                 case OptionType.VideoBackground:
                     Calculator.instance.Settings.VideoBackground = toggle;
+                    if (toggle)
+                    {
+                        if(!Calculator.instance.YoutubePlayer.IsPlaying()) Calculator.instance.YoutubePlayer.Play();
+                    }
+                    else Calculator.instance.YoutubePlayer.Stop();
                     break;
                 default:
                     break;

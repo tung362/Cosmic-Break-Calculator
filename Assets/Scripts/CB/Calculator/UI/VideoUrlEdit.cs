@@ -82,17 +82,23 @@ namespace CB.Calculator.UI
             for (int i = 0; i < UrlSlots.Count; i++) entry.Urls.Add(UrlSlots[i].UrlInputField.text);
             Calculator.instance.UrlLibrary = entry;
             Calculator.instance.SaveUrlLibrary();
+
+            //Apply to youtube player
+            Calculator.instance.YoutubePlayer.Tracks = entry.Urls;
         }
 
         public void Load()
         {
             IgnoreSave = true;
             Clear();
+            //Apply to ui
             for (int i = 0; i < Calculator.instance.UrlLibrary.Urls.Count; i++)
             {
                 AddSlot(i != 0);
                 UrlSlots[i].UrlInputField.text = Calculator.instance.UrlLibrary.Urls[i];
             }
+            //Apply to youtube player
+            Calculator.instance.YoutubePlayer.Tracks = Calculator.instance.UrlLibrary.Urls;
             IgnoreSave = false;
         }
 

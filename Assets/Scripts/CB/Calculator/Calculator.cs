@@ -1,8 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using CB.Calculator.Database;
 using CB.Utils;
+using CB.UI;
 
 namespace CB.Calculator
 {
@@ -22,7 +24,11 @@ namespace CB.Calculator
         public static string ShortcutsPath { get { return RootPath + "/Config/Shortcuts.preset"; } }
         public static string VideoUrlLibraryPath { get { return RootPath + "/Config/VideoUrlLibrary.preset"; } }
 
+        /*External Locations*/
+        public static string YoutubeDLPath { get { return RootPath + "/ExternalExe/youtube-dl.exe"; } }
+
         /*Fixed Databases*/
+        [Header("Fixed Databases")]
         public JointIconDatabase JointIcons;
 
         /*Dynamic Databases*/
@@ -36,13 +42,19 @@ namespace CB.Calculator
         public List<Contraption> WPs = new List<Contraption>();
         public List<Contraption> WBs = new List<Contraption>();
 
-        /*Global Variables*/
-        public bool ShowFixedParts = false;
-
         /*Options*/
         public Options Settings = new Options();
         public Shortcuts Controls = new Shortcuts();
         public VideoUrlLibrary UrlLibrary = new VideoUrlLibrary();
+
+        /*Global Variables*/
+        [Header("Global Variables")]
+        public bool ShowFixedParts = false;
+
+        /*Objects of Note*/
+        [Header("Objects of Note")]
+        public Canvas RootCanvas;
+        public UIYoutubePlayer YoutubePlayer;
 
         void OnEnable()
         {
@@ -56,6 +68,17 @@ namespace CB.Calculator
             LoadOptions();
             LoadShortcuts();
             LoadUrlLibrary();
+
+            //Apply scale factor data
+            RootCanvas.GetComponent<CanvasScaler>().scaleFactor = Settings.ScaleFactor;
+
+            //Apply shortcuts data
+
+            //Apply youtube player data
+            YoutubePlayer.Tracks = UrlLibrary.Urls;
+            YoutubePlayer.Volume(Settings.Sound);
+            if (Settings.VideoBackground) YoutubePlayer.Play();
+
         }
 
         #region Serialization

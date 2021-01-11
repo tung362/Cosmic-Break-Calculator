@@ -68,9 +68,11 @@ namespace CB.Calculator.UI
             {
                 case OptionType.ScaleFactor:
                     Calculator.instance.Settings.ScaleFactor = num;
+                    Calculator.instance.RootCanvas.GetComponent<CanvasScaler>().scaleFactor = Calculator.instance.Settings.ScaleFactor;
                     break;
                 case OptionType.Sound:
                     Calculator.instance.Settings.Sound = num;
+                    Calculator.instance.YoutubePlayer.Volume(Calculator.instance.Settings.Sound);
                     break;
                 default:
                     break;
