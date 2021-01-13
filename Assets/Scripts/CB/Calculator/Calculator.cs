@@ -55,6 +55,12 @@ namespace CB.Calculator
         [Header("Objects of Note")]
         public Canvas RootCanvas;
         public UIYoutubePlayer YoutubePlayer;
+        public RawImage VideoImage;
+        public RectTransform VideoControl;
+
+        /*Global Cache*/
+        [Header("Global Cache")]
+        public Color GrayscaleColor;
 
         void OnEnable()
         {
@@ -72,13 +78,29 @@ namespace CB.Calculator
             //Apply scale factor data
             RootCanvas.GetComponent<CanvasScaler>().scaleFactor = Settings.ScaleFactor;
 
+            //Apply grayscale
+            if(Settings.Grayscale)
+            {
+                VideoImage.material.SetInt("_UseGrayscale", 1);
+                VideoImage.color = GrayscaleColor;
+            }
+            else
+            {
+                VideoImage.material.SetInt("_UseGrayscale", 0);
+                VideoImage.color = Color.white;
+            }
+
             //Apply shortcuts data
 
             //Apply youtube player data
             YoutubePlayer.Tracks = UrlLibrary.Urls;
             YoutubePlayer.Volume(Settings.Sound);
-            if (Settings.VideoBackground) YoutubePlayer.Play();
-
+            if (Settings.VideoBackground)
+            {
+                VideoControl.gameObject.SetActive(true);
+                YoutubePlayer.Play();
+            }
+            else VideoControl.gameObject.SetActive(false);
         }
 
         #region Serialization

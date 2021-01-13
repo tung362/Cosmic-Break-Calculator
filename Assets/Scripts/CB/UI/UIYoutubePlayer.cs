@@ -23,6 +23,7 @@ namespace CB.UI
         /*Events*/
         public UnityEvent OnVideoStart = new UnityEvent();
         public UnityEvent OnVideoEnd = new UnityEvent();
+        public UnityEvent OnVideoStop = new UnityEvent();
         public UnityEvent OnVideoError = new UnityEvent();
 
         /*Cache*/
@@ -78,6 +79,7 @@ namespace CB.UI
         {
             ForceStop = true;
             VideoPlayerBind.Stop();
+            OnVideoStop.Invoke();
         }
 
         public void Pause()
@@ -94,18 +96,22 @@ namespace CB.UI
         public void Next()
         {
             ++TrackIndex;
+            VideoPlayerBind.Stop();
+            OnVideoStop.Invoke();
             Play();
         }
 
         public void Back()
         {
             --TrackIndex;
+            VideoPlayerBind.Stop();
+            OnVideoStop.Invoke();
             Play();
         }
 
         public void Volume(float num)
         {
-            VideoPlayerBind.SetDirectAudioVolume(0, num);
+            VideoPlayerBind.GetTargetAudioSource(0).volume = num;
         }
 
         public void SetTracks(List<string> tracks)

@@ -11,7 +11,7 @@ namespace CB.Calculator.UI
     public class OptionsToggleEdit : MonoBehaviour
     {
         /*Enums*/
-        public enum OptionType { AudioVisualizer, VideoBackground };
+        public enum OptionType { AudioVisualizer, VideoBackground, Grayscale };
 
         /*Configuration*/
         public Toggle ToggleBind;
@@ -40,6 +40,19 @@ namespace CB.Calculator.UI
                     }
                     else Calculator.instance.YoutubePlayer.Stop();
                     break;
+                case OptionType.Grayscale:
+                    Calculator.instance.Settings.Grayscale = toggle;
+                    if (toggle)
+                    {
+                        Calculator.instance.VideoImage.material.SetInt("_UseGrayscale", 1);
+                        Calculator.instance.VideoImage.color = Calculator.instance.GrayscaleColor;
+                    }
+                    else
+                    {
+                        Calculator.instance.VideoImage.material.SetInt("_UseGrayscale", 0);
+                        Calculator.instance.VideoImage.color = Color.white;
+                    }
+                    break;
                 default:
                     break;
             }
@@ -64,6 +77,9 @@ namespace CB.Calculator.UI
                     break;
                 case OptionType.VideoBackground:
                     SetValue(Calculator.instance.Settings.VideoBackground);
+                    break;
+                case OptionType.Grayscale:
+                    SetValue(Calculator.instance.Settings.Grayscale);
                     break;
                 default:
                     break;

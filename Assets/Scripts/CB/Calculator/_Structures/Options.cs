@@ -20,10 +20,13 @@ namespace CB.Calculator
         [Key(1)]
         public bool AudioVisualizer = false;
         [Key(2)]
-        public float Sound = 0.5f;
+        public float Sound = 0.25f;
 
         /*Video*/
         [Key(3)]
         public bool VideoBackground = false;
+
+        [Key(4)]
+        public bool Grayscale = true;
     }
 }
