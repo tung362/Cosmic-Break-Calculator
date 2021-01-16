@@ -5,6 +5,9 @@ using UnityEngine.UI;
 using CB.Calculator.Database;
 using CB.Utils;
 using CB.UI;
+using System;
+using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace CB.Calculator
 {
@@ -55,8 +58,15 @@ namespace CB.Calculator
         [Header("Objects of Note")]
         public Canvas RootCanvas;
         public UIYoutubePlayer YoutubePlayer;
-        public RawImage VideoImage;
         public RectTransform VideoControl;
+        public GameObject AudioVisualizer;
+        public RectTransform AudioVisualizerUI;
+
+        /*Assets of Note*/
+        [Header("Assets of Note")]
+        public Material BlurMaterial;
+        public Material VideoPlayerMaterial;
+        public Material AudioVisualizerMaterial;
 
         /*Global Cache*/
         [Header("Global Cache")]
@@ -81,13 +91,13 @@ namespace CB.Calculator
             //Apply grayscale
             if(Settings.Grayscale)
             {
-                VideoImage.material.SetInt("_UseGrayscale", 1);
-                VideoImage.color = GrayscaleColor;
+                VideoPlayerMaterial.SetInt("_UseGrayscale", 1);
+                VideoPlayerMaterial.SetColor("_VideoColor", GrayscaleColor);
             }
             else
             {
-                VideoImage.material.SetInt("_UseGrayscale", 0);
-                VideoImage.color = Color.white;
+                VideoPlayerMaterial.SetInt("_UseGrayscale", 0);
+                VideoPlayerMaterial.SetColor("_VideoColor", Color.white);
             }
 
             //Apply shortcuts data
@@ -101,6 +111,18 @@ namespace CB.Calculator
                 YoutubePlayer.Play();
             }
             else VideoControl.gameObject.SetActive(false);
+
+            //Apply audio visualizer
+            if (Settings.AudioVisualizer)
+            {
+                AudioVisualizer.gameObject.SetActive(true);
+                AudioVisualizerUI.gameObject.SetActive(true);
+            }
+            else
+            {
+                AudioVisualizer.gameObject.SetActive(false);
+                AudioVisualizerUI.gameObject.SetActive(false);
+            }
         }
 
         #region Serialization

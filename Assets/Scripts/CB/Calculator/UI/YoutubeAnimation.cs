@@ -11,7 +11,6 @@ namespace CB.Calculator.UI
     /// </summary>
     public class YoutubeAnimation : MonoBehaviour
     {
-        public RawImage VideoImageBind;
         public Animator AnimatorBind;
         [Range(0.0f, 1.0f)] public float Step = 0.0f;
         public bool UpdateAnimation = false;
@@ -25,13 +24,13 @@ namespace CB.Calculator.UI
 
         void Update()
         {
-            if (UpdateAnimation) VideoImageBind.material.SetFloat("_Step", Step);
+            if (UpdateAnimation) Calculator.instance.VideoPlayerMaterial.SetFloat("_Step", Step);
         }
 
         public void SetStep(int step)
         {
             Step = step;
-            VideoImageBind.material.SetFloat("_Step", Step);
+            Calculator.instance.VideoPlayerMaterial.SetFloat("_Step", Step);
         }
 
         public void BeginTransition(bool transitionIn)

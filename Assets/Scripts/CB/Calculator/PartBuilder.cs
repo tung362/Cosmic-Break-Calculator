@@ -43,19 +43,6 @@ namespace CB.Calculator
             OnRedraw?.Invoke(EditSlot);
         }
 
-        void Update()
-        {
-            //RectTransformUtility.ScreenPointToLocalPointInRectangle(Root.GetComponent<RectTransform>(), Input.mousePosition, null, out Vector2 localMousePosition);
-            //Debug.Log(localMousePosition);
-
-            //if (Input.GetKeyDown(KeyCode.K))
-            //{
-            //    //Debug.Log("Root: " + AssembledData.Root);
-            //    //Debug.Log("Root: " + AssembledData.Root.SubJoints.Count);
-            //    AssembledData.Root.SubJoints[1].EquipedPart.Size = Part.SizeType.LL;
-            //}
-        }
-
         #region Creation And Removal
         public void Load(PartJointSlot jointSlot, Part loadData)
         {

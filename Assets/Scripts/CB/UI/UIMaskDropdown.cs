@@ -14,11 +14,6 @@ namespace CB.UI
     /// </summary>
     public class UIMaskDropdown : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDeselectHandler
     {
-        #region Format
-        [System.Serializable]
-        public class BitMaskEvent : UnityEvent<Bitmask> { }
-        #endregion
-
         public TextMeshProUGUI Labal;
         public ScrollRect OptionMenu;
         public RectTransform DropdownTemplate;

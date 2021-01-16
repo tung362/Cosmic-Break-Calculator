@@ -47,7 +47,7 @@ namespace CB.UI
             //Collapse regions based on axis
             for (int i = 0; i < Regions.Count; i++)
             {
-                Vector2 difference = Regions[i].UITransform.position - Regions[i].Threshold.position;
+                RectTransformUtility.ScreenPointToLocalPointInRectangle(Regions[i].UITransform, Regions[i].Threshold.position, null, out Vector2 difference);
 
                 Vector2 resize = Regions[i].OriginalSize;
                 if (Horizontal)

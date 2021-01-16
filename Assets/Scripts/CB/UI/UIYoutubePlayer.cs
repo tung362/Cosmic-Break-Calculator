@@ -21,6 +21,7 @@ namespace CB.UI
         public List<string> Tracks = new List<string>();
 
         /*Events*/
+        public StringEvent OnVideoNameLoad = new StringEvent();
         public UnityEvent OnVideoStart = new UnityEvent();
         public UnityEvent OnVideoEnd = new UnityEvent();
         public UnityEvent OnVideoStop = new UnityEvent();
@@ -136,12 +137,30 @@ namespace CB.UI
             return youtubeDL.StandardOutput.ReadLine();
         }
 
+        async UniTask<string> GetYoutubeName(string path)
+        {
+            ProcessStartInfo youtubeDLInfo = new ProcessStartInfo
+            {
+                FileName = Application.dataPath + YoutubeDLExePath,
+                Arguments = $"--get-title {path}",
+                UseShellExecute = false,
+                RedirectStandardOutput = true,
+                CreateNoWindow = true
+            };
+            Process youtubeDL = Process.Start(youtubeDLInfo);
+            await youtubeDL.WaitForExitAsync();
+            return youtubeDL.StandardOutput.ReadLine();
+        }
+
         async UniTaskVoid RequestPlay(string path)
         {
             string output = await GetYoutubeDirectUrl(path);
             await UniTask.SwitchToMainThread();
+            string outputName = await GetYoutubeName(path);
+            await UniTask.SwitchToMainThread();
             if (Application.isPlaying && !ForceStop)
             {
+                OnVideoNameLoad.Invoke(outputName);
                 VideoPlayerBind.url = output;
                 VideoPlayerBind.Play();
             }

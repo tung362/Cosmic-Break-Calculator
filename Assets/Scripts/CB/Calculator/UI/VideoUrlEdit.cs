@@ -104,14 +104,8 @@ namespace CB.Calculator.UI
 
         public void RecalculateContent()
         {
-            Vector3[] startCorners = new Vector3[4];
-            Vector3[] endCorners = new Vector3[4];
-
-            Content.GetWorldCorners(startCorners);
-            AddButton.GetWorldCorners(endCorners);
-
-            float difference = startCorners[0].y - endCorners[0].y;
-            Content.sizeDelta = new Vector2(Content.sizeDelta.x, Content.sizeDelta.y + difference);
+            Bounds combinedBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(Content.transform, AddButton);
+            Content.sizeDelta = new Vector2(Content.sizeDelta.x, Mathf.Abs(combinedBounds.min.y));
         }
     }
 }

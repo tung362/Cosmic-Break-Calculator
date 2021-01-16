@@ -44,13 +44,13 @@ namespace CB.Calculator.UI
                     Calculator.instance.Settings.Grayscale = toggle;
                     if (toggle)
                     {
-                        Calculator.instance.VideoImage.material.SetInt("_UseGrayscale", 1);
-                        Calculator.instance.VideoImage.color = Calculator.instance.GrayscaleColor;
+                        Calculator.instance.VideoPlayerMaterial.SetInt("_UseGrayscale", 1);
+                        Calculator.instance.VideoPlayerMaterial.SetColor("_VideoColor", Calculator.instance.GrayscaleColor);
                     }
                     else
                     {
-                        Calculator.instance.VideoImage.material.SetInt("_UseGrayscale", 0);
-                        Calculator.instance.VideoImage.color = Color.white;
+                        Calculator.instance.VideoPlayerMaterial.SetInt("_UseGrayscale", 0);
+                        Calculator.instance.VideoPlayerMaterial.SetColor("_VideoColor", Color.white);
                     }
                     break;
                 default:
