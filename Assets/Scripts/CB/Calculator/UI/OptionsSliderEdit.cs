@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using CB.UI;
 
 namespace CB.Calculator.UI
 {
@@ -69,6 +70,7 @@ namespace CB.Calculator.UI
                 case OptionType.ScaleFactor:
                     Calculator.instance.Settings.ScaleFactor = num;
                     Calculator.instance.RootCanvas.GetComponent<CanvasScaler>().scaleFactor = Calculator.instance.Settings.ScaleFactor;
+                    WindowResizeEvent.instance.RequestOnWindowResize();
                     break;
                 case OptionType.Sound:
                     Calculator.instance.Settings.Sound = num;

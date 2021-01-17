@@ -18,6 +18,7 @@ namespace CB.UI
 
         /*Cache*/
         private Vector2 PreviousResolution = new Vector2(Screen.width, Screen.height);
+        private bool RequestedInvoke = false;
 
         void OnEnable()
         {
@@ -28,13 +29,19 @@ namespace CB.UI
         void LateUpdate()
         {
             //Check if window was resized
-            if (PreviousResolution.x != Screen.width || PreviousResolution.y != Screen.height)
+            if (PreviousResolution.x != Screen.width || PreviousResolution.y != Screen.height || RequestedInvoke)
             {
                 PreviousResolution.x = Screen.width;
                 PreviousResolution.y = Screen.height;
                 //Event callback
                 OnWindowResize?.Invoke();
+                RequestedInvoke = false;
             }
+        }
+
+        public void RequestOnWindowResize()
+        {
+            RequestedInvoke = true;
         }
     }
 }

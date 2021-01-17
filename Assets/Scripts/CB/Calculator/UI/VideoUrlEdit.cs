@@ -16,6 +16,7 @@ namespace CB.Calculator.UI
         public RectTransform AddButton;
         public VideoUrlSlot URLTemplate;
         public Vector2 Offset = new Vector2(0, -30.0f);
+        public float ScrollBarOffset = 7.0f;
 
         /*Cache*/
         private bool IgnoreSave = false;
@@ -105,7 +106,7 @@ namespace CB.Calculator.UI
         public void RecalculateContent()
         {
             Bounds combinedBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(Content.transform, AddButton);
-            Content.sizeDelta = new Vector2(Content.sizeDelta.x, Mathf.Abs(combinedBounds.min.y));
+            Content.sizeDelta = new Vector2(Content.sizeDelta.x, Mathf.Abs(combinedBounds.min.y) + ScrollBarOffset);
         }
     }
 }

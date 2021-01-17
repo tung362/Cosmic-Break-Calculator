@@ -15,8 +15,10 @@ namespace CB.UI
         public class Region
         {
             public RectTransform UITransform;
-            public RectTransform Threshold;
-            public bool Reverse = false;
+            public RectTransform ThresholdX;
+            public RectTransform ThresholdY;
+            public bool ReverseX = false;
+            public bool ReverseY = false;
 
             [HideInInspector]
             public Vector2 OriginalSize;
@@ -24,13 +26,12 @@ namespace CB.UI
         #endregion
 
         public List<Region> Regions = new List<Region>();
-        public bool Horizontal = false;
 
         void OnEnable()
         {
             //Set listener
             WindowResizeEvent.OnWindowResize += OnWindowResize;
-            for(int i = 0; i < Regions.Count; i++) Regions[i].OriginalSize = Regions[i].UITransform.sizeDelta;
+            for (int i = 0; i < Regions.Count; i++) Regions[i].OriginalSize = Regions[i].UITransform.sizeDelta;
             OnWindowResize();
         }
 
@@ -38,7 +39,7 @@ namespace CB.UI
         {
             //Unset listener
             WindowResizeEvent.OnWindowResize -= OnWindowResize;
-            for(int i = 0; i < Regions.Count; i++) Regions[i].UITransform.sizeDelta = Regions[i].OriginalSize;
+            for (int i = 0; i < Regions.Count; i++) Regions[i].UITransform.sizeDelta = Regions[i].OriginalSize;
         }
 
         #region Listeners
@@ -47,17 +48,18 @@ namespace CB.UI
             //Collapse regions based on axis
             for (int i = 0; i < Regions.Count; i++)
             {
-                RectTransformUtility.ScreenPointToLocalPointInRectangle(Regions[i].UITransform, Regions[i].Threshold.position, null, out Vector2 difference);
-
                 Vector2 resize = Regions[i].OriginalSize;
-                if (Horizontal)
+                if (Regions[i].ThresholdX)
                 {
-                    float size = Regions[i].Reverse ? -difference.x : difference.x;
+                    Bounds bounds = RectTransformUtility.CalculateRelativeRectTransformBounds(Regions[i].UITransform, Regions[i].ThresholdX);
+                    float size = Regions[i].ReverseX ? -bounds.min.x : bounds.max.x;
                     if (size < Regions[i].OriginalSize.x) resize.x = size;
                 }
-                else
+
+                if (Regions[i].ThresholdY)
                 {
-                    float size = Regions[i].Reverse ? -difference.y : difference.y;
+                    Bounds bounds = RectTransformUtility.CalculateRelativeRectTransformBounds(Regions[i].UITransform, Regions[i].ThresholdY);
+                    float size = Regions[i].ReverseY ? -bounds.min.y : bounds.max.y;
                     if (size < Regions[i].OriginalSize.y) resize.y = size;
                 }
                 Regions[i].UITransform.sizeDelta = resize;
