@@ -14,11 +14,13 @@ namespace CB.Calculator
     {
         public Contraption AssembledData = new Contraption();
         public PartJointSlot Root;
+        public RectTransform Content;
         public PartJointSlot JointSlotPrefab;
         public TuneSlot TuneSlotPrefab;
         public Vector2 JointSlotOffset = new Vector2(0, -26.90006f);
         public Vector2 TuneSlotOffset = new Vector2(21.90002f, 0);
         public Vector2 ChildLineOffset = new Vector2(0, 26.9f);
+        public float ScrollBarOffset = 7.0f;
 
         /*Slot to edit*/
         public PartJointSlot EditSlot;
@@ -51,6 +53,7 @@ namespace CB.Calculator
             for (int i = 0; i < loadData.SubJoints.Count; i++)
             {
                 PartJointSlot jointSlotChild = Instantiate(JointSlotPrefab, jointSlot.transform);
+                jointSlotChild.gameObject.SetActive(true);
                 jointSlotChild.Slot = loadData.SubJoints[i];
 
                 //Recursive branching
@@ -113,7 +116,7 @@ namespace CB.Calculator
             if (jointSlot.Slot.EquipedPart != null)
             {
                 PartJointSlot jointSlotChild = Instantiate(JointSlotPrefab, jointSlot.JointSlotOrigin);
-                jointSlotChild.Builder = this;
+                jointSlotChild.gameObject.SetActive(true);
                 jointSlotChild.Parent = jointSlot;
                 jointSlotChild.Slot = new PartJoint();
                 jointSlotChild.Slot.Tags.Add("Universal", "Universal");
@@ -126,6 +129,7 @@ namespace CB.Calculator
                 jointSlot.BranchCount += 1;
                 jointSlot.ChildLine.sizeDelta = new Vector2(jointSlot.ChildLine.sizeDelta.x, ChildLineOffset.y * (jointSlot.BranchCount - 1));
                 if (jointSlot.Parent) AddBranch(jointSlot.Parent, jointSlot.BranchIndex + 1);
+                RecalculateContent(Root.GetComponent<RectTransform>());
             }
         }
 
@@ -156,11 +160,12 @@ namespace CB.Calculator
             if (jointSlot.Slot.EquipedPart != null)
             {
                 TuneSlot tuneSlot = Instantiate(TuneSlotPrefab, jointSlot.TuneSlotOrigin);
+                tuneSlot.gameObject.SetActive(true);
                 tuneSlot.Slot = new Tune();
-                tuneSlot.Builder = this;
                 tuneSlot.GetComponent<RectTransform>().anchoredPosition = new Vector2(TuneSlotOffset.x * jointSlot.Tunes.Count, TuneSlotOffset.y);
                 jointSlot.Slot.EquipedPart.Tunes.Add(tuneSlot.Slot);
                 jointSlot.Tunes.Add(tuneSlot);
+                RecalculateContent(Root.GetComponent<RectTransform>());
             }
         }
 
@@ -174,6 +179,7 @@ namespace CB.Calculator
                 jointSlot.Parent.SubJoints.Remove(jointSlot);
                 RemoveBranch(jointSlot.Parent, jointSlot.BranchCount, jointSlot.BranchIndex);
                 Destroy(jointSlot.gameObject);
+                RecalculateContent(Root.GetComponent<RectTransform>());
                 OnRedraw?.Invoke(EditSlot);
             }
         }
@@ -212,6 +218,7 @@ namespace CB.Calculator
                 jointSlot.Slot.EquipedPart.Tunes.Remove(slot.Slot);
                 jointSlot.Tunes.Remove(slot);
                 Destroy(slot.gameObject);
+                RecalculateContent(Root.GetComponent<RectTransform>());
             }
         }
 
@@ -239,6 +246,12 @@ namespace CB.Calculator
             if (EditSlot != null) EditSlot.SelectionBox.gameObject.SetActive(false);
             EditSlot = null;
             OnRedraw?.Invoke(null);
+        }
+
+        public void RecalculateContent(RectTransform slot)
+        {
+            Bounds combinedBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(Content.transform, slot);
+            Content.sizeDelta = new Vector2(Mathf.Abs(combinedBounds.max.x) + ScrollBarOffset, Mathf.Abs(combinedBounds.min.y) + ScrollBarOffset);
         }
         #endregion
 
