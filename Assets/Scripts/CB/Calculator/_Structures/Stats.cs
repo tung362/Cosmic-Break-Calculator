@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MessagePack;
 
 namespace CB.Calculator
 {
@@ -8,16 +9,25 @@ namespace CB.Calculator
     /// Stats for parts
     /// </summary>
     //[System.Serializable]
+    [MessagePackObject]
     public class Stats
     {
         /*Configuration*/
+        [Key(0)]
         public int COST = 0;
+        [Key(1)]
         public int CAPA = 0;
+        [Key(2)]
         public int HP = 0;
+        [Key(3)]
         public int STR = 0;
+        [Key(4)]
         public int TEC = 0;
+        [Key(5)]
         public int WLK = 0;
+        [Key(6)]
         public int FLY = 0;
+        [Key(7)]
         public int TGH = 0;
 
         public Stats()

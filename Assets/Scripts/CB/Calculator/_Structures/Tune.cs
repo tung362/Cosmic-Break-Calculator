@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using CB.Utils;
+using CB.Calculator.Utils;
 using CB.Calculator.UI;
 
 namespace CB.Calculator
@@ -12,20 +13,29 @@ namespace CB.Calculator
     //[System.Serializable]
     public class Tune
     {
+        #region Format
+        public class CraftMaterial
+        {
+            public string Name = "";
+            public int Amount = 1;
+        }
+        #endregion
+
         /*Enums*/
         public enum RequirementType { BD, LG, HD, HAC, FAC, AM, BS, WP, WB, Main, Sub }
 
         /*Configuration*/
-        public bool IsEx;
+        public string Name = "";
+        public Color TuneColor = DefaultColors.RegularTune;
         public Bitmask RequirementMask = new Bitmask();
-        public Color TuneColor = new Color(0.227451f, 0.8078431f, 0.2745098f);
-        public Stats ModifierStats = new Stats();
-        public WeaponStats ModifierWeaponStats = new WeaponStats();
-        public float ForceMultiplier = 1.0f;
-        public float AmmoMultiplier = 1.0f;
-        public float RangeMultiplier = 1.0f;
-        public float SpeedMultiplier = 1.0f;
-        public float IntMultiplier = 1.0f;
         public string Description = "";
+        public int SuccessRate = 55;
+        public bool IsEx;
+        public Stats Stats = new Stats();
+        public WeaponStats MainStats = new WeaponStats();
+        public WeaponStats.Multiplier MainMultiplier = new WeaponStats.Multiplier();
+        public WeaponStats SubStats = new WeaponStats();
+        public WeaponStats.Multiplier SubMultiplier = new WeaponStats.Multiplier();
+        public List<CraftMaterial> Materials = new List<CraftMaterial>();
     }
 }

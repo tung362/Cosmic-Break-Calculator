@@ -14,12 +14,12 @@ namespace CB.Calculator.UI
         public string EnterText = "";
         public string ExitText = "";
 
-        public void OnPointerEnter(PointerEventData eventData)
+        public virtual void OnPointerEnter(PointerEventData eventData)
         {
             UIHintBind.instance.UpdateText(EnterText);
         }
 
-        public void OnPointerExit(PointerEventData eventData)
+        public virtual void OnPointerExit(PointerEventData eventData)
         {
             UIHintBind.instance.UpdateText(ExitText);
         }

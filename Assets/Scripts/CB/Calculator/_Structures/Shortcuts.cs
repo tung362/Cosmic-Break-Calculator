@@ -18,10 +18,16 @@ namespace CB.Calculator
         public List<KeyCode> ScreenshotKeys = new List<KeyCode>();
         /*Builder*/
         [Key(2)]
-        public List<KeyCode> SaveKeys = new List<KeyCode>();
-        [Key(3)]
         public List<KeyCode> UndoKeys = new List<KeyCode>();
-        [Key(4)]
+        [Key(3)]
         public List<KeyCode> RedoKeys = new List<KeyCode>();
+        [Key(4)]
+        public List<KeyCode> SaveKeys = new List<KeyCode>();
+        [Key(5)]
+        public List<KeyCode> SaveAsKeys = new List<KeyCode>();
+        [Key(6)]
+        public List<KeyCode> LoadKeys = new List<KeyCode>();
+        [Key(7)]
+        public List<KeyCode> NewFileKeys = new List<KeyCode>();
     }
 }

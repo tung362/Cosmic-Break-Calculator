@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MessagePack;
 
 namespace CB.Calculator
 {
@@ -8,13 +9,36 @@ namespace CB.Calculator
     /// Represents a generic weapon attachment for parts
     /// </summary>
     //[System.Serializable]
+    [MessagePackObject]
     public class WeaponStats
     {
+        #region Format
+        [MessagePackObject]
+        public class Multiplier
+        {
+            [Key(0)]
+            public float Force = 1.0f;
+            [Key(1)]
+            public float Ammo = 1.0f;
+            [Key(2)]
+            public float Range = 1.0f;
+            [Key(3)]
+            public float Speed = 1.0f;
+            [Key(4)]
+            public float Int = 1.0f;
+        }
+        #endregion
+
         /*Configuration*/
+        [Key(0)]
         public int Force = 0;
+        [Key(1)]
         public int Ammo = 0;
+        [Key(2)]
         public int Range = 0;
+        [Key(3)]
         public int Speed = 0;
+        [Key(4)]
         public int Int = 0;
 
         public WeaponStats()

@@ -46,19 +46,25 @@ namespace CB.Calculator
         }
 
         #region Creation And Removal
-        public void Load(PartJointSlot jointSlot, Part loadData)
+        public void CreateNew()
         {
-            jointSlot.Slot.Joint = loadData.Joint;
-            jointSlot.Slot.EquipedPart = loadData;
-            for (int i = 0; i < loadData.SubJoints.Count; i++)
-            {
-                PartJointSlot jointSlotChild = Instantiate(JointSlotPrefab, jointSlot.transform);
-                jointSlotChild.gameObject.SetActive(true);
-                jointSlotChild.Slot = loadData.SubJoints[i];
 
-                //Recursive branching
-                Load(jointSlotChild, jointSlotChild.Slot.EquipedPart);
-            }
+        }
+
+        //Load via AssembledData
+        public void Load(Contraption loadData)
+        {
+            //jointSlot.Slot.Joint = loadData.Joint;
+            //jointSlot.Slot.EquipedPart = loadData;
+            //for (int i = 0; i < loadData.SubJoints.Count; i++)
+            //{
+            //    PartJointSlot jointSlotChild = Instantiate(JointSlotPrefab, jointSlot.transform);
+            //    jointSlotChild.gameObject.SetActive(true);
+            //    jointSlotChild.Slot = loadData.SubJoints[i];
+
+            //    //Recursive branching
+            //    Load(jointSlotChild, jointSlotChild.Slot.EquipedPart);
+            //}
         }
 
         public void AddBranch(PartJointSlot jointSlot, int startIndex)
@@ -416,7 +422,6 @@ namespace CB.Calculator
             AssembledData.TotalStats.HP -= EditSlot.Slot.EquipedPart.BaseStats.HP;
             EditSlot.Slot.EquipedPart.BaseStats.HP = stat;
             AssembledData.TotalStats.HP += EditSlot.Slot.EquipedPart.BaseStats.HP;
-
         }
 
         public void UpdatePartSTR(string text)
