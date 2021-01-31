@@ -30,8 +30,8 @@ namespace CB.Calculator
         [Header("Builder")]
         public PartBuilder Builder;
         public PartJointSlot Parent;
-        public List<PartJointSlot> SubJoints;
-        public List<TuneSlot> Tunes;
+        public List<PartJointSlot> SubJoints = new List<PartJointSlot>();
+        public List<TuneSlot> Tunes = new List<TuneSlot>();
         public int BranchCount = 1;
         public int BranchIndex;
 

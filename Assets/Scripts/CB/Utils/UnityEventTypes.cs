@@ -9,6 +9,9 @@ namespace CB.Utils
     public class BitMaskEvent : UnityEvent<Bitmask> { }
 
     [System.Serializable]
+    public class DoubleStringEvent : UnityEvent<string, string> { }
+
+    [System.Serializable]
     public class ColorEvent : UnityEvent<Color> { }
 
     [System.Serializable]
