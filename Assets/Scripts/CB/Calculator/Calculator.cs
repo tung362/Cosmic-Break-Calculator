@@ -28,33 +28,33 @@ namespace CB.Calculator
         public static string OptionsPath { get { return RootPath + "/Config/Options.preset"; } }
         public static string ShortcutsPath { get { return RootPath + "/Config/Shortcuts.preset"; } }
         public static string VideoUrlLibraryPath { get { return RootPath + "/Config/VideoUrlLibrary.preset"; } }
-        public static string DataBundlePath { get { return RootPath + "/DataBundle/"; } }
-        public static string TunePath { get { return DataBundlePath + "/Tune/"; } }
-        public static string CartridgePath { get { return DataBundlePath + "/Cartridge/"; } }
-        public static string PartPath { get { return DataBundlePath + "/Part/"; } }
-        public static string BDPath { get { return PartPath + "/Part/BD/"; } }
-        public static string LGPath { get { return PartPath + "/Part/LG/"; } }
-        public static string HDPath { get { return PartPath + "/Part/HD/"; } }
-        public static string HACPath { get { return PartPath + "/Part/HAC/"; } }
-        public static string FACPath { get { return PartPath + "/Part/FAC/"; } }
-        public static string AMPath { get { return PartPath + "/Part/AM/"; } }
-        public static string BSPath { get { return PartPath + "/Part/BS/"; } }
-        public static string WPPath { get { return PartPath + "/Part/WP/"; } }
-        public static string WBPath { get { return PartPath + "/Part/WB/"; } }
-        public static string DataBundleCustomPath { get { return RootPath + "/DataBundleCustom/"; } }
-        public static string CustomContraptionPath { get { return DataBundleCustomPath + "/Contraption/"; } }
-        public static string CustomTunePath { get { return DataBundleCustomPath + "/Tune/"; } }
-        public static string CustomCartridgePath { get { return DataBundleCustomPath + "/Cartridge/"; } }
-        public static string CustomPartPath { get { return DataBundleCustomPath + "/Part/"; } }
-        public static string CustomBDPath { get { return CustomPartPath + "/Part/BD/"; } }
-        public static string CustomLGPath { get { return CustomPartPath + "/Part/LG/"; } }
-        public static string CustomHDPath { get { return CustomPartPath + "/Part/HD/"; } }
-        public static string CustomHACPath { get { return CustomPartPath + "/Part/HAC/"; } }
-        public static string CustomFACPath { get { return CustomPartPath + "/Part/FAC/"; } }
-        public static string CustomAMPath { get { return CustomPartPath + "/Part/AM/"; } }
-        public static string CustomBSPath { get { return CustomPartPath + "/Part/BS/"; } }
-        public static string CustomWPPath { get { return CustomPartPath + "/Part/WP/"; } }
-        public static string CustomWBPath { get { return CustomPartPath + "/Part/WB/"; } }
+        public static string DataBundlePath { get { return RootPath + "/DataBundle"; } }
+        public static string TunePath { get { return DataBundlePath + "/Tune"; } }
+        public static string CartridgePath { get { return DataBundlePath + "/Cartridge"; } }
+        public static string PartPath { get { return DataBundlePath + "/Part"; } }
+        public static string BDPath { get { return PartPath + "/Part/BD"; } }
+        public static string LGPath { get { return PartPath + "/Part/LG"; } }
+        public static string HDPath { get { return PartPath + "/Part/HD"; } }
+        public static string HACPath { get { return PartPath + "/Part/HAC"; } }
+        public static string FACPath { get { return PartPath + "/Part/FAC"; } }
+        public static string AMPath { get { return PartPath + "/Part/AM"; } }
+        public static string BSPath { get { return PartPath + "/Part/BS"; } }
+        public static string WPPath { get { return PartPath + "/Part/WP"; } }
+        public static string WBPath { get { return PartPath + "/Part/WB"; } }
+        public static string DataBundleCustomPath { get { return RootPath + "/DataBundleCustom"; } }
+        public static string CustomContraptionPath { get { return DataBundleCustomPath + "/Contraption"; } }
+        public static string CustomTunePath { get { return DataBundleCustomPath + "/Tune"; } }
+        public static string CustomCartridgePath { get { return DataBundleCustomPath + "/Cartridge"; } }
+        public static string CustomPartPath { get { return DataBundleCustomPath + "/Part"; } }
+        public static string CustomBDPath { get { return CustomPartPath + "/Part/BD"; } }
+        public static string CustomLGPath { get { return CustomPartPath + "/Part/LG"; } }
+        public static string CustomHDPath { get { return CustomPartPath + "/Part/HD"; } }
+        public static string CustomHACPath { get { return CustomPartPath + "/Part/HAC"; } }
+        public static string CustomFACPath { get { return CustomPartPath + "/Part/FAC"; } }
+        public static string CustomAMPath { get { return CustomPartPath + "/Part/AM"; } }
+        public static string CustomBSPath { get { return CustomPartPath + "/Part/BS"; } }
+        public static string CustomWPPath { get { return CustomPartPath + "/Part/WP"; } }
+        public static string CustomWBPath { get { return CustomPartPath + "/Part/WB"; } }
 
         /*External Locations*/
         public static string YoutubeDLPath { get { return RootPath + "/ExternalExe/youtube-dl.exe"; } }
@@ -206,6 +206,7 @@ namespace CB.Calculator
                     break;
                 case SaveType.Cartridge:
                     CustomCartridgeBuilder.CreateNew();
+                    CartridgeOutline.UnloadSlot();
                     break;
                 default:
                     break;
@@ -245,42 +246,43 @@ namespace CB.Calculator
 
         public void SaveAs()
         {
+            string path = null;
             object dataToSave = null;
             switch (SaveState)
             {
                 case SaveType.Build:
-                    SaveLocations[SaveState] = StandaloneFileBrowser.SaveFilePanel("Save Build", CustomContraptionPath, "CustomBuild", "part");
+                    path = StandaloneFileBrowser.SaveFilePanel("Save Build", CustomContraptionPath, "CustomBuild", "part");
                     dataToSave = Settings;
                     break;
                 case SaveType.Part:
                     switch (CustomPartBuilder.AssembledData.Root.Joint)
                     {
                         case PartJoint.JointType.BD:
-                            SaveLocations[SaveState] = StandaloneFileBrowser.SaveFilePanel("Save Part", CustomBDPath, "CustomBD", "part");
+                            path = StandaloneFileBrowser.SaveFilePanel("Save Part", CustomBDPath, "CustomBD", "part");
                             break;
                         case PartJoint.JointType.LG:
-                            SaveLocations[SaveState] = StandaloneFileBrowser.SaveFilePanel("Save Part", CustomLGPath, "CustomLG", "part");
+                            path = StandaloneFileBrowser.SaveFilePanel("Save Part", CustomLGPath, "CustomLG", "part");
                             break;
                         case PartJoint.JointType.HD:
-                            SaveLocations[SaveState] = StandaloneFileBrowser.SaveFilePanel("Save Part", CustomHDPath, "CustomHD", "part");
+                            path = StandaloneFileBrowser.SaveFilePanel("Save Part", CustomHDPath, "CustomHD", "part");
                             break;
                         case PartJoint.JointType.HAC:
-                            SaveLocations[SaveState] = StandaloneFileBrowser.SaveFilePanel("Save Part", CustomHACPath, "CustomHAC", "part");
+                            path = StandaloneFileBrowser.SaveFilePanel("Save Part", CustomHACPath, "CustomHAC", "part");
                             break;
                         case PartJoint.JointType.FAC:
-                            SaveLocations[SaveState] = StandaloneFileBrowser.SaveFilePanel("Save Part", CustomFACPath, "CustomFAC", "part");
+                            path = StandaloneFileBrowser.SaveFilePanel("Save Part", CustomFACPath, "CustomFAC", "part");
                             break;
                         case PartJoint.JointType.AM:
-                            SaveLocations[SaveState] = StandaloneFileBrowser.SaveFilePanel("Save Part", CustomAMPath, "CustomAM", "part");
+                            path = StandaloneFileBrowser.SaveFilePanel("Save Part", CustomAMPath, "CustomAM", "part");
                             break;
                         case PartJoint.JointType.BS:
-                            SaveLocations[SaveState] = StandaloneFileBrowser.SaveFilePanel("Save Part", CustomBSPath, "CustomBS", "part");
+                            path = StandaloneFileBrowser.SaveFilePanel("Save Part", CustomBSPath, "CustomBS", "part");
                             break;
                         case PartJoint.JointType.WP:
-                            SaveLocations[SaveState] = StandaloneFileBrowser.SaveFilePanel("Save Part", CustomWPPath, "CustomWP", "part");
+                            path = StandaloneFileBrowser.SaveFilePanel("Save Part", CustomWPPath, "CustomWP", "part");
                             break;
                         case PartJoint.JointType.WB:
-                            SaveLocations[SaveState] = StandaloneFileBrowser.SaveFilePanel("Save Part", CustomWBPath, "CustomWB", "part");
+                            path = StandaloneFileBrowser.SaveFilePanel("Save Part", CustomWBPath, "CustomWB", "part");
                             break;
                         default:
                             break;
@@ -288,24 +290,22 @@ namespace CB.Calculator
                     dataToSave = CustomPartBuilder.AssembledData;
                     break;
                 case SaveType.Tune:
-                    SaveLocations[SaveState] = StandaloneFileBrowser.SaveFilePanel("Save Tune", CustomTunePath, "CustomTune", "tune");
+                    path = StandaloneFileBrowser.SaveFilePanel("Save Tune", CustomTunePath, "CustomTune", "tune");
                     dataToSave = Settings;
                     break;
                 case SaveType.Cartridge:
-                    SaveLocations[SaveState] = StandaloneFileBrowser.SaveFilePanel("Save Cartridge", CustomCartridgePath, "CustomCartridge", "cartridge");
+                    path = StandaloneFileBrowser.SaveFilePanel("Save Cartridge", CustomCartridgePath, "CustomCartridge", "cartridge");
                     dataToSave = CustomCartridgeBuilder.AssembledData;
                     break;
                 default:
                     break;
             }
 
-            if (SaveLocations.ContainsKey(SaveState))
+            if (!string.IsNullOrEmpty(path) && dataToSave != null)
             {
-                if (!string.IsNullOrEmpty(SaveLocations[SaveState]) && dataToSave != null)
-                {
-                    Serializer.Save(SaveLocations[SaveState], dataToSave);
-                    FileNameInputField.text = Path.GetFileNameWithoutExtension(SaveLocations[SaveState]);
-                }
+                SaveLocations[SaveState] = path;
+                Serializer.Save(SaveLocations[SaveState], dataToSave);
+                FileNameInputField.text = Path.GetFileNameWithoutExtension(SaveLocations[SaveState]);
             }
         }
 

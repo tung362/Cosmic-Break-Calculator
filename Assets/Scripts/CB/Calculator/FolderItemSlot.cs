@@ -11,15 +11,16 @@ namespace CB.Calculator
     public class FolderItemSlot : MonoBehaviour, IDirectoryFile
     {
         public string Path { get; set; }
+        public IDirectoryFile Parent { get; set; }
+        public int BranchCount { get; set; } = 1;
+        public int BranchIndex { get; set; }
 
         [Header("Binds")]
         public TMP_Text NameText;
         public RectTransform FileSlotOrigin;
+        public RectTransform ChildLine;
 
         [Header("Builder")]
-        public IDirectoryFile Parent;
         public List<IDirectoryFile> SubItems = new List<IDirectoryFile>();
-        public int BranchCount = 1;
-        public int BranchIndex;
     }
 }
