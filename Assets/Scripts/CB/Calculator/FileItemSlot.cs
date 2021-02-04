@@ -19,5 +19,27 @@ namespace CB.Calculator
         [Header("Binds")]
         public TMP_Text NameText;
         public Button SelectButton;
+
+        [Header("Builder")]
+        public OutlineBuilder Builder;
+
+        public void LoadSlot()
+        {
+            switch (Calculator.instance.SaveState)
+            {
+                case Calculator.SaveType.Build:
+                    break;
+                case Calculator.SaveType.Part:
+                    Builder.LoadSlot(this, Calculator.instance.CustomPartBuilder);
+                    break;
+                case Calculator.SaveType.Tune:
+                    break;
+                case Calculator.SaveType.Cartridge:
+                    Builder.LoadSlot(this, Calculator.instance.CustomCartridgeBuilder);
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }

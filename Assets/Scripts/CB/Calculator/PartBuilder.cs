@@ -10,7 +10,7 @@ namespace CB.Calculator
     /// <summary>
     /// Handles creation, editing and loading of Parts
     /// </summary>
-    public class PartBuilder : MonoBehaviour
+    public class PartBuilder : MonoBehaviour, IBuilder<Contraption>
     {
         public Contraption AssembledData = new Contraption();
         public PartJointSlot Root;

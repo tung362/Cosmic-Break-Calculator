@@ -73,38 +73,50 @@ namespace CB.Calculator
         #endregion
 
         #region Creation And Removal
-        void AddBranch(FolderItemSlot itemSlot, int startIndex)
+        void AddBranch(FolderItemSlot itemSlot, int count, int startIndex, bool skipFirstPlacement = false)
         {
-            //Update branch count
-            itemSlot.BranchCount += 1;
-            //Update positions
-            for (int i = startIndex; i < itemSlot.SubItems.Count; i++)
+            if(!skipFirstPlacement)
             {
-                RectTransform childTransform = ((Component)itemSlot.SubItems[i]).GetComponent<RectTransform>();
-                childTransform.anchoredPosition = new Vector2(childTransform.anchoredPosition.x, childTransform.anchoredPosition.y + SlotOffset.y);
+                //Update positions
+                for (int i = startIndex; i < itemSlot.SubItems.Count; i++)
+                {
+                    RectTransform childTransform = ((Component)itemSlot.SubItems[i]).GetComponent<RectTransform>();
+                    childTransform.anchoredPosition = new Vector2(childTransform.anchoredPosition.x, childTransform.anchoredPosition.y + (SlotOffset.y * count));
+                }
             }
-            //Update child line
-            if (itemSlot.ChildLine) itemSlot.ChildLine.sizeDelta = new Vector2(itemSlot.ChildLine.sizeDelta.x, ChildLineOffset.y * (itemSlot.BranchCount - 1));
-            //Recursive branching
-            if (itemSlot.Parent != null) AddBranch((FolderItemSlot)itemSlot.Parent, itemSlot.BranchIndex + 1);
+            if(itemSlot.Show)
+            {
+                //Update branch count
+                itemSlot.BranchCount += count;
+                //Update child line
+                if (itemSlot.ChildLine) itemSlot.ChildLine.sizeDelta = new Vector2(itemSlot.ChildLine.sizeDelta.x, ChildLineOffset.y * (itemSlot.BranchCount - 1));
+                //Recursive branching
+                if (itemSlot.Parent != null) AddBranch((FolderItemSlot)itemSlot.Parent, count, itemSlot.BranchIndex + 1);
+            }
         }
 
-        void RemoveBranch(FolderItemSlot itemSlot, int count, int startIndex)
+        void RemoveBranch(FolderItemSlot itemSlot, int count, int startIndex, bool skipFirstPlacement = false)
         {
-            //Update branch count
-            itemSlot.BranchCount -= count;
-            //Update positions
-            for (int i = startIndex; i < itemSlot.SubItems.Count; i++)
+            if(!skipFirstPlacement)
             {
-                RectTransform childTransform = ((Component)itemSlot.SubItems[i]).GetComponent<RectTransform>();
-                childTransform.anchoredPosition = new Vector2(childTransform.anchoredPosition.x, childTransform.anchoredPosition.y - (SlotOffset.y * count));
-                //Update index
-                itemSlot.SubItems[i].BranchIndex = i;
+                //Update positions
+                for (int i = startIndex; i < itemSlot.SubItems.Count; i++)
+                {
+                    RectTransform childTransform = ((Component)itemSlot.SubItems[i]).GetComponent<RectTransform>();
+                    childTransform.anchoredPosition = new Vector2(childTransform.anchoredPosition.x, childTransform.anchoredPosition.y - (SlotOffset.y * count));
+                    //Update index
+                    itemSlot.SubItems[i].BranchIndex = i;
+                }
             }
-            //Update child line
-            if (itemSlot.ChildLine) itemSlot.ChildLine.sizeDelta = new Vector2(itemSlot.ChildLine.sizeDelta.x, ChildLineOffset.y * (itemSlot.BranchCount - 1));
-            //Recursive branching
-            if (itemSlot.Parent != null) RemoveBranch((FolderItemSlot)itemSlot.Parent, count, itemSlot.BranchIndex + 1);
+            if (itemSlot.Show)
+            {
+                //Update branch count
+                itemSlot.BranchCount -= count;
+                //Update child line
+                if (itemSlot.ChildLine) itemSlot.ChildLine.sizeDelta = new Vector2(itemSlot.ChildLine.sizeDelta.x, ChildLineOffset.y * (itemSlot.BranchCount - 1));
+                //Recursive branching
+                if (itemSlot.Parent != null) RemoveBranch((FolderItemSlot)itemSlot.Parent, count, itemSlot.BranchIndex + 1);
+            }
         }
 
         public void UnloadSlot()
@@ -113,15 +125,15 @@ namespace CB.Calculator
             SelectedSlot = null;
         }
 
-        public void LoadSlot(FileItemSlot fileItemSlot)
+        public void LoadSlot<T>(FileItemSlot fileItemSlot, IBuilder<T> builder)
         {
-            if (Serializer.Load(fileItemSlot.Path, out Cartridge result) && result != null)
+            if (Serializer.Load(fileItemSlot.Path, out T result) && result != null)
             {
                 if (SelectedSlot) SelectedSlot.SelectButton.interactable = true;
                 SelectedSlot = fileItemSlot;
                 SelectedSlot.SelectButton.interactable = false;
 
-                Calculator.instance.CustomCartridgeBuilder.Load(result);
+                builder.Load(result);
                 Calculator.instance.SaveLocations[Calculator.instance.SaveState] = SelectedSlot.Path;
                 Calculator.instance.FileNameInputField.text = Path.GetFileNameWithoutExtension(Calculator.instance.SaveLocations[Calculator.instance.SaveState]);
             }
@@ -138,11 +150,20 @@ namespace CB.Calculator
                 folderSlotChild.Parent = folderItemSlot;
                 folderSlotChild.BranchIndex = folderItemSlot.SubItems.Count;
                 folderSlotChild.GetComponent<RectTransform>().anchoredPosition = new Vector2(SlotOffset.x, SlotOffset.y * (folderItemSlot.BranchCount - 1));
+                if (folderItemSlot.Show)
+                {
+                    folderItemSlot.BranchCount += 1;
+                    if (folderItemSlot.ChildLine) folderItemSlot.ChildLine.sizeDelta = new Vector2(folderItemSlot.ChildLine.sizeDelta.x, ChildLineOffset.y * (folderItemSlot.BranchCount - 1));
+                    if (folderItemSlot.Parent != null) AddBranch((FolderItemSlot)folderItemSlot.Parent, 1, folderItemSlot.BranchIndex + 1);
+                }
+                else
+                {
+                    int branchCount = 0;
+                    for(int i = 0; i < folderItemSlot.SubItems.Count; i++) branchCount += folderItemSlot.SubItems[i].BranchCount;
+                    folderSlotChild.GetComponent<RectTransform>().anchoredPosition = new Vector2(SlotOffset.x, SlotOffset.y * branchCount);
+                }
                 folderItemSlot.SubItems.Add(folderSlotChild);
                 Items.Add(path, folderSlotChild);
-                folderItemSlot.BranchCount += 1;
-                if(folderItemSlot.ChildLine) folderItemSlot.ChildLine.sizeDelta = new Vector2(folderItemSlot.ChildLine.sizeDelta.x, ChildLineOffset.y * (folderItemSlot.BranchCount - 1));
-                if (folderItemSlot.Parent != null) AddBranch((FolderItemSlot)folderItemSlot.Parent, folderItemSlot.BranchIndex + 1);
             }
         }
 
@@ -157,11 +178,20 @@ namespace CB.Calculator
                 fileSlotChild.Parent = folderItemSlot;
                 fileSlotChild.BranchIndex = folderItemSlot.SubItems.Count;
                 fileSlotChild.GetComponent<RectTransform>().anchoredPosition = new Vector2(SlotOffset.x, SlotOffset.y * (folderItemSlot.BranchCount - 1));
+                if (folderItemSlot.Show)
+                {
+                    folderItemSlot.BranchCount += 1;
+                    if (folderItemSlot.ChildLine) folderItemSlot.ChildLine.sizeDelta = new Vector2(folderItemSlot.ChildLine.sizeDelta.x, ChildLineOffset.y * (folderItemSlot.BranchCount - 1));
+                    if (folderItemSlot.Parent != null) AddBranch((FolderItemSlot)folderItemSlot.Parent, 1, folderItemSlot.BranchIndex + 1);
+                }
+                else
+                {
+                    int branchCount = 0;
+                    for (int i = 0; i < folderItemSlot.SubItems.Count; i++) branchCount += folderItemSlot.SubItems[i].BranchCount;
+                    fileSlotChild.GetComponent<RectTransform>().anchoredPosition = new Vector2(SlotOffset.x, SlotOffset.y * branchCount);
+                }
                 folderItemSlot.SubItems.Add(fileSlotChild);
                 Items.Add(path, fileSlotChild);
-                folderItemSlot.BranchCount += 1;
-                if (folderItemSlot.ChildLine) folderItemSlot.ChildLine.sizeDelta = new Vector2(folderItemSlot.ChildLine.sizeDelta.x, ChildLineOffset.y * (folderItemSlot.BranchCount - 1));
-                if (folderItemSlot.Parent != null) AddBranch((FolderItemSlot)folderItemSlot.Parent, folderItemSlot.BranchIndex + 1);
             }
         }
 
@@ -182,8 +212,18 @@ namespace CB.Calculator
                         }
                         else Items.Remove(folderSlot.SubItems[i].Path);
                     }
-                    ((FolderItemSlot)folderSlot.Parent).SubItems.Remove(folderSlot);
-                    RemoveBranch((FolderItemSlot)folderSlot.Parent, folderSlot.BranchCount, folderSlot.BranchIndex);
+                    FolderItemSlot parentSlot = (FolderItemSlot)folderSlot.Parent;
+                    parentSlot.SubItems.Remove(folderSlot);
+                    if (parentSlot.Show) RemoveBranch(parentSlot, folderSlot.BranchCount, folderSlot.BranchIndex);
+                    else
+                    {
+                        for (int i = folderSlot.BranchIndex; i < parentSlot.SubItems.Count; i++)
+                        {
+                            RectTransform childTransform = ((Component)parentSlot.SubItems[i]).GetComponent<RectTransform>();
+                            childTransform.anchoredPosition = new Vector2(childTransform.anchoredPosition.x, childTransform.anchoredPosition.y - (SlotOffset.y * folderSlot.BranchCount));
+                            parentSlot.SubItems[i].BranchIndex = i;
+                        }
+                    }
                     Destroy(folderSlot.gameObject);
                     Items.Remove(path);
                 }
@@ -197,11 +237,41 @@ namespace CB.Calculator
                 FileItemSlot fileSlot = (FileItemSlot)Items[path];
                 if (fileSlot.Parent != null)
                 {
-                    ((FolderItemSlot)fileSlot.Parent).SubItems.Remove(fileSlot);
-                    RemoveBranch((FolderItemSlot)fileSlot.Parent, fileSlot.BranchCount, fileSlot.BranchIndex);
+                    FolderItemSlot parentSlot = (FolderItemSlot)fileSlot.Parent;
+                    parentSlot.SubItems.Remove(fileSlot);
+                    if (parentSlot.Show) RemoveBranch(parentSlot, fileSlot.BranchCount, fileSlot.BranchIndex);
+                    else
+                    {
+                        for (int i = fileSlot.BranchIndex; i < parentSlot.SubItems.Count; i++)
+                        {
+                            RectTransform childTransform = ((Component)parentSlot.SubItems[i]).GetComponent<RectTransform>();
+                            childTransform.anchoredPosition = new Vector2(childTransform.anchoredPosition.x, childTransform.anchoredPosition.y - (SlotOffset.y * fileSlot.BranchCount));
+                            parentSlot.SubItems[i].BranchIndex = i;
+                        }
+                    }
                     Destroy(fileSlot.gameObject);
                     Items.Remove(path);
                 }
+            }
+        }
+
+        public void Show(string path)
+        {
+            if (Items.ContainsKey(path))
+            {
+                FolderItemSlot folderSlot = (FolderItemSlot)Items[path];
+                folderSlot.BranchCount = 1;
+                for (int i = 0; i < folderSlot.SubItems.Count; i++) AddBranch(folderSlot, folderSlot.SubItems[i].BranchCount, folderSlot.SubItems[i].BranchIndex + 1, true);
+            }
+        }
+
+        public void Hide(string path)
+        {
+            if (Items.ContainsKey(path))
+            {
+                FolderItemSlot folderSlot = (FolderItemSlot)Items[path];
+                RemoveBranch((FolderItemSlot)folderSlot.Parent, folderSlot.BranchCount - 1, folderSlot.BranchIndex + 1);
+                folderSlot.BranchCount = 1;
             }
         }
 
@@ -210,9 +280,6 @@ namespace CB.Calculator
             Bounds combinedBounds = RectTransformUtility.CalculateRelativeRectTransformBounds(Content.transform, slot);
             Content.sizeDelta = new Vector2(Mathf.Abs(combinedBounds.max.x) + ScrollBarOffset, Mathf.Abs(combinedBounds.min.y) + ScrollBarOffset);
         }
-        #endregion
-
-        #region Editing
         #endregion
 
         #region Utils

@@ -10,7 +10,7 @@ namespace CB.Calculator
     /// <summary>
     /// Handles creation, editing and loading of Cartridges
     /// </summary>
-    public class CartridgeBuilder : MonoBehaviour
+    public class CartridgeBuilder : MonoBehaviour, IBuilder<Cartridge>
     {
         public Cartridge AssembledData = new Cartridge();
 
