@@ -25,6 +25,7 @@ namespace CB.Calculator
 
         /*Save Locations*/
         public static string RootPath { get { return Application.dataPath + "/../"; } }
+        public static string TunePalettePath { get { return RootPath + "/Config/TunePalette.preset"; } }
         public static string OptionsPath { get { return RootPath + "/Config/Options.preset"; } }
         public static string ShortcutsPath { get { return RootPath + "/Config/Shortcuts.preset"; } }
         public static string VideoUrlLibraryPath { get { return RootPath + "/Config/VideoUrlLibrary.preset"; } }
@@ -78,6 +79,7 @@ namespace CB.Calculator
         public List<Contraption> WBs = new List<Contraption>();
 
         /*Options*/
+        public TunePalette TuneColorPalette = new TunePalette();
         public Options Settings = new Options();
         public Shortcuts Controls = new Shortcuts();
         public VideoUrlLibrary UrlLibrary = new VideoUrlLibrary();
@@ -128,6 +130,7 @@ namespace CB.Calculator
             CartridgeWatcher = new DirectoryWatcher(new string[] { CartridgePath, CustomCartridgePath }, new string[] { "*.cartridge" });
 
             /*Initial Load*/
+            LoadTunePalette();
             LoadOptions();
             LoadShortcuts();
             LoadUrlLibrary();
@@ -352,6 +355,16 @@ namespace CB.Calculator
                 SaveLocations[SaveState] = path[0];
                 FileNameInputField.text = Path.GetFileNameWithoutExtension(SaveLocations[SaveState]);
             }
+        }
+
+        public void LoadTunePalette()
+        {
+            if (Serializer.Load(TunePalettePath, out TunePalette result) && result != null) TuneColorPalette = result;
+        }
+
+        public void SaveTunePalette()
+        {
+            Serializer.Save(TunePalettePath, TuneColorPalette);
         }
 
         public void LoadOptions()

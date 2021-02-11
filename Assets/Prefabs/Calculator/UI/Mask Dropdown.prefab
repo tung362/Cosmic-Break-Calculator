@@ -220,6 +220,7 @@ GameObject:
   - component: {fileID: 8753691487333981121}
   - component: {fileID: 4592725884337191691}
   - component: {fileID: 7282352197852342989}
+  - component: {fileID: 7665856529705975852}
   - component: {fileID: 8360435030448051286}
   - component: {fileID: 8415926388265519785}
   m_Layer: 5
@@ -306,7 +307,7 @@ MonoBehaviour:
   m_Elasticity: 0.1
   m_Inertia: 1
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
+  m_ScrollSensitivity: 80
   m_Viewport: {fileID: 3809800070299415790}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 8466137745867026167}
@@ -317,6 +318,46 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &7665856529705975852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 629398181081674371}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f12e8784bfd1c84d9594ea8271693a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnDeselected:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5621503798580013033}
+        m_MethodName: Hide
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnCanceled:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 5621503798580013033}
+        m_MethodName: Hide
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!223 &8360435030448051286
 Canvas:
   m_ObjectHideFlags: 0
@@ -587,7 +628,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Labal: {fileID: 4319231269513672283}
-  OptionMenu: {fileID: 7282352197852342989}
   DropdownTemplate: {fileID: 683484910190397957}
   ContentTemplate: {fileID: 5561943518027810780}
   ItemTemplate: {fileID: 7741220447738255149}

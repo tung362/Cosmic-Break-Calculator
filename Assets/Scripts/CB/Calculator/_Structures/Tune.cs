@@ -28,6 +28,7 @@ namespace CB.Calculator
 
         /*Enums*/
         public enum RequirementType { BD, LG, HD, HAC, FAC, AM, BS, WP, WB, Main, Sub }
+        public enum ColorType { Regular, Ex, Main, Sub }
 
         /*Configuration*/
         [Key(0)]
@@ -53,6 +54,6 @@ namespace CB.Calculator
         [Key(10)]
         public WeaponStats.Multiplier SubMultiplier = new WeaponStats.Multiplier();
         [Key(11)]
-        public List<CraftMaterial> Materials = new List<CraftMaterial>();
+        public List<CraftMaterial> CraftMaterials = new List<CraftMaterial>();
     }
 }

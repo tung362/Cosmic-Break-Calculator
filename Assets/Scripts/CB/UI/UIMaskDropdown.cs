@@ -12,10 +12,9 @@ namespace CB.UI
     /// <summary>
     /// Custom dropdown UI for Bitmask type
     /// </summary>
-    public class UIMaskDropdown : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDeselectHandler
+    public class UIMaskDropdown : MonoBehaviour
     {
         public TextMeshProUGUI Labal;
-        public ScrollRect OptionMenu;
         public RectTransform DropdownTemplate;
         public RectTransform ContentTemplate;
         public RectTransform ItemTemplate;
@@ -41,7 +40,6 @@ namespace CB.UI
         }
         private float PreviousDropdownHeight;
         private float PreviousContentHeight;
-        bool MouseOnMenu;
         private List<RectTransform> Items = new List<RectTransform>();
 
         void Start()
@@ -50,26 +48,9 @@ namespace CB.UI
             PreviousContentHeight = ContentTemplate.sizeDelta.y;
         }
 
-        public void OnPointerEnter(PointerEventData eventData)
-        {
-            MouseOnMenu = true;
-            EventSystem.current.SetSelectedGameObject(gameObject);
-        }
-
-        public void OnPointerExit(PointerEventData eventData)
-        {
-            MouseOnMenu = false;
-            EventSystem.current.SetSelectedGameObject(gameObject);
-        }
-
-        public void OnDeselect(BaseEventData eventData)
-        {
-            if(!MouseOnMenu) Hide();
-        }
-
         public void ToggleOptionMenu()
         {
-            if (OptionMenu.gameObject.activeSelf) Hide();
+            if (DropdownTemplate.gameObject.activeSelf) Hide();
             else Show();
         }
 
@@ -77,8 +58,8 @@ namespace CB.UI
         {
             //Create content
             CreateItems();
-            //Disable dropdown menu
-            OptionMenu.gameObject.SetActive(true);
+            //Enable dropdown menu
+            DropdownTemplate.gameObject.SetActive(true);
         }
 
         public void Hide()
@@ -89,8 +70,8 @@ namespace CB.UI
             //Reset Content window
             DropdownTemplate.sizeDelta = new Vector2(DropdownTemplate.sizeDelta.x, PreviousDropdownHeight);
             ContentTemplate.sizeDelta = new Vector2(ContentTemplate.sizeDelta.x, PreviousContentHeight);
-            //Enable dropdown menu
-            OptionMenu.gameObject.SetActive(false);
+            //Disable dropdown menu
+            DropdownTemplate.gameObject.SetActive(false);
         }
 
         void CreateItems()

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace CB.Calculator.UI
 {
     /// <summary>
-    /// UI Shortcuts editor
+    /// UI shortcuts editor
     /// </summary>
     public class ShortcutsEdit : MonoBehaviour
     {
