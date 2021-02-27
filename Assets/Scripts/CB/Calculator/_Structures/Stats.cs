@@ -55,5 +55,10 @@ namespace CB.Calculator
         {
             return new Stats(s1.COST - s2.COST, s1.CAPA - s2.CAPA, s1.HP - s2.HP, s1.STR - s2.STR, s1.TEC - s2.TEC, s1.WLK - s2.WLK, s1.FLY - s2.FLY, s1.TGH - s2.TGH);
         }
+
+        public override string ToString()
+        {
+            return $"COST: {COST}, CAPA: {CAPA}, HP: {HP}, STR: {STR}, TEC: {TEC}, WLK: {WLK}, FLY: {FLY}, TGH: {TGH}";
+        }
     }
 }

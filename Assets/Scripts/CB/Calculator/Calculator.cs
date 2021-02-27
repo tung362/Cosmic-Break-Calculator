@@ -33,29 +33,29 @@ namespace CB.Calculator
         public static string TunePath { get { return DataBundlePath + "/Tune"; } }
         public static string CartridgePath { get { return DataBundlePath + "/Cartridge"; } }
         public static string PartPath { get { return DataBundlePath + "/Part"; } }
-        public static string BDPath { get { return PartPath + "/Part/BD"; } }
-        public static string LGPath { get { return PartPath + "/Part/LG"; } }
-        public static string HDPath { get { return PartPath + "/Part/HD"; } }
-        public static string HACPath { get { return PartPath + "/Part/HAC"; } }
-        public static string FACPath { get { return PartPath + "/Part/FAC"; } }
-        public static string AMPath { get { return PartPath + "/Part/AM"; } }
-        public static string BSPath { get { return PartPath + "/Part/BS"; } }
-        public static string WPPath { get { return PartPath + "/Part/WP"; } }
-        public static string WBPath { get { return PartPath + "/Part/WB"; } }
+        public static string BDPath { get { return PartPath + "/BD"; } }
+        public static string LGPath { get { return PartPath + "/LG"; } }
+        public static string HDPath { get { return PartPath + "/HD"; } }
+        public static string HACPath { get { return PartPath + "/HAC"; } }
+        public static string FACPath { get { return PartPath + "/FAC"; } }
+        public static string AMPath { get { return PartPath + "/AM"; } }
+        public static string BSPath { get { return PartPath + "/BS"; } }
+        public static string WPPath { get { return PartPath + "/WP"; } }
+        public static string WBPath { get { return PartPath + "/WB"; } }
         public static string DataBundleCustomPath { get { return RootPath + "/DataBundleCustom"; } }
         public static string CustomContraptionPath { get { return DataBundleCustomPath + "/Contraption"; } }
         public static string CustomTunePath { get { return DataBundleCustomPath + "/Tune"; } }
         public static string CustomCartridgePath { get { return DataBundleCustomPath + "/Cartridge"; } }
         public static string CustomPartPath { get { return DataBundleCustomPath + "/Part"; } }
-        public static string CustomBDPath { get { return CustomPartPath + "/Part/BD"; } }
-        public static string CustomLGPath { get { return CustomPartPath + "/Part/LG"; } }
-        public static string CustomHDPath { get { return CustomPartPath + "/Part/HD"; } }
-        public static string CustomHACPath { get { return CustomPartPath + "/Part/HAC"; } }
-        public static string CustomFACPath { get { return CustomPartPath + "/Part/FAC"; } }
-        public static string CustomAMPath { get { return CustomPartPath + "/Part/AM"; } }
-        public static string CustomBSPath { get { return CustomPartPath + "/Part/BS"; } }
-        public static string CustomWPPath { get { return CustomPartPath + "/Part/WP"; } }
-        public static string CustomWBPath { get { return CustomPartPath + "/Part/WB"; } }
+        public static string CustomBDPath { get { return CustomPartPath + "/BD"; } }
+        public static string CustomLGPath { get { return CustomPartPath + "/LG"; } }
+        public static string CustomHDPath { get { return CustomPartPath + "/HD"; } }
+        public static string CustomHACPath { get { return CustomPartPath + "/HAC"; } }
+        public static string CustomFACPath { get { return CustomPartPath + "/FAC"; } }
+        public static string CustomAMPath { get { return CustomPartPath + "/AM"; } }
+        public static string CustomBSPath { get { return CustomPartPath + "/BS"; } }
+        public static string CustomWPPath { get { return CustomPartPath + "/WP"; } }
+        public static string CustomWBPath { get { return CustomPartPath + "/WB"; } }
 
         /*External Locations*/
         public static string YoutubeDLPath { get { return RootPath + "/ExternalExe/youtube-dl.exe"; } }
@@ -89,7 +89,9 @@ namespace CB.Calculator
         public SaveType SaveState = SaveType.Build;
         public Dictionary<SaveType, string> SaveLocations = new Dictionary<SaveType, string>();
         public bool ShowFixedParts = false;
+        public DirectoryWatcher BuildWatcher;
         public DirectoryWatcher PartWatcher;
+        public DirectoryWatcher TuneWatcher;
         public DirectoryWatcher CartridgeWatcher;
 
         /*Objects of Note*/
@@ -97,9 +99,13 @@ namespace CB.Calculator
         public Canvas RootCanvas;
         public TMP_InputField VersionInputField;
         public TMP_InputField FileNameInputField;
+        public PartBuilder CustomBuildBuilder;
         public PartBuilder CustomPartBuilder;
+        public TuneBuilder CustomTuneBuilder;
         public CartridgeBuilder CustomCartridgeBuilder;
+        public OutlineBuilder BuildOutline;
         public OutlineBuilder PartOutline;
+        public OutlineBuilder TuneOutline;
         public OutlineBuilder CartridgeOutline;
         public UIYoutubePlayer YoutubePlayer;
         public RectTransform VideoControl;
@@ -126,7 +132,9 @@ namespace CB.Calculator
         {
             /*Variable Assignment*/
             //Watcher
+            BuildWatcher = new DirectoryWatcher(new string[] { CustomContraptionPath }, new string[] { "*.part" });
             PartWatcher = new DirectoryWatcher(new string[] { PartPath, CustomPartPath }, new string[] { "*.part" });
+            TuneWatcher = new DirectoryWatcher(new string[] { TunePath, CustomTunePath }, new string[] { "*.tune" });
             CartridgeWatcher = new DirectoryWatcher(new string[] { CartridgePath, CustomCartridgePath }, new string[] { "*.cartridge" });
 
             /*Initial Load*/
@@ -183,15 +191,26 @@ namespace CB.Calculator
         {
             /*Init*/
             //Outline
-            CartridgeOutline.SetListeners();
+            BuildOutline.SetListeners(BuildWatcher);
+            PartOutline.SetListeners(PartWatcher);
+            TuneOutline.SetListeners(TuneWatcher);
+            CartridgeOutline.SetListeners(CartridgeWatcher);
             //Watcher
+            BuildWatcher.Load();
+            BuildWatcher.Watch();
+            PartWatcher.Load();
+            PartWatcher.Watch();
+            TuneWatcher.Load();
+            TuneWatcher.Watch();
             CartridgeWatcher.Load();
             CartridgeWatcher.Watch();
         }
 
         void OnDestroy()
         {
+            BuildWatcher.Dispose();
             PartWatcher.Dispose();
+            TuneWatcher.Dispose();
             CartridgeWatcher.Dispose();
         }
 
@@ -201,11 +220,16 @@ namespace CB.Calculator
             switch (SaveState)
             {
                 case SaveType.Build:
+                    CustomBuildBuilder.CreateNew();
+                    BuildOutline.UnloadSlot();
                     break;
                 case SaveType.Part:
                     CustomPartBuilder.CreateNew();
+                    PartOutline.UnloadSlot();
                     break;
                 case SaveType.Tune:
+                    CustomTuneBuilder.CreateNew();
+                    TuneOutline.UnloadSlot();
                     break;
                 case SaveType.Cartridge:
                     CustomCartridgeBuilder.CreateNew();
@@ -227,13 +251,13 @@ namespace CB.Calculator
                     switch (SaveState)
                     {
                         case SaveType.Build:
-                            Serializer.Save(SaveLocations[SaveState], Settings);
+                            Serializer.Save(SaveLocations[SaveState], CustomBuildBuilder.AssembledData);
                             break;
                         case SaveType.Part:
                             Serializer.Save(SaveLocations[SaveState], CustomPartBuilder.AssembledData);
                             break;
                         case SaveType.Tune:
-                            Serializer.Save(SaveLocations[SaveState], Settings);
+                            Serializer.Save(SaveLocations[SaveState], CustomTuneBuilder.AssembledData);
                             break;
                         case SaveType.Cartridge:
                             Serializer.Save(SaveLocations[SaveState], CustomCartridgeBuilder.AssembledData);
@@ -255,7 +279,7 @@ namespace CB.Calculator
             {
                 case SaveType.Build:
                     path = StandaloneFileBrowser.SaveFilePanel("Save Build", CustomContraptionPath, "CustomBuild", "part");
-                    dataToSave = Settings;
+                    dataToSave = CustomBuildBuilder.AssembledData;
                     break;
                 case SaveType.Part:
                     switch (CustomPartBuilder.AssembledData.Root.Joint)
@@ -294,7 +318,7 @@ namespace CB.Calculator
                     break;
                 case SaveType.Tune:
                     path = StandaloneFileBrowser.SaveFilePanel("Save Tune", CustomTunePath, "CustomTune", "tune");
-                    dataToSave = Settings;
+                    dataToSave = CustomTuneBuilder.AssembledData;
                     break;
                 case SaveType.Cartridge:
                     path = StandaloneFileBrowser.SaveFilePanel("Save Cartridge", CustomCartridgePath, "CustomCartridge", "cartridge");
@@ -320,9 +344,17 @@ namespace CB.Calculator
             {
                 case SaveType.Build:
                     path = StandaloneFileBrowser.OpenFilePanel("Open Build", CustomContraptionPath, "part", false);
+                    if (path.Length != 0)
+                    {
+                        if (Serializer.Load(path[0], out Contraption result) && result != null)
+                        {
+                            CustomBuildBuilder.Load(result);
+                            successful = true;
+                        }
+                    }
                     break;
                 case SaveType.Part:
-                    path = StandaloneFileBrowser.OpenFilePanel("Open Part", DataBundleCustomPath, "part", false);
+                    path = StandaloneFileBrowser.OpenFilePanel("Open Part", CustomPartPath, "part", false);
                     if (path.Length != 0)
                     {
                         if (Serializer.Load(path[0], out Contraption result) && result != null)
@@ -334,6 +366,14 @@ namespace CB.Calculator
                     break;
                 case SaveType.Tune:
                     path = StandaloneFileBrowser.OpenFilePanel("Open Tune", CustomTunePath, "tune", false);
+                    if (path.Length != 0)
+                    {
+                        if (Serializer.Load(path[0], out Tune result) && result != null)
+                        {
+                            CustomTuneBuilder.Load(result);
+                            successful = true;
+                        }
+                    }
                     break;
                 case SaveType.Cartridge:
                     path = StandaloneFileBrowser.OpenFilePanel("Open Cartridge", CustomCartridgePath, "cartridge", false);

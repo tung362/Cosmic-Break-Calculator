@@ -59,6 +59,9 @@ namespace CB.Calculator.UI
 
         [Header("BD Edit Binds")]
         public RectTransform CartridgeHeaderRegion;
+        public RectTransform LevelBGMask;
+        public RectTransform CostTitleMask;
+        public RectTransform CartridgeMask;
         //Robot Information header
         public TMP_InputField InfoTypeBind;
         public TMP_InputField InfoHPBind;
@@ -93,8 +96,20 @@ namespace CB.Calculator.UI
         #region Listeners
         void OnRedraw(ISelectable selectable)
         {
-            if (Builder.Root.Slot.Joint != PartJoint.JointType.BD) CartridgeHeaderRegion.gameObject.SetActive(false);
-            else CartridgeHeaderRegion.gameObject.SetActive(true);
+            if (Builder.Root.Slot.Joint != PartJoint.JointType.BD)
+            {
+                CartridgeHeaderRegion.gameObject.SetActive(false);
+                LevelBGMask.gameObject.SetActive(false);
+                CostTitleMask.gameObject.SetActive(false);
+                CartridgeMask.gameObject.SetActive(false);
+            }
+            else
+            {
+                CartridgeHeaderRegion.gameObject.SetActive(true);
+                LevelBGMask.gameObject.SetActive(true);
+                CostTitleMask.gameObject.SetActive(true);
+                CartridgeMask.gameObject.SetActive(true);
+            }
             /*BD Edit Section*/
             UpdateInfoType();
             UpdateInfoHP();

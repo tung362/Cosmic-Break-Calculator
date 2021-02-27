@@ -48,23 +48,65 @@ namespace CB.Calculator
         #region Creation And Removal
         public void CreateNew()
         {
-
+            if (Root.Slot.EquipedPart != null) RemovePart(Root);
+            AssembledData = new Contraption();
+            Root.Slot = AssembledData.Root;
+            Root.Slot.Tags.Add("Universal", "Universal");
+            LoadBranch(Root);
+            RecalculateContent(Root.GetComponent<RectTransform>());
+            //Event callback
+            OnRedraw?.Invoke(EditSlot);
         }
 
-        //Load via AssembledData
         public void Load(Contraption loadData)
         {
-            //jointSlot.Slot.Joint = loadData.Joint;
-            //jointSlot.Slot.EquipedPart = loadData;
-            //for (int i = 0; i < loadData.SubJoints.Count; i++)
-            //{
-            //    PartJointSlot jointSlotChild = Instantiate(JointSlotPrefab, jointSlot.transform);
-            //    jointSlotChild.gameObject.SetActive(true);
-            //    jointSlotChild.Slot = loadData.SubJoints[i];
+            if (Root.Slot.EquipedPart != null) RemovePart(Root);
+            AssembledData = loadData;
+            Root.Slot = AssembledData.Root;
+            LoadBranch(Root);
+            RecalculateContent(Root.GetComponent<RectTransform>());
+            //Event callback
+            OnRedraw?.Invoke(EditSlot);
+        }
 
-            //    //Recursive branching
-            //    Load(jointSlotChild, jointSlotChild.Slot.EquipedPart);
-            //}
+        void LoadBranch(PartJointSlot jointSlot)
+        {
+            jointSlot.NameText.text = "-";
+            jointSlot.NameText.color = jointSlot.Slot.Joint == PartJoint.JointType.WB ? DefaultColors.WB : DefaultColors.Value;
+            jointSlot.TypeIcon.sprite = Calculator.instance.JointIcons.Icons[jointSlot.Slot.Joint];
+            jointSlot.TypeIcon.color = Color.white;
+            jointSlot.TypeText.text = jointSlot.Slot.Joint.ToString();
+            jointSlot.TypeText.color = jointSlot.Slot.Fixed ? Color.red : DefaultColors.Name;
+            jointSlot.AddSlotButton.interactable = false;
+            jointSlot.AddSlotButtonText.color = DefaultColors.Name;
+
+            if (jointSlot.Slot.EquipedPart != null)
+            {
+                if (!string.IsNullOrEmpty(jointSlot.Slot.EquipedPart.Name)) jointSlot.NameText.text = jointSlot.Slot.EquipedPart.Name;
+                if (jointSlot.Slot.EquipedPart.MainWeapon != null && jointSlot.Slot.EquipedPart.SubWeapon != null) jointSlot.NameText.color = DefaultColors.MAINSUB;
+                else if (jointSlot.Slot.EquipedPart.MainWeapon != null) jointSlot.NameText.color = DefaultColors.MAIN;
+                else if (jointSlot.Slot.EquipedPart.SubWeapon != null) jointSlot.NameText.color = DefaultColors.SUB;
+                if (jointSlot.Slot.EquipedPart.IsJ) jointSlot.TypeIcon.color = DefaultColors.J;
+                jointSlot.AddSlotButton.interactable = true;
+                jointSlot.AddSlotButtonText.color = DefaultColors.AddSlot;
+
+                //Recursive branching
+                for (int i = 0; i < jointSlot.Slot.EquipedPart.SubJoints.Count; i++)
+                {
+                    PartJointSlot jointSlotChild = Instantiate(JointSlotPrefab, jointSlot.JointSlotOrigin);
+                    jointSlotChild.gameObject.SetActive(true);
+                    jointSlotChild.Parent = jointSlot;
+                    jointSlotChild.Slot = jointSlot.Slot.EquipedPart.SubJoints[i];
+                    jointSlotChild.BranchIndex = jointSlot.SubJoints.Count;
+                    jointSlotChild.GetComponent<RectTransform>().anchoredPosition = new Vector2(JointSlotOffset.x, JointSlotOffset.y * (jointSlot.BranchCount - 1));
+                    jointSlot.SubJoints.Add(jointSlotChild);
+                    jointSlot.BranchCount += 1;
+                    jointSlot.ChildLine.sizeDelta = new Vector2(jointSlot.ChildLine.sizeDelta.x, ChildLineOffset.y * (jointSlot.BranchCount - 1));
+                    if (jointSlot.Parent) AddBranch(jointSlot.Parent, jointSlot.BranchIndex + 1);
+                    //Recursive branching
+                    LoadBranch(jointSlotChild);
+                }
+            }
         }
 
         public void AddBranch(PartJointSlot jointSlot, int startIndex)
@@ -155,7 +197,7 @@ namespace CB.Calculator
                 if (jointSlot.transform == Root.transform)
                 {
                     if (jointSlot.Slot.EquipedPart.Joint == PartJoint.JointType.BD) jointSlot.Slot.EquipedPart.BDMask.AddFlag((int)Part.BDType.Lnd);
-                    AssembledData.Root = jointSlot.Slot.EquipedPart;
+                    AssembledData.Root = jointSlot.Slot;
                 }
             }
         }
@@ -186,6 +228,7 @@ namespace CB.Calculator
                 RemoveBranch(jointSlot.Parent, jointSlot.BranchCount, jointSlot.BranchIndex);
                 Destroy(jointSlot.gameObject);
                 RecalculateContent(Root.GetComponent<RectTransform>());
+                //Event callback
                 OnRedraw?.Invoke(EditSlot);
             }
         }

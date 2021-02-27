@@ -28,11 +28,13 @@ namespace CB.Calculator
             switch (Calculator.instance.SaveState)
             {
                 case Calculator.SaveType.Build:
+                    Builder.LoadSlot(this, Calculator.instance.CustomBuildBuilder);
                     break;
                 case Calculator.SaveType.Part:
                     Builder.LoadSlot(this, Calculator.instance.CustomPartBuilder);
                     break;
                 case Calculator.SaveType.Tune:
+                    Builder.LoadSlot(this, Calculator.instance.CustomTuneBuilder);
                     break;
                 case Calculator.SaveType.Cartridge:
                     Builder.LoadSlot(this, Calculator.instance.CustomCartridgeBuilder);

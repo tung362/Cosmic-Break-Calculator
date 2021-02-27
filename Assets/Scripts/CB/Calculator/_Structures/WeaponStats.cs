@@ -26,6 +26,11 @@ namespace CB.Calculator
             public float Speed = 1.0f;
             [Key(4)]
             public float Int = 1.0f;
+
+            public override string ToString()
+            {
+                return $"Force: {Force}, Ammo: {Ammo}, Range: {Range}, Speed: {Speed}, Int: {Int}";
+            }
         }
         #endregion
 
@@ -62,6 +67,11 @@ namespace CB.Calculator
         public static WeaponStats operator -(WeaponStats s1, WeaponStats s2)
         {
             return new WeaponStats(s1.Force - s2.Force, s1.Ammo - s2.Ammo, s1.Range - s2.Range, s1.Speed - s2.Speed, s1.Int - s2.Int);
+        }
+
+        public override string ToString()
+        {
+            return $"Force: {Force}, Ammo: {Ammo}, Range: {Range}, Speed: {Speed}, Int: {Int}";
         }
 
         #region Utils

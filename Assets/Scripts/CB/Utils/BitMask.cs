@@ -1,16 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using MessagePack;
 
 namespace CB.Utils
 {
     /// <summary>
     /// Mask for storing multiple flags using bit shifting
     /// </summary>
+    [MessagePackObject]
     [System.Serializable]
     public struct Bitmask
     {
-        public int Mask { get; private set; }
+        [Key(0)]
+        public int Mask;
 
         public bool HasFlag(int flag)
         {

@@ -22,13 +22,12 @@ namespace CB.Calculator
             [Key(0)]
             public string Name = "";
             [Key(1)]
-            public int Amount = 1;
+            public int Amount = 0;
         }
         #endregion
 
         /*Enums*/
         public enum RequirementType { BD, LG, HD, HAC, FAC, AM, BS, WP, WB, Main, Sub }
-        public enum ColorType { Regular, Ex, Main, Sub }
 
         /*Configuration*/
         [Key(0)]

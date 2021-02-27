@@ -21,6 +21,6 @@ namespace CB.Calculator
         [Key(3)]
         public List<(Cartridge, int, bool)> Cartridges = new List<(Cartridge, int, bool)>();
         [Key(4)]
-        public Part Root = new Part();
+        public PartJoint Root = new PartJoint();
     }
 }

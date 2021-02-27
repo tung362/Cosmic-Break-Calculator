@@ -24,7 +24,8 @@ namespace CB.Calculator
         public FileItemSlot SelectedSlot;
 
         /*Cache*/
-        public Dictionary<string, IDirectoryFile> Items = new Dictionary<string, IDirectoryFile>();
+        private Dictionary<string, IDirectoryFile> Items = new Dictionary<string, IDirectoryFile>();
+        private List<DirectoryWatcher> Watchers = new List<DirectoryWatcher>();
 
         void Start()
         {
@@ -43,8 +44,19 @@ namespace CB.Calculator
             {
                 //Create root folders
                 string alternativeName = null;
-                if ((Path.GetFullPath(Calculator.CartridgePath) == root)) alternativeName = "Data Bundle";
-                if ((Path.GetFullPath(Calculator.CustomCartridgePath) == root)) alternativeName = "Custom Data Bundle";
+                if (Path.GetFullPath(Calculator.PartPath) == root ||
+                    Path.GetFullPath(Calculator.TunePath) == root ||
+                    Path.GetFullPath(Calculator.CartridgePath) == root)
+                {
+                    alternativeName = "Data Bundle";
+                }
+                if (Path.GetFullPath(Calculator.CustomContraptionPath) == root ||
+                    Path.GetFullPath(Calculator.CustomPartPath) == root ||
+                    Path.GetFullPath(Calculator.CustomTunePath) == root ||
+                    Path.GetFullPath(Calculator.CustomCartridgePath) == root)
+                {
+                    alternativeName = "Custom Data Bundle";
+                }
                 CreateFolder(Template.GetComponent<FolderItemSlot>(), path, alternativeName);
                 RecalculateContent(Template);
             }
@@ -283,18 +295,22 @@ namespace CB.Calculator
         #endregion
 
         #region Utils
-        public void SetListeners()
+        public void SetListeners(DirectoryWatcher watcher)
         {
-            Calculator.instance.CartridgeWatcher.OnDirectoryChanged += OnDirectoryChanged;
-            Calculator.instance.CartridgeWatcher.OnFileChanged += OnFileChanged;
-            Calculator.instance.CartridgeWatcher.OnDeleted += OnDeleted;
+            watcher.OnDirectoryChanged += OnDirectoryChanged;
+            watcher.OnFileChanged += OnFileChanged;
+            watcher.OnDeleted += OnDeleted;
+            Watchers.Add(watcher);
         }
 
         public void UnsetListeners()
         {
-            Calculator.instance.CartridgeWatcher.OnDirectoryChanged -= OnDirectoryChanged;
-            Calculator.instance.CartridgeWatcher.OnFileChanged -= OnFileChanged;
-            Calculator.instance.CartridgeWatcher.OnDeleted -= OnDeleted;
+            for(int i = 0; i < Watchers.Count; i++)
+            {
+                Watchers[i].OnDirectoryChanged -= OnDirectoryChanged;
+                Watchers[i].OnFileChanged -= OnFileChanged;
+                Watchers[i].OnDeleted -= OnDeleted;
+            }
         }
 
         public void CreateDirectory(string path, List<string> previousPaths, int currentIndex)
