@@ -115,59 +115,59 @@ namespace CB.Calculator.UI
             switch (ShortcutField)
             {
                 case ShortcutType.SettingsMenu:
-                    for (int i = 0; i < Calculator.instance.Controls.SettingsMenuKeys.Count; i++)
+                    for (int i = Calculator.instance.Controls.SettingsMenuKeys.Count; i-- > 0;)
                     {
-                        AddSlot(i != 0);
-                        ShortcutSlots[i].SetValue(Calculator.instance.Controls.SettingsMenuKeys[i]);
+                        AddSlot(ShortcutSlots.Count != 0);
+                        ShortcutSlots[0].SetValue(Calculator.instance.Controls.SettingsMenuKeys[i]);
                     }
                     break;
                 case ShortcutType.Screenshot:
-                    for (int i = 0; i < Calculator.instance.Controls.ScreenshotKeys.Count; i++)
+                    for (int i = Calculator.instance.Controls.ScreenshotKeys.Count; i-- > 0;)
                     {
-                        AddSlot(i != 0);
-                        ShortcutSlots[i].SetValue(Calculator.instance.Controls.ScreenshotKeys[i]);
+                        AddSlot(ShortcutSlots.Count != 0);
+                        ShortcutSlots[0].SetValue(Calculator.instance.Controls.ScreenshotKeys[i]);
                     }
                     break;
                 case ShortcutType.Undo:
-                    for (int i = 0; i < Calculator.instance.Controls.UndoKeys.Count; i++)
+                    for (int i = Calculator.instance.Controls.UndoKeys.Count; i-- > 0;)
                     {
-                        AddSlot(i != 0);
-                        ShortcutSlots[i].SetValue(Calculator.instance.Controls.UndoKeys[i]);
+                        AddSlot(ShortcutSlots.Count != 0);
+                        ShortcutSlots[0].SetValue(Calculator.instance.Controls.UndoKeys[i]);
                     }
                     break;
                 case ShortcutType.Redo:
-                    for (int i = 0; i < Calculator.instance.Controls.RedoKeys.Count; i++)
+                    for (int i = Calculator.instance.Controls.RedoKeys.Count; i-- > 0;)
                     {
-                        AddSlot(i != 0);
-                        ShortcutSlots[i].SetValue(Calculator.instance.Controls.RedoKeys[i]);
+                        AddSlot(ShortcutSlots.Count != 0);
+                        ShortcutSlots[0].SetValue(Calculator.instance.Controls.RedoKeys[i]);
                     }
                     break;
                 case ShortcutType.Save:
-                    for (int i = 0; i < Calculator.instance.Controls.SaveKeys.Count; i++)
+                    for (int i = Calculator.instance.Controls.SaveKeys.Count; i-- > 0;)
                     {
-                        AddSlot(i != 0);
-                        ShortcutSlots[i].SetValue(Calculator.instance.Controls.SaveKeys[i]);
+                        AddSlot(ShortcutSlots.Count != 0);
+                        ShortcutSlots[0].SetValue(Calculator.instance.Controls.SaveKeys[i]);
                     }
                     break;
                 case ShortcutType.SaveAs:
-                    for (int i = 0; i < Calculator.instance.Controls.SaveAsKeys.Count; i++)
+                    for (int i = Calculator.instance.Controls.SaveAsKeys.Count; i-- > 0;)
                     {
-                        AddSlot(i != 0);
-                        ShortcutSlots[i].SetValue(Calculator.instance.Controls.SaveAsKeys[i]);
+                        AddSlot(ShortcutSlots.Count != 0);
+                        ShortcutSlots[0].SetValue(Calculator.instance.Controls.SaveAsKeys[i]);
                     }
                     break;
                 case ShortcutType.Load:
-                    for (int i = 0; i < Calculator.instance.Controls.LoadKeys.Count; i++)
+                    for (int i = Calculator.instance.Controls.LoadKeys.Count; i-- > 0;)
                     {
-                        AddSlot(i != 0);
-                        ShortcutSlots[i].SetValue(Calculator.instance.Controls.LoadKeys[i]);
+                        AddSlot(ShortcutSlots.Count != 0);
+                        ShortcutSlots[0].SetValue(Calculator.instance.Controls.LoadKeys[i]);
                     }
                     break;
                 case ShortcutType.NewFile:
-                    for (int i = 0; i < Calculator.instance.Controls.NewFileKeys.Count; i++)
+                    for (int i = Calculator.instance.Controls.NewFileKeys.Count; i-- > 0;)
                     {
-                        AddSlot(i != 0);
-                        ShortcutSlots[i].SetValue(Calculator.instance.Controls.NewFileKeys[i]);
+                        AddSlot(ShortcutSlots.Count != 0);
+                        ShortcutSlots[0].SetValue(Calculator.instance.Controls.NewFileKeys[i]);
                     }
                     break;
                 default:
