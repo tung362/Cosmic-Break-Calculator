@@ -21,7 +21,7 @@ namespace CB.Calculator
         public static Calculator instance { get; private set; }
 
         /*Version*/
-        public static string Version = "v. 1.0.0";
+        public static string Version = "v. 0.7.5";
 
         /*Save Locations*/
         public static string RootPath { get { return Application.dataPath + "/../"; } }
