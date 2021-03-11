@@ -85,7 +85,7 @@ namespace CB.Calculator
         #endregion
 
         #region Creation And Removal
-        void AddBranch(FolderItemSlot itemSlot, int count, int startIndex, bool skipFirstPlacement = false)
+        public void AddBranch(FolderItemSlot itemSlot, int count, int startIndex, bool skipFirstPlacement = false)
         {
             if(!skipFirstPlacement)
             {
@@ -107,7 +107,7 @@ namespace CB.Calculator
             }
         }
 
-        void RemoveBranch(FolderItemSlot itemSlot, int count, int startIndex, bool skipFirstPlacement = false)
+        public void RemoveBranch(FolderItemSlot itemSlot, int count, int startIndex, bool skipFirstPlacement = false)
         {
             if(!skipFirstPlacement)
             {
@@ -151,7 +151,7 @@ namespace CB.Calculator
             }
         }
 
-        void CreateFolder(FolderItemSlot folderItemSlot, string path, string alternativeName = null)
+        public void CreateFolder(FolderItemSlot folderItemSlot, string path, string alternativeName = null)
         {
             if (!Items.ContainsKey(path))
             {
@@ -179,7 +179,7 @@ namespace CB.Calculator
             }
         }
 
-        void CreateFile(FolderItemSlot folderItemSlot, string path)
+        public void CreateFile(FolderItemSlot folderItemSlot, string path)
         {
             if (!Items.ContainsKey(path))
             {
@@ -207,7 +207,7 @@ namespace CB.Calculator
             }
         }
 
-        void RemoveFolder(string path)
+        public void RemoveFolder(string path)
         {
             if(Items.ContainsKey(path))
             {
@@ -242,7 +242,7 @@ namespace CB.Calculator
             }
         }
 
-        void RemoveFile(string path)
+        public void RemoveFile(string path)
         {
             if (Items.ContainsKey(path))
             {

@@ -9,6 +9,7 @@ namespace CB.Utils
     /// </summary>
     public static class AudioVisualizer
     {
+        #region Utils
         public static void CreateAmplitude(float[] rawOutput, float[] output, ref float amplitudeOutput, ref float amplitudeHighest)
         {
             //Get sum
@@ -101,5 +102,6 @@ namespace CB.Utils
                 Debug.DrawLine(start, end, Color.cyan);
             }
         }
+        #endregion
     }
 }

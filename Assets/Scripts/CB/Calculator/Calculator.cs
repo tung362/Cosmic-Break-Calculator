@@ -99,6 +99,7 @@ namespace CB.Calculator
         public Canvas RootCanvas;
         public TMP_InputField VersionInputField;
         public TMP_InputField FileNameInputField;
+        public PartListView PartLibrary;
         public PartBuilder CustomBuildBuilder;
         public PartBuilder CustomPartBuilder;
         public TuneBuilder CustomTuneBuilder;
@@ -190,6 +191,8 @@ namespace CB.Calculator
         void Start()
         {
             /*Init*/
+            //List view
+            PartLibrary.SetListeners(PartWatcher);
             //Outline
             BuildOutline.SetListeners(BuildWatcher);
             PartOutline.SetListeners(PartWatcher);
