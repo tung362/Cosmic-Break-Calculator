@@ -12,7 +12,7 @@ namespace CB.Calculator.UI
     public class UIHintHook : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
         public string EnterText = "";
-        public string ExitText = "";
+        public UIHintHook ExitChain;
 
         public virtual void OnPointerEnter(PointerEventData eventData)
         {
@@ -21,7 +21,7 @@ namespace CB.Calculator.UI
 
         public virtual void OnPointerExit(PointerEventData eventData)
         {
-            UIHintBind.instance.UpdateText(ExitText);
+            UIHintBind.instance.UpdateText(ExitChain ? ExitChain.EnterText : "");
         }
     }
 }

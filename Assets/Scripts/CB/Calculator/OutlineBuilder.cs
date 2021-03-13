@@ -311,6 +311,7 @@ namespace CB.Calculator
                 Watchers[i].OnFileChanged -= OnFileChanged;
                 Watchers[i].OnDeleted -= OnDeleted;
             }
+            Watchers.Clear();
         }
 
         public void CreateDirectory(string path, List<string> previousPaths, int currentIndex)

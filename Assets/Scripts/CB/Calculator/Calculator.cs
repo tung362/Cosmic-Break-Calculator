@@ -9,6 +9,7 @@ using CB.Calculator.Database;
 using CB.Utils;
 using CB.UI;
 using CB.Calculator.UI;
+using CB.Calculator.Utils;
 using SFB;
 
 namespace CB.Calculator
@@ -68,15 +69,10 @@ namespace CB.Calculator
         public JointIconDatabase JointIcons;
 
         /*Dynamic Databases*/
-        public List<Contraption> BDs = new List<Contraption>();
-        public List<Contraption> LGs = new List<Contraption>();
-        public List<Contraption> HDs = new List<Contraption>();
-        public List<Contraption> HACs = new List<Contraption>();
-        public List<Contraption> FACs = new List<Contraption>();
-        public List<Contraption> AMs = new List<Contraption>();
-        public List<Contraption> BSs = new List<Contraption>();
-        public List<Contraption> WPs = new List<Contraption>();
-        public List<Contraption> WBs = new List<Contraption>();
+        public Dictionary<string, Contraption> Builds = new Dictionary<string, Contraption>();
+        public Dictionary<string, Contraption> Parts = new Dictionary<string, Contraption>();
+        public Dictionary<string, Tune> Tunes = new Dictionary<string, Tune>();
+        public Dictionary<string, Cartridge> Cartridges = new Dictionary<string, Cartridge>();
 
         /*Options*/
         public TunePalette TuneColorPalette = new TunePalette();
@@ -122,6 +118,12 @@ namespace CB.Calculator
         /*Global Cache*/
         [Header("Global Cache")]
         public Color GrayscaleColor;
+
+        /*Callbacks*/
+        public event Action<string, bool> OnBuildsChange;
+        public event Action<string, bool> OnPartsChange;
+        public event Action<string, bool> OnTunesChange;
+        public event Action<string, bool> OnCartridgesChange;
 
         void OnEnable()
         {
@@ -191,8 +193,10 @@ namespace CB.Calculator
         void Start()
         {
             /*Init*/
+            //Proxy
+            SetListeners();
             //List view
-            PartLibrary.SetListeners(PartWatcher);
+            PartLibrary.SetListeners();
             //Outline
             BuildOutline.SetListeners(BuildWatcher);
             PartOutline.SetListeners(PartWatcher);
@@ -211,11 +215,98 @@ namespace CB.Calculator
 
         void OnDestroy()
         {
+            UnsetListeners();
             BuildWatcher.Dispose();
             PartWatcher.Dispose();
             TuneWatcher.Dispose();
             CartridgeWatcher.Dispose();
         }
+
+        #region Listeners
+        void OnBuildFileChanged(string path, string root)
+        {
+            if (!Builds.ContainsKey(path))
+            {
+                if (Serializer.Load(path, out Contraption result) && result != null)
+                {
+                    Builds.Add(path, result);
+                    OnBuildsChange?.Invoke(path, true);
+                }
+            }
+        }
+
+        void OnBuildDeleted(string path, string root)
+        {
+            if (Builds.ContainsKey(path))
+            {
+                Builds.Remove(path);
+                OnBuildsChange?.Invoke(path, false);
+            }
+        }
+
+        void OnPartFileChanged(string path, string root)
+        {
+            if (!Parts.ContainsKey(path))
+            {
+                if (Serializer.Load(path, out Contraption result) && result != null)
+                {
+                    Parts.Add(path, result);
+                    OnPartsChange?.Invoke(path, true);
+                }
+            }
+        }
+
+        void OnPartDeleted(string path, string root)
+        {
+            if (Parts.ContainsKey(path))
+            {
+                Parts.Remove(path);
+                OnPartsChange?.Invoke(path, false);
+            }
+        }
+
+        void OnTuneFileChanged(string path, string root)
+        {
+            if (!Tunes.ContainsKey(path))
+            {
+                if (Serializer.Load(path, out Tune result) && result != null)
+                {
+                    Tunes.Add(path, result);
+                    OnTunesChange?.Invoke(path, true);
+                }
+            }
+        }
+
+        void OnTuneDeleted(string path, string root)
+        {
+            if (Tunes.ContainsKey(path))
+            {
+                Tunes.Remove(path);
+                OnTunesChange?.Invoke(path, false);
+            }
+        }
+
+        void OnCartridgeFileChanged(string path, string root)
+        {
+            if (!Cartridges.ContainsKey(path))
+            {
+                if (Serializer.Load(path, out Cartridge result) && result != null)
+                {
+                    Cartridges.Add(path, result);
+                    OnCartridgesChange?.Invoke(path, true);
+                }
+            }
+        }
+
+        void OnCartridgeDeleted(string path, string root)
+        {
+            if (Cartridges.ContainsKey(path))
+            {
+                Cartridges.Remove(path);
+                OnCartridgesChange?.Invoke(path, false);
+            }
+        }
+        #endregion
 
         #region Serialization
         public void NewFile()
@@ -442,6 +533,30 @@ namespace CB.Calculator
         #endregion
 
         #region Utils
+        public void SetListeners()
+        {
+            BuildWatcher.OnFileChanged += OnBuildFileChanged;
+            BuildWatcher.OnDeleted += OnBuildDeleted;
+            PartWatcher.OnFileChanged += OnPartFileChanged;
+            PartWatcher.OnDeleted += OnPartDeleted;
+            TuneWatcher.OnFileChanged += OnTuneFileChanged;
+            TuneWatcher.OnDeleted += OnTuneDeleted;
+            CartridgeWatcher.OnFileChanged += OnCartridgeFileChanged;
+            CartridgeWatcher.OnDeleted += OnCartridgeDeleted;
+        }
+
+        public void UnsetListeners()
+        {
+            BuildWatcher.OnFileChanged -= OnBuildFileChanged;
+            BuildWatcher.OnDeleted -= OnBuildDeleted;
+            PartWatcher.OnFileChanged -= OnPartFileChanged;
+            PartWatcher.OnDeleted -= OnPartDeleted;
+            TuneWatcher.OnFileChanged -= OnTuneFileChanged;
+            TuneWatcher.OnDeleted -= OnTuneDeleted;
+            CartridgeWatcher.OnFileChanged -= OnCartridgeFileChanged;
+            CartridgeWatcher.OnDeleted -= OnCartridgeDeleted;
+        }
+
         public void SetSaveState(int state)
         {
             SaveState = (SaveType)state;

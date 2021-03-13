@@ -12,17 +12,10 @@ namespace CB.Calculator.UI
     public class UIShortcutHintHook : UIHintHook
     {
         public ShortcutsEdit.ShortcutType ShortcutField;
-        public bool EnterAdd = true;
-        public bool ExitAdd = false;
 
         public override void OnPointerEnter(PointerEventData eventData)
         {
-            UIHintBind.instance.UpdateText(EnterAdd ? EnterText + GetShortcutText() : EnterText);
-        }
-
-        public override void OnPointerExit(PointerEventData eventData)
-        {
-            UIHintBind.instance.UpdateText(ExitAdd ? ExitText + GetShortcutText() : ExitText);
+            UIHintBind.instance.UpdateText(EnterText + GetShortcutText());
         }
 
         string GetShortcutText()
