@@ -4,6 +4,7 @@ using System.IO;
 using System;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using System.Threading.Tasks;
 
 namespace CB.Utils
 {
@@ -20,9 +21,12 @@ namespace CB.Utils
         public event Action<string, string> OnDirectoryChanged;
         public event Action<string, string> OnFileChanged;
         public event Action<string, string> OnDeleted;
+        public event Action<string, string> OnFinished;
 
         /*Cache*/
         private List<FileSystemWatcher> Watchers = new List<FileSystemWatcher>();
+        private bool TimerExists = false;
+        private float Timer = 0;
 
         public DirectoryWatcher(string[] paths, string[] fileExtensions)
         {
@@ -33,6 +37,7 @@ namespace CB.Utils
         #region Listeners
         async UniTask OnChanged(object source, FileSystemEventArgs args, string root)
         {
+            //await UniTask.Yield(PlayerLoopTiming.EarlyUpdate);
             await UniTask.SwitchToMainThread();
             //Change
             if (File.Exists(args.FullPath) || Directory.Exists(args.FullPath))
@@ -55,7 +60,29 @@ namespace CB.Utils
             }
             //Remove
             else OnDeleted?.Invoke(args.FullPath, root);
+
+            //Timer = 0;
+            //if(!TimerExists)
+            //{
+            //    Debug.Log("Start");
+            //    TimerExists = true;
+            //    await TickTimer(args.FullPath, root);
+            //}
         }
+
+        //async UniTask TickTimer(string path, string root)
+        //{
+        //    while(Timer < 2.0f)
+        //    {
+        //        await UniTask.Yield(PlayerLoopTiming.Update);
+        //        await UniTask.SwitchToMainThread();
+        //        Debug.Log(Timer);
+        //        Timer += Time.deltaTime;
+        //    }
+        //    OnFinished?.Invoke(path, root);
+        //    Debug.Log("Finished");
+        //    TimerExists = false;
+        //}
         #endregion
 
         #region Utils

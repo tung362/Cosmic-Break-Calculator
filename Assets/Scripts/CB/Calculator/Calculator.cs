@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Linq;
 using System.IO;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using TMPro;
 using CB.Calculator.Database;
 using CB.Utils;
@@ -11,6 +14,7 @@ using CB.UI;
 using CB.Calculator.UI;
 using CB.Calculator.Utils;
 using SFB;
+using Cysharp.Threading.Tasks;
 
 namespace CB.Calculator
 {
@@ -120,10 +124,21 @@ namespace CB.Calculator
         public Color GrayscaleColor;
 
         /*Callbacks*/
-        public event Action<string, bool> OnBuildsChange;
-        public event Action<string, bool> OnPartsChange;
-        public event Action<string, bool> OnTunesChange;
-        public event Action<string, bool> OnCartridgesChange;
+        [Header("Callbacks")]
+        public StringBoolEvent OnBuildsChange;
+        public UnityEvent OnBuildsFinish;
+        public StringBoolEvent OnPartsChange;
+        public UnityEvent OnPartsFinish;
+        public StringBoolEvent OnTunesChange;
+        public UnityEvent OnTunesFinish;
+        public StringBoolEvent OnCartridgesChange;
+        public UnityEvent OnCartridgesFinish;
+
+        /*Cache*/
+        private HashSet<string> BuildsFileQueue = new HashSet<string>();
+        private HashSet<string> PartsFileQueue = new HashSet<string>();
+        private HashSet<string> TunesFileQueue = new HashSet<string>();
+        private HashSet<string> CartridgesFileQueue = new HashSet<string>();
 
         void OnEnable()
         {
@@ -140,13 +155,19 @@ namespace CB.Calculator
             TuneWatcher = new DirectoryWatcher(new string[] { TunePath, CustomTunePath }, new string[] { "*.tune" });
             CartridgeWatcher = new DirectoryWatcher(new string[] { CartridgePath, CustomCartridgePath }, new string[] { "*.cartridge" });
 
-            /*Initial Load*/
+            /*Initial library loader*/
+            BuildsFileLoaderAsync().Forget();
+            PartsFileLoaderAsync().Forget();
+            TunesFileLoaderAsync().Forget();
+            CartridgesFileLoaderAsync().Forget();
+
+            /*Initial config Load*/
             LoadTunePalette();
             LoadOptions();
             LoadShortcuts();
             LoadUrlLibrary();
 
-            /*Apply Load*/
+            /*Apply config Load*/
             //Apply version
             VersionInputField.text = Version;
 
@@ -196,12 +217,13 @@ namespace CB.Calculator
             //Proxy
             SetListeners();
             //List view
-            PartLibrary.SetListeners();
+            PartLibrary.Init();
+            PartLibrary.SetListeners(OnPartsChange, OnPartsFinish);
             //Outline
-            BuildOutline.SetListeners(BuildWatcher);
-            PartOutline.SetListeners(PartWatcher);
-            TuneOutline.SetListeners(TuneWatcher);
-            CartridgeOutline.SetListeners(CartridgeWatcher);
+            //BuildOutline.SetListeners(BuildWatcher);
+            //PartOutline.SetListeners(PartWatcher);
+            //TuneOutline.SetListeners(TuneWatcher);
+            //CartridgeOutline.SetListeners(CartridgeWatcher);
             //Watcher
             BuildWatcher.Load();
             BuildWatcher.Watch();
@@ -223,92 +245,208 @@ namespace CB.Calculator
         }
 
         #region Listeners
-        void OnBuildFileChanged(string path, string root)
+        async UniTaskVoid OnBuildFileChanged(string path, string root)
         {
-            if (!Builds.ContainsKey(path))
-            {
-                if (Serializer.Load(path, out Contraption result) && result != null)
-                {
-                    Builds.Add(path, result);
-                    OnBuildsChange?.Invoke(path, true);
-                }
-            }
+            await UniTask.Yield(PlayerLoopTiming.EarlyUpdate);
+            await UniTask.SwitchToMainThread();
+            BuildsFileQueue.Add(path);
         }
 
-        void OnBuildDeleted(string path, string root)
+        async UniTaskVoid OnBuildDeleted(string path, string root)
         {
+            await UniTask.Yield(PlayerLoopTiming.EarlyUpdate);
+            await UniTask.SwitchToMainThread();
+
+            if (BuildsFileQueue.Contains(path)) BuildsFileQueue.Remove(path);
+
             if (Builds.ContainsKey(path))
             {
                 Builds.Remove(path);
-                OnBuildsChange?.Invoke(path, false);
+                OnBuildsChange.Invoke(path, false);
             }
         }
 
-        void OnPartFileChanged(string path, string root)
+        async UniTaskVoid OnPartFileChanged(string path, string root)
         {
-            if (!Parts.ContainsKey(path))
-            {
-                if (Serializer.Load(path, out Contraption result) && result != null)
-                {
-                    Parts.Add(path, result);
-                    OnPartsChange?.Invoke(path, true);
-                }
-            }
+            await UniTask.Yield(PlayerLoopTiming.EarlyUpdate);
+            await UniTask.SwitchToMainThread();
+            PartsFileQueue.Add(path);
         }
 
-        void OnPartDeleted(string path, string root)
+        async UniTaskVoid OnPartDeleted(string path, string root)
         {
+            await UniTask.Yield(PlayerLoopTiming.EarlyUpdate);
+            await UniTask.SwitchToMainThread();
+
+            if (PartsFileQueue.Contains(path)) PartsFileQueue.Remove(path);
+
             if (Parts.ContainsKey(path))
             {
                 Parts.Remove(path);
-                OnPartsChange?.Invoke(path, false);
+                OnPartsChange.Invoke(path, false);
             }
         }
 
-        void OnTuneFileChanged(string path, string root)
+        async UniTaskVoid OnTuneFileChanged(string path, string root)
         {
-            if (!Tunes.ContainsKey(path))
-            {
-                if (Serializer.Load(path, out Tune result) && result != null)
-                {
-                    Tunes.Add(path, result);
-                    OnTunesChange?.Invoke(path, true);
-                }
-            }
+            await UniTask.Yield(PlayerLoopTiming.EarlyUpdate);
+            await UniTask.SwitchToMainThread();
+            TunesFileQueue.Add(path);
         }
 
-        void OnTuneDeleted(string path, string root)
+        async UniTaskVoid OnTuneDeleted(string path, string root)
         {
+            await UniTask.Yield(PlayerLoopTiming.EarlyUpdate);
+            await UniTask.SwitchToMainThread();
+
+            if (TunesFileQueue.Contains(path)) TunesFileQueue.Remove(path);
+
             if (Tunes.ContainsKey(path))
             {
                 Tunes.Remove(path);
-                OnTunesChange?.Invoke(path, false);
+                OnTunesChange.Invoke(path, false);
             }
         }
 
-        void OnCartridgeFileChanged(string path, string root)
+        async UniTaskVoid OnCartridgeFileChanged(string path, string root)
         {
-            if (!Cartridges.ContainsKey(path))
-            {
-                if (Serializer.Load(path, out Cartridge result) && result != null)
-                {
-                    Cartridges.Add(path, result);
-                    OnCartridgesChange?.Invoke(path, true);
-                }
-            }
+            await UniTask.Yield(PlayerLoopTiming.EarlyUpdate);
+            await UniTask.SwitchToMainThread();
+            CartridgesFileQueue.Add(path);
         }
 
-        void OnCartridgeDeleted(string path, string root)
+        async UniTaskVoid OnCartridgeDeleted(string path, string root)
         {
+            await UniTask.Yield(PlayerLoopTiming.EarlyUpdate);
+            await UniTask.SwitchToMainThread();
+
+            if (CartridgesFileQueue.Contains(path)) CartridgesFileQueue.Remove(path);
+
             if (Cartridges.ContainsKey(path))
             {
                 Cartridges.Remove(path);
-                OnCartridgesChange?.Invoke(path, false);
+                OnCartridgesChange.Invoke(path, false);
             }
         }
         #endregion
 
         #region Serialization
+        async UniTaskVoid BuildsFileLoaderAsync()
+        {
+            while (true)
+            {
+                await UniTask.Yield(PlayerLoopTiming.Update);
+                await UniTask.SwitchToMainThread();
+
+                if (BuildsFileQueue.Count > 0)
+                {
+                    string path = BuildsFileQueue.First();
+                    if (!Builds.ContainsKey(path))
+                    {
+                        (bool, Contraption) result = await Serializer.LoadAsync<Contraption>(path);
+                        await UniTask.SwitchToMainThread();
+                        if (BuildsFileQueue.Contains(path))
+                        {
+                            if (result.Item1 && result.Item2 != null)
+                            {
+                                Builds.Add(path, result.Item2);
+                                OnBuildsChange.Invoke(path, true);
+                                if (BuildsFileQueue.Count <= 1) OnBuildsFinish.Invoke();
+                            }
+                        }
+                    }
+                    BuildsFileQueue.Remove(path);
+                }
+            }
+        }
+
+        async UniTaskVoid PartsFileLoaderAsync()
+        {
+            while(true)
+            {
+                await UniTask.Yield(PlayerLoopTiming.Update);
+                await UniTask.SwitchToMainThread();
+
+                if(PartsFileQueue.Count > 0)
+                {
+                    string path = PartsFileQueue.First();
+                    if (!Parts.ContainsKey(path))
+                    {
+                        (bool, Contraption) result = await Serializer.LoadAsync<Contraption>(path);
+                        await UniTask.SwitchToMainThread();
+                        if (PartsFileQueue.Contains(path))
+                        {
+                            if (result.Item1 && result.Item2 != null)
+                            {
+                                Parts.Add(path, result.Item2);
+                                OnPartsChange.Invoke(path, true);
+                                if (PartsFileQueue.Count <= 1) OnPartsFinish.Invoke();
+                            }
+                        }
+                    }
+                    PartsFileQueue.Remove(path);
+                }
+            }
+        }
+
+        async UniTaskVoid TunesFileLoaderAsync()
+        {
+            while (true)
+            {
+                await UniTask.Yield(PlayerLoopTiming.Update);
+                await UniTask.SwitchToMainThread();
+
+                if (TunesFileQueue.Count > 0)
+                {
+                    string path = TunesFileQueue.First();
+                    if (!Tunes.ContainsKey(path))
+                    {
+                        (bool, Tune) result = await Serializer.LoadAsync<Tune>(path);
+                        await UniTask.SwitchToMainThread();
+                        if (TunesFileQueue.Contains(path))
+                        {
+                            if (result.Item1 && result.Item2 != null)
+                            {
+                                Tunes.Add(path, result.Item2);
+                                OnTunesChange.Invoke(path, true);
+                                if (TunesFileQueue.Count <= 1) OnTunesFinish.Invoke();
+                            }
+                        }
+                    }
+                    TunesFileQueue.Remove(path);
+                }
+            }
+        }
+
+        async UniTaskVoid CartridgesFileLoaderAsync()
+        {
+            while (true)
+            {
+                await UniTask.Yield(PlayerLoopTiming.Update);
+                await UniTask.SwitchToMainThread();
+
+                if (CartridgesFileQueue.Count > 0)
+                {
+                    string path = CartridgesFileQueue.First();
+                    if (!Cartridges.ContainsKey(path))
+                    {
+                        (bool, Cartridge) result = await Serializer.LoadAsync<Cartridge>(path);
+                        await UniTask.SwitchToMainThread();
+                        if (CartridgesFileQueue.Contains(path))
+                        {
+                            if (result.Item1 && result.Item2 != null)
+                            {
+                                Cartridges.Add(path, result.Item2);
+                                OnCartridgesChange.Invoke(path, true);
+                                if (CartridgesFileQueue.Count <= 1) OnCartridgesFinish.Invoke();
+                            }
+                        }
+                    }
+                    CartridgesFileQueue.Remove(path);
+                }
+            }
+        }
+
         public void NewFile()
         {
             switch (SaveState)
@@ -535,26 +673,26 @@ namespace CB.Calculator
         #region Utils
         public void SetListeners()
         {
-            BuildWatcher.OnFileChanged += OnBuildFileChanged;
-            BuildWatcher.OnDeleted += OnBuildDeleted;
-            PartWatcher.OnFileChanged += OnPartFileChanged;
-            PartWatcher.OnDeleted += OnPartDeleted;
-            TuneWatcher.OnFileChanged += OnTuneFileChanged;
-            TuneWatcher.OnDeleted += OnTuneDeleted;
-            CartridgeWatcher.OnFileChanged += OnCartridgeFileChanged;
-            CartridgeWatcher.OnDeleted += OnCartridgeDeleted;
+            BuildWatcher.OnFileChanged += (path, root) => OnBuildFileChanged(path, root).Forget();
+            BuildWatcher.OnDeleted += (path, root) => OnBuildDeleted(path, root).Forget();
+            PartWatcher.OnFileChanged += (path, root) => OnPartFileChanged(path, root).Forget();
+            PartWatcher.OnDeleted += (path, root) => OnPartDeleted(path, root).Forget();
+            TuneWatcher.OnFileChanged += (path, root) => OnTuneFileChanged(path, root).Forget();
+            TuneWatcher.OnDeleted += (path, root) => OnTuneDeleted(path, root).Forget();
+            CartridgeWatcher.OnFileChanged += (path, root) => OnCartridgeFileChanged(path, root).Forget();
+            CartridgeWatcher.OnDeleted += (path, root) => OnCartridgeDeleted(path, root).Forget();
         }
 
         public void UnsetListeners()
         {
-            BuildWatcher.OnFileChanged -= OnBuildFileChanged;
-            BuildWatcher.OnDeleted -= OnBuildDeleted;
-            PartWatcher.OnFileChanged -= OnPartFileChanged;
-            PartWatcher.OnDeleted -= OnPartDeleted;
-            TuneWatcher.OnFileChanged -= OnTuneFileChanged;
-            TuneWatcher.OnDeleted -= OnTuneDeleted;
-            CartridgeWatcher.OnFileChanged -= OnCartridgeFileChanged;
-            CartridgeWatcher.OnDeleted -= OnCartridgeDeleted;
+            BuildWatcher.OnFileChanged -= (path, root) => OnBuildFileChanged(path, root).Forget();
+            BuildWatcher.OnDeleted -= (path, root) => OnBuildDeleted(path, root).Forget();
+            PartWatcher.OnFileChanged -= (path, root) => OnPartFileChanged(path, root).Forget();
+            PartWatcher.OnDeleted -= (path, root) => OnPartDeleted(path, root).Forget();
+            TuneWatcher.OnFileChanged -= (path, root) => OnTuneFileChanged(path, root).Forget();
+            TuneWatcher.OnDeleted -= (path, root) => OnTuneDeleted(path, root).Forget();
+            CartridgeWatcher.OnFileChanged -= (path, root) => OnCartridgeFileChanged(path, root).Forget();
+            CartridgeWatcher.OnDeleted -= (path, root) => OnCartridgeDeleted(path, root).Forget();
         }
 
         public void SetSaveState(int state)

@@ -13,7 +13,7 @@ namespace CB.Calculator
     public class PartJoint
     {
         /*Enums*/
-        public enum JointType { BD, LG, HD, HAC, FAC, AM, BS, WP, WB }
+        public enum JointType { BD, LG, HD, HAC, FAC, AM, BS, WP, WB, Count }
 
         /*Configuration*/
         [Key(0)]

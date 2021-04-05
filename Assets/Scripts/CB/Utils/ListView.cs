@@ -16,6 +16,8 @@ namespace CB.Utils
             public RectTransform Mask;
             public RectTransform Template;
         }
+
+        public enum SortType { None, Descending, Ascending };
         #endregion
     }
 }

@@ -15,8 +15,8 @@ namespace CB.Calculator
     public class Part
     {
         /*Enums*/
-        public enum BDType { Lnd, Air, Art, Sup };
-        public enum SizeType { None, SS, S, M, L, LL};
+        public enum BDType { Lnd, Air, Art, Sup, Count };
+        public enum SizeType { None, SS, S, M, L, LL, Count };
 
         /*Configuration*/
         [Key(0)]
