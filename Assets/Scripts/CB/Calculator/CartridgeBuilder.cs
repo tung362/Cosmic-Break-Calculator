@@ -21,6 +21,11 @@ namespace CB.Calculator
         //Set to true when you want events to be ignored (For loading settings without triggering edits)
         public bool IgnoreEvents = false;
 
+        public void Init()
+        {
+
+        }
+
         void Start()
         {
             //Event callback

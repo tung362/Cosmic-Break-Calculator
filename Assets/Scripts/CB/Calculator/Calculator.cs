@@ -143,7 +143,7 @@ namespace CB.Calculator
         void OnEnable()
         {
             if (!instance) instance = this;
-            else Debug.Log("Warning! Multiple instances of \"Calculator\"");
+            else Debug.LogWarning("Warning! Multiple instances of \"Calculator\"");
         }
 
         void Awake()
@@ -219,6 +219,11 @@ namespace CB.Calculator
             //List view
             PartLibrary.Init();
             PartLibrary.SetListeners(OnPartsChange, OnPartsFinish);
+            //Builder
+            //CustomBuildBuilder.Init();
+            CustomPartBuilder.Init();
+            CustomTuneBuilder.Init();
+            CustomCartridgeBuilder.Init();
             //Outline
             //BuildOutline.SetListeners(BuildWatcher);
             //PartOutline.SetListeners(PartWatcher);
@@ -341,18 +346,19 @@ namespace CB.Calculator
                 if (BuildsFileQueue.Count > 0)
                 {
                     string path = BuildsFileQueue.First();
-                    if (!Builds.ContainsKey(path))
+                    (bool, Contraption) result = await Serializer.LoadAsync<Contraption>(path);
+                    await UniTask.SwitchToMainThread();
+                    //Recheck queue
+                    if (BuildsFileQueue.Contains(path))
                     {
-                        (bool, Contraption) result = await Serializer.LoadAsync<Contraption>(path);
-                        await UniTask.SwitchToMainThread();
-                        if (BuildsFileQueue.Contains(path))
+                        //If check load was successful
+                        if (result.Item1 && result.Item2 != null)
                         {
-                            if (result.Item1 && result.Item2 != null)
-                            {
-                                Builds.Add(path, result.Item2);
-                                OnBuildsChange.Invoke(path, true);
-                                if (BuildsFileQueue.Count <= 1) OnBuildsFinish.Invoke();
-                            }
+                            //Add or update
+                            if (!Builds.ContainsKey(path)) Builds.Add(path, result.Item2);
+                            else Builds[path] = result.Item2;
+                            OnBuildsChange.Invoke(path, true);
+                            if (BuildsFileQueue.Count <= 1) OnBuildsFinish.Invoke();
                         }
                     }
                     BuildsFileQueue.Remove(path);
@@ -370,18 +376,19 @@ namespace CB.Calculator
                 if(PartsFileQueue.Count > 0)
                 {
                     string path = PartsFileQueue.First();
-                    if (!Parts.ContainsKey(path))
+                    (bool, Contraption) result = await Serializer.LoadAsync<Contraption>(path);
+                    await UniTask.SwitchToMainThread();
+                    //Recheck queue
+                    if (PartsFileQueue.Contains(path))
                     {
-                        (bool, Contraption) result = await Serializer.LoadAsync<Contraption>(path);
-                        await UniTask.SwitchToMainThread();
-                        if (PartsFileQueue.Contains(path))
+                        //If check load was successful
+                        if (result.Item1 && result.Item2 != null)
                         {
-                            if (result.Item1 && result.Item2 != null)
-                            {
-                                Parts.Add(path, result.Item2);
-                                OnPartsChange.Invoke(path, true);
-                                if (PartsFileQueue.Count <= 1) OnPartsFinish.Invoke();
-                            }
+                            //Add or update
+                            if (!Parts.ContainsKey(path)) Parts.Add(path, result.Item2);
+                            else Parts[path] = result.Item2;
+                            OnPartsChange.Invoke(path, true);
+                            if (PartsFileQueue.Count <= 1) OnPartsFinish.Invoke();
                         }
                     }
                     PartsFileQueue.Remove(path);
@@ -399,18 +406,19 @@ namespace CB.Calculator
                 if (TunesFileQueue.Count > 0)
                 {
                     string path = TunesFileQueue.First();
-                    if (!Tunes.ContainsKey(path))
+                    (bool, Tune) result = await Serializer.LoadAsync<Tune>(path);
+                    await UniTask.SwitchToMainThread();
+                    //Recheck queue
+                    if (TunesFileQueue.Contains(path))
                     {
-                        (bool, Tune) result = await Serializer.LoadAsync<Tune>(path);
-                        await UniTask.SwitchToMainThread();
-                        if (TunesFileQueue.Contains(path))
+                        //If check load was successful
+                        if (result.Item1 && result.Item2 != null)
                         {
-                            if (result.Item1 && result.Item2 != null)
-                            {
-                                Tunes.Add(path, result.Item2);
-                                OnTunesChange.Invoke(path, true);
-                                if (TunesFileQueue.Count <= 1) OnTunesFinish.Invoke();
-                            }
+                            //Add or update
+                            if (!Tunes.ContainsKey(path)) Tunes.Add(path, result.Item2);
+                            else Tunes[path] = result.Item2;
+                            OnTunesChange.Invoke(path, true);
+                            if (TunesFileQueue.Count <= 1) OnTunesFinish.Invoke();
                         }
                     }
                     TunesFileQueue.Remove(path);
@@ -428,18 +436,19 @@ namespace CB.Calculator
                 if (CartridgesFileQueue.Count > 0)
                 {
                     string path = CartridgesFileQueue.First();
-                    if (!Cartridges.ContainsKey(path))
+                    (bool, Cartridge) result = await Serializer.LoadAsync<Cartridge>(path);
+                    await UniTask.SwitchToMainThread();
+                    //Recheck queue
+                    if (CartridgesFileQueue.Contains(path))
                     {
-                        (bool, Cartridge) result = await Serializer.LoadAsync<Cartridge>(path);
-                        await UniTask.SwitchToMainThread();
-                        if (CartridgesFileQueue.Contains(path))
+                        //If check load was successful
+                        if (result.Item1 && result.Item2 != null)
                         {
-                            if (result.Item1 && result.Item2 != null)
-                            {
-                                Cartridges.Add(path, result.Item2);
-                                OnCartridgesChange.Invoke(path, true);
-                                if (CartridgesFileQueue.Count <= 1) OnCartridgesFinish.Invoke();
-                            }
+                            //Add or update
+                            if (!Cartridges.ContainsKey(path)) Cartridges.Add(path, result.Item2);
+                            else Cartridges[path] = result.Item2;
+                            OnCartridgesChange.Invoke(path, true);
+                            if (CartridgesFileQueue.Count <= 1) OnCartridgesFinish.Invoke();
                         }
                     }
                     CartridgesFileQueue.Remove(path);

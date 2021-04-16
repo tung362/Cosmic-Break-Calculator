@@ -17,7 +17,7 @@ namespace CB.Calculator.UI
         void OnEnable()
         {
             if (!instance) instance = this;
-            else Debug.Log("Warning! Multiple instances of \"UIHintBind\"");
+            else Debug.LogWarning("Warning! Multiple instances of \"UIHintBind\"");
         }
 
         #region Utils

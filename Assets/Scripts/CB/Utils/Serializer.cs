@@ -23,7 +23,7 @@ namespace CB.Utils
                 }
                 catch (MessagePackSerializationException)
                 {
-                    Debug.Log("Error! Failed to load, file may be corrupted! | Path: \"" + path + "\" | Type: \"" + typeof(T) + "\"");
+                    Debug.LogError("Error! Failed to load, file may be corrupted! | Path: \"" + path + "\" | Type: \"" + typeof(T) + "\"");
                     result = default;
                 }
                 stream.Close();
@@ -44,7 +44,7 @@ namespace CB.Utils
             }
             catch (MessagePackSerializationException)
             {
-                Debug.Log("Error! Failed to save, type not compatible with MessagePack! | Path: \"" + path + "\" | Type: \"" + typeof(T) + "\"");
+                Debug.LogError("Error! Failed to save, type not compatible with MessagePack! | Path: \"" + path + "\" | Type: \"" + typeof(T) + "\"");
             }
             stream.Close();
         }
@@ -61,7 +61,7 @@ namespace CB.Utils
                 }
                 catch (MessagePackSerializationException)
                 {
-                    Debug.Log("Error! Failed to load, file may be corrupted! | Path: \"" + path + "\" | Type: \"" + typeof(T) + "\"");
+                    Debug.LogError("Error! Failed to load, file may be corrupted! | Path: \"" + path + "\" | Type: \"" + typeof(T) + "\"");
                 }
                 stream.Close();
 
@@ -80,7 +80,7 @@ namespace CB.Utils
             }
             catch (MessagePackSerializationException)
             {
-                Debug.Log("Error! Failed to save, type not compatible with MessagePack! | Path: \"" + path + "\" | Type: \"" + typeof(T) + "\"");
+                Debug.LogError("Error! Failed to save, type not compatible with MessagePack! | Path: \"" + path + "\" | Type: \"" + typeof(T) + "\"");
             }
             stream.Close();
         }

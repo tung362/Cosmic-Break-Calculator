@@ -23,7 +23,7 @@ namespace CB.UI
         void OnEnable()
         {
             if (!instance) instance = this;
-            else Debug.Log("Warning! Multiple instances of \"WindowResizeEvent\"");
+            else Debug.LogWarning("Warning! Multiple instances of \"WindowResizeEvent\"");
         }
 
         void LateUpdate()

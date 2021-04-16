@@ -24,12 +24,12 @@ namespace CB.Calculator
         public RectTransform ItemTemplate;
         public RectTransform ItemContent;
         public RectTransform ItemContainer;
-        public List<ListView.ItemField> PoolTemplate = new List<ListView.ItemField>();
+        public List<ListViewUtils.ItemField> PoolTemplate = new List<ListViewUtils.ItemField>();
         public float Offset = 31.0f;
         public float ScrollBarOffset = 7.0f;
 
         /*Callbacks*/
-        public event Action<Contraption> OnPreview;
+        public event Action<string> OnPreview;
 
         /*Cache*/
         private List<IPool<string>> Pool = new List<IPool<string>>();
@@ -55,7 +55,11 @@ namespace CB.Calculator
         #region Listeners
         void OnPartsChange(string path, bool changed)
         {
-            if (changed) AddItem(path);
+            if (changed)
+            {
+                if(PreviewPath == path) OnPreview?.Invoke(path);
+                AddItem(path);
+            }
             else RemoveItem(path);
         }
 
@@ -84,7 +88,7 @@ namespace CB.Calculator
             if (Calculator.instance.Parts.ContainsKey(path))
             {
                 PreviewPath = path;
-                OnPreview?.Invoke(Calculator.instance.Parts[path]);
+                OnPreview?.Invoke(path);
             }
         }
         #endregion
@@ -213,8 +217,9 @@ namespace CB.Calculator
 
         public void ResetPreview()
         {
+            PreviewPath = "";
             //Event callback
-            OnPreview?.Invoke(null);
+            OnPreview?.Invoke(PreviewPath);
         }
 
         public void UpdateHeaderContent()
@@ -259,7 +264,7 @@ namespace CB.Calculator
             }
             if(!string.IsNullOrEmpty(SearchText))
             {
-                if (!Path.GetFileNameWithoutExtension(path).Contains(SearchText)) return false;
+                if (!Path.GetFileNameWithoutExtension(path).ToLowerInvariant().Contains(SearchText.ToLowerInvariant())) return false;
             }
             return true;
         }
@@ -511,105 +516,105 @@ namespace CB.Calculator
         #region Sort Editing
         public void SortName(int num)
         {
-            Sorter.Name = (ListView.SortType)num;
+            Sorter.Name = (ListViewUtils.SortType)num;
             SortItems();
             UpdatePool();
         }
 
         public void SortCOST(int num)
         {
-            Sorter.COST = (ListView.SortType)num;
+            Sorter.COST = (ListViewUtils.SortType)num;
             SortItems();
             UpdatePool();
         }
 
         public void SortCAPA(int num)
         {
-            Sorter.CAPA = (ListView.SortType)num;
+            Sorter.CAPA = (ListViewUtils.SortType)num;
             SortItems();
             UpdatePool();
         }
 
         public void SortHP(int num)
         {
-            Sorter.HP = (ListView.SortType)num;
+            Sorter.HP = (ListViewUtils.SortType)num;
             SortItems();
             UpdatePool();
         }
 
         public void SortSTR(int num)
         {
-            Sorter.STR = (ListView.SortType)num;
+            Sorter.STR = (ListViewUtils.SortType)num;
             SortItems();
             UpdatePool();
         }
 
         public void SortTEC(int num)
         {
-            Sorter.TEC = (ListView.SortType)num;
+            Sorter.TEC = (ListViewUtils.SortType)num;
             SortItems();
             UpdatePool();
         }
 
         public void SortWLK(int num)
         {
-            Sorter.WLK = (ListView.SortType)num;
+            Sorter.WLK = (ListViewUtils.SortType)num;
             SortItems();
             UpdatePool();
         }
 
         public void SortFLY(int num)
         {
-            Sorter.FLY = (ListView.SortType)num;
+            Sorter.FLY = (ListViewUtils.SortType)num;
             SortItems();
             UpdatePool();
         }
 
         public void SortTGH(int num)
         {
-            Sorter.TGH = (ListView.SortType)num;
+            Sorter.TGH = (ListViewUtils.SortType)num;
             SortItems();
             UpdatePool();
         }
 
         public void SortJointType(int num)
         {
-            Sorter.JointType = (ListView.SortType)num;
+            Sorter.JointType = (ListViewUtils.SortType)num;
             SortItems();
             UpdatePool();
         }
 
         public void SortSize(int num)
         {
-            Sorter.Size = (ListView.SortType)num;
+            Sorter.Size = (ListViewUtils.SortType)num;
             SortItems();
             UpdatePool();
         }
 
         public void SortMaxLevel(int num)
         {
-            Sorter.MaxLevel = (ListView.SortType)num;
+            Sorter.MaxLevel = (ListViewUtils.SortType)num;
             SortItems();
             UpdatePool();
         }
 
         public void SortExTune(int num)
         {
-            Sorter.ExTune = (ListView.SortType)num;
+            Sorter.ExTune = (ListViewUtils.SortType)num;
             SortItems();
             UpdatePool();
         }
 
         public void SortLocation(int num)
         {
-            Sorter.Location = (ListView.SortType)num;
+            Sorter.Location = (ListViewUtils.SortType)num;
             SortItems();
             UpdatePool();
         }
 
         public void SortDate(int num)
         {
-            Sorter.Date = (ListView.SortType)num;
+            Sorter.Date = (ListViewUtils.SortType)num;
             SortItems();
             UpdatePool();
         }

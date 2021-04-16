@@ -32,7 +32,7 @@ namespace CB.Calculator
         //Set to true when you want events to be ignored (For loading settings without triggering edits)
         public bool IgnoreEvents = false;
 
-        void Start()
+        public void Init()
         {
             //Create the root joint
             Root.Slot = new PartJoint();
@@ -41,6 +41,10 @@ namespace CB.Calculator
             Root.AddSlotButtonText.color = DefaultColors.Name;
             Root.RemoveSlotButton.interactable = false;
             Root.RemoveSlotButtonText.color = DefaultColors.Name;
+        }
+
+        void Start()
+        {
             //Event callback
             OnRedraw?.Invoke(EditSlot);
         }

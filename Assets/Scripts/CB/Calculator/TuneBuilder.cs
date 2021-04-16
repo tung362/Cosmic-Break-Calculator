@@ -28,6 +28,11 @@ namespace CB.Calculator
         public bool IgnoreEvents = false;
         private List<CraftMaterialSlot> MaterialSlots = new List<CraftMaterialSlot>();
 
+        public void Init()
+        {
+
+        }
+
         void Start()
         {
             OnRedraw?.Invoke(AssembledData);

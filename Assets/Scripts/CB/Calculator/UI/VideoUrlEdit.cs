@@ -50,7 +50,7 @@ namespace CB.Calculator.UI
             int index = UrlSlots.IndexOf(slot);
             if(index < 0)
             {
-                Debug.Log("Warning! Slot is not in the list, this should not happen! \"RemoveSlot()\" @VideoUrlEdit");
+                Debug.LogWarning("Warning! Slot is not in the list, this should not happen! \"RemoveSlot()\" @VideoUrlEdit");
                 return;
             }
 
