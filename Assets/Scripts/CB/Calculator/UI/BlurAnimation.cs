@@ -12,6 +12,7 @@ namespace CB.Calculator.UI
     public class BlurAnimation : MonoBehaviour
     {
         public Animator AnimatorBind;
+        public Image ImageBind;
         public float Radius = 0.0f;
         public bool UpdateAnimation = false;
 
@@ -19,15 +20,32 @@ namespace CB.Calculator.UI
         public UnityEvent OnTransitionIn = new UnityEvent();
         public UnityEvent OnTransitionOut = new UnityEvent();
 
+        /*Cache*/
+        private Material BlurInstance;
+
+        void Start()
+        {
+            if(!BlurInstance)
+            {
+                BlurInstance = new Material(Calculator.instance.BlurMaterial);
+                ImageBind.material = BlurInstance;
+            }
+        }
+
         void Update()
         {
-            if (UpdateAnimation) Calculator.instance.BlurMaterial.SetFloat("_Radius", Radius);
+            if (UpdateAnimation) BlurInstance.SetFloat("_Radius", Radius);
+        }
+
+        void OnDestroy()
+        {
+            Destroy(BlurInstance);
         }
 
         public void SetRadius(int radius)
         {
             Radius = radius;
-            Calculator.instance.BlurMaterial.SetFloat("_Radius", Radius);
+            BlurInstance.SetFloat("_Radius", Radius);
         }
 
         public void BeginTransition(bool transitionIn)

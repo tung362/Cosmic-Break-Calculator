@@ -15,6 +15,9 @@ namespace CB.Utils
     public class StringBoolEvent : UnityEvent<string, bool> { }
 
     [System.Serializable]
+    public class FloatStringEvent : UnityEvent<float, string> { }
+
+    [System.Serializable]
     public class ColorEvent : UnityEvent<Color> { }
 
     [System.Serializable]

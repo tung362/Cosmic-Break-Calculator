@@ -53,23 +53,6 @@ namespace CB.Calculator
         }
 
         #region Listeners
-        void OnPartsChange(string path, bool changed)
-        {
-            if (changed)
-            {
-                if(PreviewPath == path) OnPreview?.Invoke(path);
-                AddItem(path);
-            }
-            else RemoveItem(path);
-        }
-
-        void OnPartsFinish()
-        {
-            SortItems();
-            UpdateItemContent();
-            UpdatePool();
-        }
-
         void Select(bool toggle, string path)
         {
             if (toggle)
@@ -94,6 +77,23 @@ namespace CB.Calculator
         #endregion
 
         #region Creation And Removal
+        public void OnPartsChange(string path, bool changed)
+        {
+            if (changed)
+            {
+                if (PreviewPath == path) OnPreview?.Invoke(path);
+                AddItem(path);
+            }
+            else RemoveItem(path);
+        }
+
+        public void OnPartsFinish()
+        {
+            SortItems();
+            UpdateItemContent();
+            UpdatePool();
+        }
+
         public void RecalculatePool()
         {
             int poolCount = Mathf.CeilToInt(ItemTemplate.rect.height / Mathf.Abs(Offset)) + 1;
@@ -235,12 +235,6 @@ namespace CB.Calculator
         #endregion
 
         #region Utils
-        public void SetListeners(StringBoolEvent changeHandler, UnityEvent finishHandler)
-        {
-            changeHandler.AddListener((path, changed) => OnPartsChange(path, changed));
-            finishHandler.AddListener(() => OnPartsFinish());
-        }
-
         bool CheckFilter(string path)
         {
             if (!Calculator.instance.Parts.ContainsKey(path)) return false;
