@@ -410,8 +410,7 @@ namespace CB.Calculator
                 if(PartsFileQueue.Count > 0)
                 {
                     string path = PartsFileQueue.First();
-                    Debug.Log(1.0f - (PartsFileQueue.Count / (float)PartsQueueTotalCount));
-                    OnPartsProgressChange.Invoke(1.0f - (PartsFileQueue.Count / PartsQueueTotalCount), path);
+                    OnPartsProgressChange.Invoke(1.0f - (PartsFileQueue.Count / (float)PartsQueueTotalCount), path);
                     (bool, Contraption) result = await Serializer.LoadAsync<Contraption>(path);
                     await UniTask.SwitchToMainThread();
                     //Recheck queue
