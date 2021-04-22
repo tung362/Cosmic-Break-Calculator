@@ -11,6 +11,8 @@
 
         SubShader
         {
+            ZWrite Off
+
             GrabPass
             {
                 Tags{ "LightMode" = "Always" }

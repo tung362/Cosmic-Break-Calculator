@@ -18,5 +18,4 @@ namespace CB.UI
             Events.Invoke();
         }
     }
-
 }

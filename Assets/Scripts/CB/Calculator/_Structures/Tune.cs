@@ -27,7 +27,7 @@ namespace CB.Calculator
         #endregion
 
         /*Enums*/
-        public enum RequirementType { BD, LG, HD, HAC, FAC, AM, BS, WP, WB, Main, Sub }
+        public enum RequirementType { BD, LG, HD, HAC, FAC, AM, BS, WP, WB, Main, Sub, Count }
 
         /*Configuration*/
         [Key(0)]

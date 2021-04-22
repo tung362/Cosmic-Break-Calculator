@@ -11,6 +11,13 @@ namespace CB.Calculator.UI
     /// </summary>
     public class BlurAnimation : MonoBehaviour
     {
+        #region Format
+        public class StateParams
+        {
+            public bool TransitionIn;
+        }
+        #endregion
+
         public Animator AnimatorBind;
         public Image ImageBind;
         public float Radius = 0.0f;
@@ -22,6 +29,16 @@ namespace CB.Calculator.UI
 
         /*Cache*/
         private Material BlurInstance;
+        private StateParams StateQueue; //The state to take when re-enabled if there was a state change request when disabled
+
+        void OnEnable()
+        {
+            if(StateQueue != null)
+            {
+                BeginTransition(StateQueue.TransitionIn);
+                StateQueue = null;
+            }
+        }
 
         void Start()
         {
@@ -30,6 +47,7 @@ namespace CB.Calculator.UI
                 BlurInstance = new Material(Calculator.instance.BlurMaterial);
                 ImageBind.material = BlurInstance;
             }
+            AnimatorBind.keepAnimatorControllerStateOnDisable = true;
         }
 
         void Update()
@@ -50,8 +68,18 @@ namespace CB.Calculator.UI
 
         public void BeginTransition(bool transitionIn)
         {
-            AnimatorBind.SetBool("TransitionIn", transitionIn);
-            AnimatorBind.SetTrigger("Transition");
+            if(!gameObject.activeInHierarchy)
+            {
+                StateQueue = new StateParams
+                {
+                    TransitionIn = transitionIn
+                };
+            }
+            else
+            {
+                AnimatorBind.SetBool("TransitionIn", transitionIn);
+                AnimatorBind.SetTrigger("Transition");
+            }
         }
 
         public void InvokeOnTransitionIn()

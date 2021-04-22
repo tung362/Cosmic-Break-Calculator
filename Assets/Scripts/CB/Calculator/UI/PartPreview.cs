@@ -14,11 +14,15 @@ namespace CB.Calculator.UI
     /// </summary>
     public class PartPreview : MonoBehaviour
     {
-        public PartListView ListView;
+        /*Enum*/
+        public enum PreviewType { Build, Part };
+
+        public BuildListView BuildListView;
+        public PartListView PartListView;
         public UIEnableSectionFitTrigger TabFitter;
         public UIEnableSectionFitTrigger ListViewSectionFitter;
-        public RectTransform Tab;
-        public PartBuilder Builder;
+        public RectTransform BuildTab;
+        public RectTransform PartTab;
         public RectTransform CartridgeContent;
         public PreviewCartridgeSlot CartridgeSlotTemplate;
         public Color CartridgeOnColor;
@@ -53,18 +57,21 @@ namespace CB.Calculator.UI
         /*Cache*/
         private string CurrentPreviewPath = "";
         private List<PreviewCartridgeSlot> CartridgeSlots = new List<PreviewCartridgeSlot>();
+        private PreviewType PreviewState = PreviewType.Build;
 
         void OnEnable()
         {
-            //Set listener
-            ListView.OnPreview += OnPreview;
+            //Set listeners
+            BuildListView.OnPreview += OnPreview;
+            PartListView.OnPreview += OnPreview;
             OnPreview("");
         }
 
         void OnDisable()
         {
-            //Unset listener
-            ListView.OnPreview -= OnPreview;
+            //Unset listeners
+            BuildListView.OnPreview -= OnPreview;
+            PartListView.OnPreview -= OnPreview;
         }
 
         void OnPreview(string path)
@@ -72,9 +79,30 @@ namespace CB.Calculator.UI
             CurrentPreviewPath = path;
             if (!string.IsNullOrEmpty(path))
             {
-                if(Calculator.instance.Parts.ContainsKey(path))
+                bool keyCheck = false;
+                Contraption contraption = null;
+                switch (PreviewState)
                 {
-                    Contraption contraption = Calculator.instance.Parts[path];
+                    case PreviewType.Build:
+                        if (Calculator.instance.Builds.ContainsKey(path))
+                        {
+                            keyCheck = true;
+                            contraption = Calculator.instance.Builds[path];
+                        }
+                        break;
+                    case PreviewType.Part:
+                        if (Calculator.instance.Parts.ContainsKey(path))
+                        {
+                            keyCheck = true;
+                            contraption = Calculator.instance.Parts[path];
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+                if (keyCheck)
+                {
                     PartSection.gameObject.SetActive(true);
                     NameBind.text = Path.GetFileNameWithoutExtension(path);
                     LocationBind.text = path;
@@ -188,14 +216,47 @@ namespace CB.Calculator.UI
         {
             if (!string.IsNullOrEmpty(CurrentPreviewPath))
             {
-                if (Calculator.instance.Parts.ContainsKey(CurrentPreviewPath))
+                bool keyCheck = false;
+                Contraption contraption = null;
+                RectTransform tab = null;
+                IBuilder<Contraption> builder = null;
+                switch (PreviewState)
                 {
-                    Tab.gameObject.SetActive(true);
-                    Builder.Load(ObjectCloner<Contraption>.Clone(Calculator.instance.Parts[CurrentPreviewPath]));
+                    case PreviewType.Build:
+                        if (Calculator.instance.Builds.ContainsKey(CurrentPreviewPath))
+                        {
+                            keyCheck = true;
+                            contraption = Calculator.instance.Builds[CurrentPreviewPath];
+                            tab = BuildTab;
+                            builder = Calculator.instance.CustomBuildBuilder;
+                        }
+                        break;
+                    case PreviewType.Part:
+                        if (Calculator.instance.Parts.ContainsKey(CurrentPreviewPath))
+                        {
+                            keyCheck = true;
+                            contraption = Calculator.instance.Parts[CurrentPreviewPath];
+                            tab = PartTab;
+                            builder = Calculator.instance.CustomPartBuilder;
+                        }
+                        break;
+                    default:
+                        break;
+                }
+
+                if (keyCheck)
+                {
+                    tab.gameObject.SetActive(true);
+                    builder.Load(ObjectCloner<Contraption>.Clone(contraption));
                     Calculator.instance.SaveLocations[Calculator.instance.SaveState] = CurrentPreviewPath;
                     Calculator.instance.FileNameInputField.text = Path.GetFileNameWithoutExtension(Calculator.instance.SaveLocations[Calculator.instance.SaveState]);
                 }
             }
+        }
+
+        public void SetPreviewState(int state)
+        {
+            PreviewState = (PreviewType)state;
         }
         #endregion
     }

@@ -18,7 +18,6 @@ namespace CB.Calculator.UI
 
         public void UpdateProgress(float progress, string path)
         {
-            if (!gameObject.activeInHierarchy) gameObject.SetActive(true);
             ProgressBar.UpdateProgress(progress);
             FileNameText.text = Path.GetFileNameWithoutExtension(path);
         }

@@ -66,5 +66,19 @@ namespace CB.UI
             }
         }
         #endregion
+        public void RemoveAllEmpty()
+        {
+            //Remove all unused
+            for (int i = 0; i < Regions.Count; i++)
+            {
+                if(!Regions[i].UITransform)
+                {
+                    Regions.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+        #region Utils
+        #endregion
     }
 }
