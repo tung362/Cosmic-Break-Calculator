@@ -38,13 +38,11 @@ namespace CB.Calculator
         private (HashSet<string>, List<string>) SortedItems = (new HashSet<string>(), new List<string>());
         private int TopIndex = 0;
         private string PreviewPath = "";
-        private Bitmask RequirementTypeFilter = new Bitmask();
         private string SearchText = "";
         private ListViewTuneSorter Sorter = new ListViewTuneSorter();
 
         public void Init()
         {
-            for (int i = 0; i < (int)Tune.RequirementType.Count; i++) RequirementTypeFilter.AddFlag(i);
             RecalculatePool();
         }
 
@@ -234,19 +232,6 @@ namespace CB.Calculator
         bool CheckFilter(string path)
         {
             if (!Calculator.instance.Tunes.ContainsKey(path)) return false;
-            bool match = false;
-            for (int i = 0; i < (int)Tune.RequirementType.Count; i++)
-            {
-                if (RequirementTypeFilter.HasFlag(i))
-                {
-                    if (Calculator.instance.Tunes[path].RequirementMask.HasFlag(i))
-                    {
-                        match = true;
-                        break;
-                    }
-                }
-            }
-            if (!match) return false;
             if (!string.IsNullOrEmpty(SearchText))
             {
                 if (!Path.GetFileNameWithoutExtension(path).ToLowerInvariant().Contains(SearchText.ToLowerInvariant())) return false;
@@ -318,105 +303,6 @@ namespace CB.Calculator
         #endregion
 
         #region Filter Editing
-        public void FilterBD(bool toggle)
-        {
-            if (toggle) RequirementTypeFilter.AddFlag((int)Tune.RequirementType.BD);
-            else RequirementTypeFilter.RemoveFlag((int)Tune.RequirementType.BD);
-            FilterItems(toggle);
-            UpdateItemContent();
-            UpdatePool();
-        }
-
-        public void FilterLG(bool toggle)
-        {
-            if (toggle) RequirementTypeFilter.AddFlag((int)Tune.RequirementType.LG);
-            else RequirementTypeFilter.RemoveFlag((int)Tune.RequirementType.LG);
-            FilterItems(toggle);
-            UpdateItemContent();
-            UpdatePool();
-        }
-
-        public void FilterHD(bool toggle)
-        {
-            if (toggle) RequirementTypeFilter.AddFlag((int)Tune.RequirementType.HD);
-            else RequirementTypeFilter.RemoveFlag((int)Tune.RequirementType.HD);
-            FilterItems(toggle);
-            UpdateItemContent();
-            UpdatePool();
-        }
-
-        public void FilterHAC(bool toggle)
-        {
-            if (toggle) RequirementTypeFilter.AddFlag((int)Tune.RequirementType.HAC);
-            else RequirementTypeFilter.RemoveFlag((int)Tune.RequirementType.HAC);
-            FilterItems(toggle);
-            UpdateItemContent();
-            UpdatePool();
-        }
-
-        public void FilterFAC(bool toggle)
-        {
-            if (toggle) RequirementTypeFilter.AddFlag((int)Tune.RequirementType.FAC);
-            else RequirementTypeFilter.RemoveFlag((int)Tune.RequirementType.FAC);
-            FilterItems(toggle);
-            UpdateItemContent();
-            UpdatePool();
-        }
-
-        public void FilterAM(bool toggle)
-        {
-            if (toggle) RequirementTypeFilter.AddFlag((int)Tune.RequirementType.AM);
-            else RequirementTypeFilter.RemoveFlag((int)Tune.RequirementType.AM);
-            FilterItems(toggle);
-            UpdateItemContent();
-            UpdatePool();
-        }
-
-        public void FilterBS(bool toggle)
-        {
-            if (toggle) RequirementTypeFilter.AddFlag((int)Tune.RequirementType.BS);
-            else RequirementTypeFilter.RemoveFlag((int)Tune.RequirementType.BS);
-            FilterItems(toggle);
-            UpdateItemContent();
-            UpdatePool();
-        }
-
-        public void FilterWP(bool toggle)
-        {
-            if (toggle) RequirementTypeFilter.AddFlag((int)Tune.RequirementType.WP);
-            else RequirementTypeFilter.RemoveFlag((int)Tune.RequirementType.WP);
-            FilterItems(toggle);
-            UpdateItemContent();
-            UpdatePool();
-        }
-
-        public void FilterWB(bool toggle)
-        {
-            if (toggle) RequirementTypeFilter.AddFlag((int)Tune.RequirementType.WB);
-            else RequirementTypeFilter.RemoveFlag((int)Tune.RequirementType.WB);
-            FilterItems(toggle);
-            UpdateItemContent();
-            UpdatePool();
-        }
-
-        public void FilterMain(bool toggle)
-        {
-            if (toggle) RequirementTypeFilter.AddFlag((int)Tune.RequirementType.Main);
-            else RequirementTypeFilter.RemoveFlag((int)Tune.RequirementType.Main);
-            FilterItems(toggle);
-            UpdateItemContent();
-            UpdatePool();
-        }
-
-        public void FilterSub(bool toggle)
-        {
-            if (toggle) RequirementTypeFilter.AddFlag((int)Tune.RequirementType.Sub);
-            else RequirementTypeFilter.RemoveFlag((int)Tune.RequirementType.Sub);
-            FilterItems(toggle);
-            UpdateItemContent();
-            UpdatePool();
-        }
-
         public void FilterSearch(string text)
         {
             SearchText = text;

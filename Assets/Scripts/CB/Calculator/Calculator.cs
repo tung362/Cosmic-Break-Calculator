@@ -102,6 +102,7 @@ namespace CB.Calculator
         public BuildListView BuildLibrary;
         public PartListView PartLibrary;
         public TuneListView TuneLibrary;
+        public CartridgeListView CartridgeLibrary;
         public PartBuilder CustomBuildBuilder;
         public PartBuilder CustomPartBuilder;
         public TuneBuilder CustomTuneBuilder;
@@ -242,6 +243,7 @@ namespace CB.Calculator
             BuildLibrary.Init();
             PartLibrary.Init();
             TuneLibrary.Init();
+            CartridgeLibrary.Init();
             //Builder
             //CustomBuildBuilder.Init();
             CustomPartBuilder.Init();

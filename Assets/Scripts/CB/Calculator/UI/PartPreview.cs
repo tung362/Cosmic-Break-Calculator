@@ -17,8 +17,8 @@ namespace CB.Calculator.UI
         /*Enum*/
         public enum PreviewType { Build, Part };
 
-        public BuildListView BuildListView;
-        public PartListView PartListView;
+        public BuildListView BuildLibrary;
+        public PartListView PartLibrary;
         public UIEnableSectionFitTrigger TabFitter;
         public UIEnableSectionFitTrigger ListViewSectionFitter;
         public RectTransform BuildTab;
@@ -30,6 +30,7 @@ namespace CB.Calculator.UI
 
         /*Binds*/
         [Header("Binds")]
+        public RectTransform PreviewSection;
         public RectTransform PartSection;
         public TMP_InputField NameBind;
         public TMP_InputField LocationBind;
@@ -62,16 +63,16 @@ namespace CB.Calculator.UI
         void OnEnable()
         {
             //Set listeners
-            BuildListView.OnPreview += OnPreview;
-            PartListView.OnPreview += OnPreview;
+            BuildLibrary.OnPreview += OnPreview;
+            PartLibrary.OnPreview += OnPreview;
             OnPreview("");
         }
 
         void OnDisable()
         {
             //Unset listeners
-            BuildListView.OnPreview -= OnPreview;
-            PartListView.OnPreview -= OnPreview;
+            BuildLibrary.OnPreview -= OnPreview;
+            PartLibrary.OnPreview -= OnPreview;
         }
 
         void OnPreview(string path)
@@ -103,6 +104,7 @@ namespace CB.Calculator.UI
 
                 if (keyCheck)
                 {
+                    PreviewSection.gameObject.SetActive(true);
                     PartSection.gameObject.SetActive(true);
                     NameBind.text = Path.GetFileNameWithoutExtension(path);
                     LocationBind.text = path;
@@ -123,9 +125,17 @@ namespace CB.Calculator.UI
                     ClearCartridgeSlots();
                     for (int i = 0; i < contraption.Cartridges.Count; i++) AddCartridgeSlot(contraption.Cartridges[i]);
                 }
-                else PartSection.gameObject.SetActive(false);
+                else
+                {
+                    PartSection.gameObject.SetActive(false);
+                    PreviewSection.gameObject.SetActive(false);
+                }
             }
-            else PartSection.gameObject.SetActive(false);
+            else
+            {
+                PartSection.gameObject.SetActive(false);
+                PreviewSection.gameObject.SetActive(false);
+            }
             TabFitter.Resize();
             ListViewSectionFitter.Resize();
         }
