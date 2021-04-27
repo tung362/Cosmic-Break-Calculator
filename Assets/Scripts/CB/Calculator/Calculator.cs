@@ -99,6 +99,7 @@ namespace CB.Calculator
         public Canvas RootCanvas;
         public TMP_InputField VersionInputField;
         public TMP_InputField FileNameInputField;
+        public AllListView AllLibrary;
         public BuildListView BuildLibrary;
         public PartListView PartLibrary;
         public TuneListView TuneLibrary;
@@ -127,25 +128,30 @@ namespace CB.Calculator
         public Color GrayscaleColor;
 
         /*Events*/
-        [Header("Builds Events")]
+        [Header("All Watcher Events")]
+        public UnityEvent OnAllBegin;
+        public FloatStringEvent OnAllProgressChange;
+        public UnityEvent OnAllFinish;
+
+        [Header("Builds Watcher Events")]
         public UnityEvent OnBuildsBegin;
         public StringBoolEvent OnBuildsChange;
         public FloatStringEvent OnBuildsProgressChange;
         public UnityEvent OnBuildsFinish;
 
-        [Header("Parts Events")]
+        [Header("Parts Watcher Events")]
         public UnityEvent OnPartsBegin;
         public StringBoolEvent OnPartsChange;
         public FloatStringEvent OnPartsProgressChange;
         public UnityEvent OnPartsFinish;
 
-        [Header("Tunes Events")]
+        [Header("Tunes Watcher Events")]
         public UnityEvent OnTunesBegin;
         public StringBoolEvent OnTunesChange;
         public FloatStringEvent OnTunesProgressChange;
         public UnityEvent OnTunesFinish;
 
-        [Header("Cartridges Events")]
+        [Header("Cartridges Watcher Events")]
         public UnityEvent OnCartridgesBegin;
         public StringBoolEvent OnCartridgesChange;
         public FloatStringEvent OnCartridgesProgressChange;
@@ -162,6 +168,10 @@ namespace CB.Calculator
         private int PartsQueueTotalCount = 0;
         private int TunesQueueTotalCount = 0;
         private int CartridgesQueueTotalCount = 0;
+        private bool BuildsLoadBegin = false;
+        private bool PartsLoadBegin = false;
+        private bool TunesLoadBegin = false;
+        private bool CartridgesLoadBegin = false;
 
         void OnEnable()
         {
@@ -240,6 +250,7 @@ namespace CB.Calculator
             //Proxy
             SetListeners();
             //List view
+            AllLibrary.Init();
             BuildLibrary.Init();
             PartLibrary.Init();
             TuneLibrary.Init();
@@ -383,7 +394,6 @@ namespace CB.Calculator
         #region Serialization
         async UniTaskVoid BuildsFileLoaderAsync()
         {
-            bool begin = false;
             while (true)
             {
                 await UniTask.Yield(PlayerLoopTiming.Update);
@@ -391,13 +401,17 @@ namespace CB.Calculator
 
                 if (BuildsFileQueue.Count > 0)
                 {
-                    if(!begin)
+                    if(!BuildsLoadBegin)
                     {
                         OnBuildsBegin.Invoke();
-                        begin = true;
+                        if (!PartsLoadBegin && !TunesLoadBegin && !CartridgesLoadBegin) OnAllBegin.Invoke();
+                        BuildsLoadBegin = true;
                     }
                     string path = BuildsFileQueue.First();
+                    float current = BuildsFileQueue.Count + PartsFileQueue.Count + TunesFileQueue.Count + CartridgesFileQueue.Count;
+                    float total = BuildsQueueTotalCount + PartsQueueTotalCount + TunesQueueTotalCount + CartridgesQueueTotalCount;
                     OnBuildsProgressChange.Invoke(1.0f - (BuildsFileQueue.Count / (float)BuildsQueueTotalCount), path);
+                    OnAllProgressChange.Invoke(1.0f - (current / total), path);
                     (bool, Contraption) result = await Serializer.LoadAsync<Contraption>(path);
                     await UniTask.SwitchToMainThread();
                     //Recheck queue
@@ -414,9 +428,10 @@ namespace CB.Calculator
                     }
                     if (BuildsFileQueue.Count <= 1)
                     {
-                        begin = false;
+                        BuildsLoadBegin = false;
                         BuildsQueueTotalCount = 0;
                         OnBuildsFinish.Invoke();
+                        if (!PartsLoadBegin && !TunesLoadBegin && !CartridgesLoadBegin) OnAllFinish.Invoke();
                     }
                     BuildsFileQueue.Remove(path);
                 }
@@ -425,7 +440,6 @@ namespace CB.Calculator
 
         async UniTaskVoid PartsFileLoaderAsync()
         {
-            bool begin = false;
             while (true)
             {
                 await UniTask.Yield(PlayerLoopTiming.Update);
@@ -433,13 +447,17 @@ namespace CB.Calculator
 
                 if(PartsFileQueue.Count > 0)
                 {
-                    if (!begin)
+                    if (!PartsLoadBegin)
                     {
                         OnPartsBegin.Invoke();
-                        begin = true;
+                        if (!BuildsLoadBegin && !TunesLoadBegin && !CartridgesLoadBegin) OnAllBegin.Invoke();
+                        PartsLoadBegin = true;
                     }
                     string path = PartsFileQueue.First();
+                    float current = BuildsFileQueue.Count + PartsFileQueue.Count + TunesFileQueue.Count + CartridgesFileQueue.Count;
+                    float total = BuildsQueueTotalCount + PartsQueueTotalCount + TunesQueueTotalCount + CartridgesQueueTotalCount;
                     OnPartsProgressChange.Invoke(1.0f - (PartsFileQueue.Count / (float)PartsQueueTotalCount), path);
+                    OnAllProgressChange.Invoke(1.0f - (current / total), path);
                     (bool, Contraption) result = await Serializer.LoadAsync<Contraption>(path);
                     await UniTask.SwitchToMainThread();
                     //Recheck queue
@@ -456,9 +474,11 @@ namespace CB.Calculator
                     }
                     if (PartsFileQueue.Count <= 1)
                     {
-                        begin = false;
+                        PartsLoadBegin = false;
                         PartsQueueTotalCount = 0;
                         OnPartsFinish.Invoke();
+                        if (!BuildsLoadBegin && !TunesLoadBegin && !CartridgesLoadBegin) OnAllFinish.Invoke();
+
                     }
                     PartsFileQueue.Remove(path);
                 }
@@ -467,7 +487,6 @@ namespace CB.Calculator
 
         async UniTaskVoid TunesFileLoaderAsync()
         {
-            bool begin = false;
             while (true)
             {
                 await UniTask.Yield(PlayerLoopTiming.Update);
@@ -475,13 +494,17 @@ namespace CB.Calculator
 
                 if (TunesFileQueue.Count > 0)
                 {
-                    if (!begin)
+                    if (!TunesLoadBegin)
                     {
                         OnTunesBegin.Invoke();
-                        begin = true;
+                        if (!BuildsLoadBegin && !PartsLoadBegin && !CartridgesLoadBegin) OnAllBegin.Invoke();
+                        TunesLoadBegin = true;
                     }
                     string path = TunesFileQueue.First();
+                    float current = BuildsFileQueue.Count + PartsFileQueue.Count + TunesFileQueue.Count + CartridgesFileQueue.Count;
+                    float total = BuildsQueueTotalCount + PartsQueueTotalCount + TunesQueueTotalCount + CartridgesQueueTotalCount;
                     OnTunesProgressChange.Invoke(1.0f - (TunesFileQueue.Count / (float)TunesQueueTotalCount), path);
+                    OnAllProgressChange.Invoke(1.0f - (current / total), path);
                     (bool, Tune) result = await Serializer.LoadAsync<Tune>(path);
                     await UniTask.SwitchToMainThread();
                     //Recheck queue
@@ -498,9 +521,10 @@ namespace CB.Calculator
                     }
                     if (TunesFileQueue.Count <= 1)
                     {
-                        begin = false;
+                        TunesLoadBegin = false;
                         TunesQueueTotalCount = 0;
                         OnTunesFinish.Invoke();
+                        if (!BuildsLoadBegin && !PartsLoadBegin && !CartridgesLoadBegin) OnAllFinish.Invoke();
                     }
                     TunesFileQueue.Remove(path);
                 }
@@ -509,7 +533,6 @@ namespace CB.Calculator
 
         async UniTaskVoid CartridgesFileLoaderAsync()
         {
-            bool begin = false;
             while (true)
             {
                 await UniTask.Yield(PlayerLoopTiming.Update);
@@ -517,13 +540,17 @@ namespace CB.Calculator
 
                 if (CartridgesFileQueue.Count > 0)
                 {
-                    if (!begin)
+                    if (!CartridgesLoadBegin)
                     {
                         OnCartridgesBegin.Invoke();
-                        begin = true;
+                        if (!BuildsLoadBegin && !PartsLoadBegin && !TunesLoadBegin) OnAllBegin.Invoke();
+                        CartridgesLoadBegin = true;
                     }
                     string path = CartridgesFileQueue.First();
+                    float current = BuildsFileQueue.Count + PartsFileQueue.Count + TunesFileQueue.Count + CartridgesFileQueue.Count;
+                    float total = BuildsQueueTotalCount + PartsQueueTotalCount + TunesQueueTotalCount + CartridgesQueueTotalCount;
                     OnCartridgesProgressChange.Invoke(1.0f - (CartridgesFileQueue.Count / (float)CartridgesQueueTotalCount), path);
+                    OnAllProgressChange.Invoke(1.0f - (current / total), path);
                     (bool, Cartridge) result = await Serializer.LoadAsync<Cartridge>(path);
                     await UniTask.SwitchToMainThread();
                     //Recheck queue
@@ -540,9 +567,10 @@ namespace CB.Calculator
                     }
                     if (CartridgesFileQueue.Count <= 1)
                     {
-                        begin = false;
+                        CartridgesLoadBegin = false;
                         CartridgesQueueTotalCount = 0;
                         OnCartridgesFinish.Invoke();
+                        if (!BuildsLoadBegin && !PartsLoadBegin && !TunesLoadBegin) OnAllFinish.Invoke();
                     }
                     CartridgesFileQueue.Remove(path);
                 }

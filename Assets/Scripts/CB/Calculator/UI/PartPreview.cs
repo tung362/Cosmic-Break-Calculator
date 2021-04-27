@@ -75,7 +75,7 @@ namespace CB.Calculator.UI
             PartLibrary.OnPreview -= OnPreview;
         }
 
-        void OnPreview(string path)
+        public void OnPreview(string path)
         {
             CurrentPreviewPath = path;
             if (!string.IsNullOrEmpty(path))

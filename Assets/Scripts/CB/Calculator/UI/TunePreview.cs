@@ -79,7 +79,7 @@ namespace CB.Calculator.UI
             TuneLibrary.OnPreview -= OnPreview;
         }
 
-        void OnPreview(string path)
+        public void OnPreview(string path)
         {
             CurrentPreviewPath = path;
             if (!string.IsNullOrEmpty(path))
