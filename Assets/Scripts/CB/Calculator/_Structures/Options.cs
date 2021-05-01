@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using MessagePack;
 
-
 namespace CB.Calculator
 {
     /// <summary>
@@ -15,7 +14,7 @@ namespace CB.Calculator
         /*Enums*/
         public enum LanguageType { EN, JP, CH };
 
-        /*UI*/
+        /*Builder*/
         [Key(0)]
         public float ScaleFactor = 1.0f;
 
