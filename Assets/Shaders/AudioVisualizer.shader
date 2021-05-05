@@ -5,7 +5,6 @@
         _MainTex("Texture", 2D) = "white" {}
         _AudioColor("Audio Color", Color) = (1, 0.5, 0.5, 1)
         _Step("Step", Range(0, 1)) = 1.0
-
     }
     SubShader
     {

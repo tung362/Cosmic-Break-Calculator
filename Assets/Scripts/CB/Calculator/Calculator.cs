@@ -256,10 +256,10 @@ namespace CB.Calculator
             CustomTuneBuilder.Init();
             CustomCartridgeBuilder.Init();
             //Outline
-            //BuildOutline.SetListeners(BuildWatcher);
-            //PartOutline.SetListeners(PartWatcher);
-            //TuneOutline.SetListeners(TuneWatcher);
-            //CartridgeOutline.SetListeners(CartridgeWatcher);
+            BuildOutline.Init();
+            PartOutline.Init();
+            TuneOutline.Init();
+            CartridgeOutline.Init();
             //Watcher
             BuildWatcher.Load();
             BuildWatcher.Watch();
@@ -779,6 +779,7 @@ namespace CB.Calculator
                         {
                             CustomBuildBuilder.Load(result);
                             successful = true;
+                            BuildOutline.UnloadSlot();
                         }
                     }
                     break;
@@ -790,6 +791,7 @@ namespace CB.Calculator
                         {
                             CustomPartBuilder.Load(result);
                             successful = true;
+                            PartOutline.UnloadSlot();
                         }
                     }
                     break;
@@ -801,6 +803,7 @@ namespace CB.Calculator
                         {
                             CustomTuneBuilder.Load(result);
                             successful = true;
+                            TuneOutline.UnloadSlot();
                         }
                     }
                     break;
@@ -812,6 +815,7 @@ namespace CB.Calculator
                         {
                             CustomCartridgeBuilder.Load(result);
                             successful = true;
+                            CartridgeOutline.UnloadSlot();
                         }
                     }
                     break;
