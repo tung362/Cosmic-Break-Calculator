@@ -9,3 +9,7 @@ Cosmic Break Calculator
 ![alt text](https://cdn.discordapp.com/attachments/643683921258610740/797023153447632906/ghfhdfhdfj.gif)  
 ![alt text](https://cdn.discordapp.com/attachments/332391424072876033/796645915733000202/unknown.png)  
 ![alt text](https://cdn.discordapp.com/attachments/643683921258610740/797023846154371102/unknown.png)  
+![alt text](https://i.imgur.com/OAPwcCE.png)  
+![alt text](https://i.imgur.com/EORQNI4.png)  
+![alt text](https://i.imgur.com/swuolIz.gif)  
+![alt text](https://i.imgur.com/mh2m1YD.gif)  
