@@ -4,7 +4,8 @@ Cosmic Break Calculator
 ### Features:  
 - Calculator **<ins>(Still under development)</ins>**  
   - Auto tuner  
-  - Base64 string importer and exporter  
+  - Ability to create, export, and load custom builds
+  - Ability to import and export builds as base64 string  
   - Outliners for easy loading of saves  
 - Builder  
   - Sorted listview and filter search to easily find specific robot parts, tune ups, and cartridges  
@@ -12,6 +13,8 @@ Cosmic Break Calculator
   - Ability to create, export, and load custom tune ups should it not exist in the built-in database  
   - Ability to create, export, and load custom cartridges should it not exist in the built-in database  
   - Outliners for easy loading of saves  
+- REST API builds sharer **<ins>(Still under development)</ins>**  
+- REST API bazaar market **<ins>(Still under development)</ins>**  
 - Custom shortcut key bindings  
 - Dynamically detects imported or removed data bundles and files  
 - Built-in data bundle auto updater **<ins>(Still under development)</ins>**  
