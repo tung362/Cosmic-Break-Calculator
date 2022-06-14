@@ -1,6 +1,32 @@
 # Cosmic-Break-Calculator
 Cosmic Break Calculator
 
+### Features:  
+- Calculator **<ins>(Still under development)</ins>**  
+  - Auto tuner  
+  - Base64 string importer and exporter  
+  - Outliners for easy loading of saves  
+- Builder  
+  - Sorted listview and filter search to easily find specific robot parts, tune ups, and cartridges  
+  - Ability to create, export, and load custom robot parts should it not exist in the built-in database  
+  - Ability to create, export, and load custom tune ups should it not exist in the built-in database  
+  - Ability to create, export, and load custom cartridges should it not exist in the built-in database  
+  - Outliners for easy loading of saves  
+- Custom shortcut key bindings  
+- Dynamically detects imported or removed data bundles and files  
+- Built-in data bundle auto updater **<ins>(Still under development)</ins>**  
+- Localization support for english, japanese, and chinese **<ins>(Still under development)</ins>**  
+- Adaptive window resize, supports all screen aspect ratios and resolutions  
+- Fun extra mechanics  
+  - Music player  
+  - Audio visualizer  
+  - Theme changer **<ins>(Still under development)</ins>**  
+
+### Dynamic window resize:  
+https://i.imgur.com/tEMbPnN.mp4  
+https://i.imgur.com/ZMGW9a8.mp4  
+
+### Preview:  
 ![alt text](https://cdn.discordapp.com/attachments/643683921258610740/757701732624105512/mbhjd.gif)  
 ![alt text](https://cdn.discordapp.com/attachments/643683921258610740/757704816729391234/unknown.png)  
 ![alt text](https://cdn.discordapp.com/attachments/643683921258610740/758072912757522583/unknown.png)  
