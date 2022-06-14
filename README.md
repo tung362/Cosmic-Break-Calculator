@@ -39,7 +39,6 @@ https://i.imgur.com/ZMGW9a8.mp4
 ![alt text](https://cdn.discordapp.com/attachments/332391424072876033/750745249302708344/unknown.png)  
 ![alt text](https://i.imgur.com/iLrb5cl.png)  
 ![alt text](https://i.imgur.com/igcM1B1.png)  
-![alt text](https://cdn.discordapp.com/attachments/643683921258610740/800242933428256768/unknown.png)  
 ![alt text](https://i.imgur.com/iexiue2.png)  
 ![alt text](https://i.imgur.com/sffKZg6.png)  
 ![alt text](https://cdn.discordapp.com/attachments/643683921258610740/797023153447632906/ghfhdfhdfj.gif)  
