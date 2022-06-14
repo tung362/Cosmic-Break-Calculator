@@ -25,6 +25,9 @@ Cosmic Break Calculator
   - Audio visualizer  
   - Theme changer **<ins>(Still under development)</ins>**  
 
+### Credits:  
+- [Pinlin (Background Art)](https://www.deviantart.com/pinlin)  
+
 ### Adaptive window resize:  
 https://i.imgur.com/tEMbPnN.mp4  
 https://i.imgur.com/ZMGW9a8.mp4  
@@ -34,10 +37,12 @@ https://i.imgur.com/ZMGW9a8.mp4
 ![alt text](https://cdn.discordapp.com/attachments/643683921258610740/757704816729391234/unknown.png)  
 ![alt text](https://cdn.discordapp.com/attachments/643683921258610740/758072912757522583/unknown.png)  
 ![alt text](https://cdn.discordapp.com/attachments/332391424072876033/750745249302708344/unknown.png)  
+![alt text](https://i.imgur.com/iLrb5cl.png)  
+![alt text](https://i.imgur.com/igcM1B1.png)  
 ![alt text](https://cdn.discordapp.com/attachments/643683921258610740/800242933428256768/unknown.png)  
+![alt text](https://i.imgur.com/iexiue2.png)  
+![alt text](https://i.imgur.com/sffKZg6.png)  
 ![alt text](https://cdn.discordapp.com/attachments/643683921258610740/797023153447632906/ghfhdfhdfj.gif)  
-![alt text](https://cdn.discordapp.com/attachments/332391424072876033/796645915733000202/unknown.png)  
-![alt text](https://cdn.discordapp.com/attachments/643683921258610740/797023846154371102/unknown.png)  
 ![alt text](https://i.imgur.com/OAPwcCE.png)  
 ![alt text](https://i.imgur.com/EORQNI4.png)  
 ![alt text](https://i.imgur.com/swuolIz.gif)  
