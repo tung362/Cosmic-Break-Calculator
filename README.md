@@ -25,7 +25,7 @@ Cosmic Break Calculator
   - Audio visualizer  
   - Theme changer **<ins>(Still under development)</ins>**  
 
-### Dynamic window resize:  
+### Adaptive window resize:  
 https://i.imgur.com/tEMbPnN.mp4  
 https://i.imgur.com/ZMGW9a8.mp4  
 
