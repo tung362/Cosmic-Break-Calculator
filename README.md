@@ -33,15 +33,13 @@ https://i.imgur.com/tEMbPnN.mp4
 https://i.imgur.com/ZMGW9a8.mp4  
 
 ### Preview:  
-![alt text](https://cdn.discordapp.com/attachments/643683921258610740/757701732624105512/mbhjd.gif)  
-![alt text](https://cdn.discordapp.com/attachments/643683921258610740/757704816729391234/unknown.png)  
-![alt text](https://cdn.discordapp.com/attachments/643683921258610740/758072912757522583/unknown.png)  
-![alt text](https://cdn.discordapp.com/attachments/332391424072876033/750745249302708344/unknown.png)  
+![alt text](https://i.imgur.com/uHWfo67.png)  
+![alt text](https://i.imgur.com/xtRrGDl.png)  
+![alt text](https://i.imgur.com/wcGavyD.png)  
 ![alt text](https://i.imgur.com/iLrb5cl.png)  
 ![alt text](https://i.imgur.com/igcM1B1.png)  
 ![alt text](https://i.imgur.com/iexiue2.png)  
 ![alt text](https://i.imgur.com/sffKZg6.png)  
-![alt text](https://cdn.discordapp.com/attachments/643683921258610740/797023153447632906/ghfhdfhdfj.gif)  
 ![alt text](https://i.imgur.com/OAPwcCE.png)  
 ![alt text](https://i.imgur.com/EORQNI4.png)  
 ![alt text](https://i.imgur.com/swuolIz.gif)  
